@@ -3,6 +3,7 @@ package org.tka.robotics;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.Range;
 
 @TeleOp(name = "CarnivalBot")
@@ -11,12 +12,19 @@ public class CarnivalBot extends OpMode{
 
     @Override
     public void init() {
-        front_left = hardwareMap.dcMotor.get("front_left");
-        front_right = hardwareMap.dcMotor.get("front_right");
-        back_left = hardwareMap.dcMotor.get("back_left");
-        back_right = hardwareMap.dcMotor.get("back_right");
-        front_left.setDirection(DcMotor.Direction.REVERSE);
-        front_right.setDirection(DcMotor.Direction.REVERSE);
+        front_left = hardwareMap.dcMotor.get("left_front");
+        front_right = hardwareMap.dcMotor.get("right_front");
+        back_left = hardwareMap.dcMotor.get("left_back");
+        back_right = hardwareMap.dcMotor.get("right_back");
+
+        // Reset configurations
+        front_left.resetDeviceConfigurationForOpMode();
+        front_right.resetDeviceConfigurationForOpMode();
+        back_left.resetDeviceConfigurationForOpMode();
+        back_right.resetDeviceConfigurationForOpMode();
+
+        front_left.setDirection(DcMotorSimple.Direction.REVERSE);
+        front_right.setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
     @Override
@@ -27,7 +35,6 @@ public class CarnivalBot extends OpMode{
         front_right.setPower(motorPwr[1]);
         back_left.setPower(motorPwr[2]);
         back_right.setPower(motorPwr[3]);
-        // TODO: Maybe have one stick = omnidirectional & 2 sticks be tank-like
         telemetry.addData("right_stick_x", gamepad1.right_stick_x);
         telemetry.addData("right_stick_y", gamepad1.right_stick_y);
         telemetry.addData("left_stick_x", gamepad1.left_stick_x);
@@ -36,11 +43,12 @@ public class CarnivalBot extends OpMode{
         telemetry.addData("front_right_power", front_right.getPower());
         telemetry.addData("back_left_power", back_left.getPower());
         telemetry.addData("back_right_power", back_right.getPower());
+        telemetry.update();
     }
 
 
     /**
-     * Calculates the motor powers for driving omnidirectionally <b>USING A SINGLE JOYSTICK</b>
+     * Calculates the motor powers for driving omnidirectionally
      *
      * @param joyLX The left X-value of the joystick
      * @param joyLY The left Y-value of the joystick
@@ -52,11 +60,7 @@ public class CarnivalBot extends OpMode{
         joyLY = scaleInput(joyLY);
         joyRX = scaleInput(joyRX);
         joyLX = scaleInput(joyLX);
-        // Dirty hack :p TODO: Fix later
-        if(Math.abs(joyLY) > 0 && Math.abs(joyRY) > 0){
-            joyLY /= 2;
-            joyRY /= 2;
-        }
+
         float modX = -(joyLX + joyRX) / 2;
         telemetry.addData("modX: ", modX);
         // front_left
