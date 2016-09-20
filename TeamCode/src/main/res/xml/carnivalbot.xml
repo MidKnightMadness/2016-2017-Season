@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
+<Robot type="FirstInspires-FTC" name="CarnivalBot">
+    <DeviceInterfaceModule name="Device Interface Module 1" serialNumber="AL00VFP3">
+        <ColorSensor name="color_sensor" port="0" />
+    </DeviceInterfaceModule>
+    <MotorController name="Motor Controller 1" serialNumber="AL00XPKR">
+        <Motor name="right_front" port="1" />
+        <Motor name="left_front" port="2" />
+    </MotorController>
+    <MotorController name="Motor Controller 2" serialNumber="AH00QHU6">
+        <Motor name="right_back" port="1" />
+        <Motor name="left_back" port="2" />
+    </MotorController>
+</Robot>
