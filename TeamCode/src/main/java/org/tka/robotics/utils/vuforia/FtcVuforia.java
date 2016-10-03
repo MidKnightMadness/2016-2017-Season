@@ -105,6 +105,7 @@ public class FtcVuforia {
      * @return A float array of coordinates ordered by X, Y, then Z
      */
     public float[] getRobotPosition() {
+        updateRobotLocation();
         float[] pos = new float[3];
         if (lastKnownLocation == null)
             return pos;
