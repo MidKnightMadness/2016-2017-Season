@@ -39,7 +39,7 @@ public class RobotHardware {
         backLeft = hardwareMap.dcMotor.get("left_back");
         backRight = hardwareMap.dcMotor.get("right_back");
 
-        frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        backRight.setDirection(DcMotorSimple.Direction.REVERSE);
         frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
