@@ -30,7 +30,7 @@ public class VuforiaNavigation extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         // Initialize Vuforia
         VuforiaLocalizer.Parameters params = new VuforiaLocalizer.Parameters(R.id.cameraMonitorViewId);
-        params.vuforiaLicenseKey= "AcF4Fen/////AAAAGRpWPEA6DkVapPT8h4D5ABozK1RZ3YsKUwHZzIVVWPzksL3r3" +
+        params.vuforiaLicenseKey = "AcF4Fen/////AAAAGRpWPEA6DkVapPT8h4D5ABozK1RZ3YsKUwHZzIVVWPzksL3r3" +
                 "rHDhFZNXqWXupugaYnNZHy95Pf+vKqje93szcW6OCpJ4H66mtHrVuirEB4gAsVglOLqgaMkHWms0p4dxduw" +
                 "Zc+HzxGTmuF7oPWuX57Bg/4TesNeD0vgT1X1M2tedf0F4U6bavaEtis+5In/7/fBJ1n6Fv/qLcHPtxAJ+nM" +
                 "zFycCv4HkEQhnhOxcT8TnTleAAFEirS7gP6jufZ3Sy7JrYQBLkMs+BstrhjdIGOGLKbohyiLJ9/EWl8udGn" +
@@ -39,7 +39,7 @@ public class VuforiaNavigation extends LinearOpMode {
         this.vuforia = ClassFactory.createVuforiaLocalizer(params);
 
         // Load tracking assets
-        VuforiaTrackables  trackables = this.vuforia.loadTrackablesFromAsset("FTC_2016-17");
+        VuforiaTrackables trackables = this.vuforia.loadTrackablesFromAsset("FTC_2016-17");
 
         VuforiaTrackable wheels = trackables.get(0);
         VuforiaTrackable tools = trackables.get(1);
@@ -55,21 +55,38 @@ public class VuforiaNavigation extends LinearOpMode {
 
         float mmPerInch = 25.4f;
         float mmBotWidth = 18 * mmPerInch;
-        float mmFieldWidth = (12*12 - 2) * mmPerInch; // The field is 12', but the walls are 1", giving us 11'10" of usable space
+        float mmFieldWidth = (12 * 12 - 2) * mmPerInch; // The field is 12', but the walls are 1", giving us 11'10" of usable space
 
-        OpenGLMatrix wheelsLocationOnField = OpenGLMatrix.translation((18*3)*mmPerInch, 0, 0)
+        /*
+            //
+            // Blue alliance beacon 1.
+            //
+            new FtcVuforia.Target("wheels", 90.0f, 0.0f, 0.0f, 12.0f*MM_PER_INCH, FTC_FIELD_WIDTH/2.0f, TARGET_HEIGHT),
+            //
+            // Red alliance beacon 2.
+            //
+            new FtcVuforia.Target("tools", 90.0f, 0.0f, 90.0f, -FTC_FIELD_WIDTH/2.0f, 30.0f*MM_PER_INCH, TARGET_HEIGHT),
+            //
+            // Blue alliance beacon 2 location.
+            //
+            new FtcVuforia.Target("legos", 90.0f, 0.0f, 0.0f, -30.0f*MM_PER_INCH, FTC_FIELD_WIDTH/2.0f, TARGET_HEIGHT),
+            //
+            // Red alliance beacon 1 location.
+            //
+            new FtcVuforia.Target("gears", 90.0f, 0.0f, 90.0f, -FTC_FIELD_WIDTH/2.0f, -12.0f*MM_PER_INCH, TARGET_HEIGHT)*/
+        OpenGLMatrix wheelsLocationOnField = OpenGLMatrix.translation(12.0F * mmPerInch, mmFieldWidth / 2, 160)
                 .multiplied(OpenGLMatrix.rotation(AxesReference.EXTRINSIC,
-                        AxesOrder.XYX, AngleUnit.DEGREES, 180, 0, 0));
+                        AxesOrder.XYX, AngleUnit.DEGREES, 90, 0, 0));
         wheels.setLocation(wheelsLocationOnField);
         RobotLog.ii(TAG, "wheels = %s", format(wheelsLocationOnField));
 
-        OpenGLMatrix legosLocationOnField = OpenGLMatrix.translation((5*18+13) * mmPerInch, 0, 0)
+        OpenGLMatrix legosLocationOnField = OpenGLMatrix.translation(-30 * mmPerInch, mmFieldWidth / 2, 160)
                 .multiplied(OpenGLMatrix.rotation(AxesReference.EXTRINSIC,
-                        AxesOrder.XYX, AngleUnit.DEGREES, 180, 0, 0));
+                        AxesOrder.XYX, AngleUnit.DEGREES, 90, 0, 0));
         legos.setLocation(legosLocationOnField);
         RobotLog.ii(TAG, "legos = %s", format(legosLocationOnField));
 
-        OpenGLMatrix phoneLocOnBot = OpenGLMatrix.translation(12 * mmPerInch, 0, 0);
+        OpenGLMatrix phoneLocOnBot = OpenGLMatrix.translation(6 * mmPerInch, 0, 0);
         RobotLog.ii(TAG, "phone = %s", format(phoneLocOnBot));
         ((VuforiaTrackableDefaultListener) wheels.getListener()).setPhoneInformation(phoneLocOnBot, params.cameraDirection);
         ((VuforiaTrackableDefaultListener) legos.getListener()).setPhoneInformation(phoneLocOnBot, params.cameraDirection);
@@ -80,16 +97,16 @@ public class VuforiaNavigation extends LinearOpMode {
 
         trackables.activate();
 
-        while(opModeIsActive()){
-            for(VuforiaTrackable t : allTrackables){
+        while (opModeIsActive()) {
+            for (VuforiaTrackable t : allTrackables) {
                 VuforiaTrackableDefaultListener listener = (VuforiaTrackableDefaultListener) t.getListener();
-                telemetry.addData(t == wheels? "Wheels" : "Legos", listener.isVisible()? "Visible" : "Not Visible");
+                telemetry.addData(t == wheels ? "Wheels" : "Legos", listener.isVisible() ? "Visible" : "Not Visible");
                 OpenGLMatrix matrix = listener.getUpdatedRobotLocation();
-                if(matrix != null){
+                if (matrix != null) {
                     lastPosition = matrix;
                 }
             }
-            telemetry.addData("Pos ", lastPosition == null? "Unknown" : format(lastPosition));
+            telemetry.addData("Pos ", lastPosition == null ? "Unknown" : format(lastPosition));
             telemetry.update();
             idle();
         }

@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Func;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -118,6 +119,30 @@ public class RobotHardware {
                     return m.getValue().getTargetPosition();
                 }
             });
+        }
+    }
+
+    /**
+     * Reset all encoders on the robot. This will wait until the motors
+     */
+    public void resetAllEncoders(){
+        Map<DcMotor, DcMotor.RunMode> prevRunMode = new HashMap<>();
+        for(Map.Entry<String, DcMotor> m : this.hardwareMap.dcMotor.entrySet()){
+            prevRunMode.put(m.getValue(), m.getValue().getMode());
+            m.getValue().setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        }
+        boolean encodersReset = false;
+        while(!encodersReset){
+            encodersReset = true;
+            for(Map.Entry<String, DcMotor> m : this.hardwareMap.dcMotor.entrySet()){
+                if(Math.abs(m.getValue().getCurrentPosition()) < 10){
+                    encodersReset = false;
+                }
+            }
+            Thread.yield();
+        }
+        for(Map.Entry<String, DcMotor> m : this.hardwareMap.dcMotor.entrySet()){
+            m.getValue().setMode(prevRunMode.get(m.getValue()));
         }
     }
 }
