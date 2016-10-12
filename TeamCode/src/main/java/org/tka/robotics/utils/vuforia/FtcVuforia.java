@@ -134,6 +134,7 @@ public class FtcVuforia {
      * </ul>
      */
     public float[] getRobotPosition() {
+        updateRobotLocation();
         if (lastKnownLocation == null) {
             return null;
         }
