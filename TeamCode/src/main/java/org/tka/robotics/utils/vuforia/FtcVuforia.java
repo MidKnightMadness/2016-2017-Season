@@ -2,7 +2,14 @@ package org.tka.robotics.utils.vuforia;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
-import org.firstinspires.ftc.robotcore.external.navigation.*;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +46,8 @@ public class FtcVuforia {
     private long lastKnownAt;
     private Target lastSeenTarget;
 
+    private Thread updaterThread;
+
 
     /**
      * Creates an instance of this object. This initializes Vuforia with the camera view's ID (the preview window), asset file,
@@ -56,6 +65,11 @@ public class FtcVuforia {
         VuforiaLocalizer localizer = ClassFactory.createVuforiaLocalizer(parameters);
         // Load the trackable assets
         this.trackables = localizer.loadTrackablesFromAsset(assetFile);
+
+        this.updaterThread = new Thread(new Updater());
+        this.updaterThread.setName("VuforiaUpdater");
+        this.updaterThread.setDaemon(true);
+        this.updaterThread.start();
     }
 
     /**
@@ -134,7 +148,7 @@ public class FtcVuforia {
      * </ul>
      */
     public float[] getRobotPosition() {
-        updateRobotLocation();
+//        updateRobotLocation();
         if (lastKnownLocation == null) {
             return null;
         }
@@ -229,9 +243,6 @@ public class FtcVuforia {
                 lastSeenTarget = t;
             }
         }
-        // Allow other threads to run, so that we don't crash the opmode if called really quickly
-        // Unsure of implications of this, will need to experiment
-        Thread.yield();
     }
 
     /**
@@ -271,6 +282,24 @@ public class FtcVuforia {
             this.rotY = rotY;
             this.rotZ = rotZ;
             return this;
+        }
+    }
+
+    private class Updater implements Runnable {
+
+        private boolean running = true;
+
+        @Override
+        public void run() {
+            while (running) {
+                if (trackingEnabled)
+                    updateRobotLocation();
+                try {
+                    Thread.sleep(250);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 }
