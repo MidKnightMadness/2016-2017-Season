@@ -39,29 +39,73 @@ public class AutonomousGyroTurnInfoSampleExampleToMakeSureItWorksTest extends Li
 
 
 
-        turnDegrees(0.2, 90);
+        turnDegrees(0.5, 90);
+        sleep(250);
+
+
+
+        while(opModeIsActive()) {
+            idle();
+        }
+
+        /*
         sleep(250);
         turnDegrees(0.2, 90);
         sleep(250);
         turnDegrees(0.2, 90);
         sleep(250);
         turnDegrees(0.2, 90);
+        */
     }
 
     private void turnDegrees(double power, double angle) throws InterruptedException {
+        if(power < 0)
+            throw new IllegalStateException("Power must be positive");
+
+        double initialHeading = heading;
         double targetAngle = heading + angle;
-
-        turn(power);
-
-        while(heading < targetAngle) {
-            heading = gyro.getHeading();
+        double percentToTarget = 0;
 
 
-            telemetry.addData("0", "Heading %03d", heading);
-            telemetry.update();
-            idle();
+        if(angle > 0) {
+            turn(power);
+
+            while(percentToTarget < 90) {
+                heading = -gyro.getIntegratedZValue();
+                percentToTarget = (heading - initialHeading)/(targetAngle - initialHeading) * 100;
+
+                if(percentToTarget > 75 && power >= 0.20) {
+                    turn(power * 0.75);
+                }
+
+                telemetry.addData("% to Target", percentToTarget);
+                telemetry.addData("Heading", heading);
+                telemetry.update();
+                idle();
+            }
+
         }
+        else {
+            turn(-power);
+
+            while(percentToTarget < 90) {
+                heading = -gyro.getIntegratedZValue();
+                percentToTarget = (heading - initialHeading)/(targetAngle - initialHeading) * 100;
+
+                if(percentToTarget > 75 && power >= 0.20) {
+                    turn(-power * 0.75);
+                }
+
+                telemetry.addData("% to Target", percentToTarget);
+                telemetry.addData("Heading", heading);
+                telemetry.update();
+                idle();
+            }
+        }
+
         robotHardware.stopAllMotors();
+
+
     }
 
     private void turn(double power) {

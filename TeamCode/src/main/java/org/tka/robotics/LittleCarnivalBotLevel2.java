@@ -1,17 +1,18 @@
 package org.tka.robotics;
 
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
+import java.util.Random;
+
 /**
  * Created by Joshua on 9/28/2016.
  */
 
-@TeleOp(name = "LittleCarnivalBot")
-public class LittleCarnivalBot extends OpMode {
+@TeleOp(name = "LittleCarnivalBotFunVersion")
+public class LittleCarnivalBotLevel2 extends OpMode {
     private DcMotor left, right;
 
     @Override
@@ -28,11 +29,16 @@ public class LittleCarnivalBot extends OpMode {
 
     @Override
     public void loop() {
-        left.setPower(gamepad1.left_stick_y * 0.20);
-        right.setPower(gamepad1.right_stick_y * 0.20);
+        left.setPower(gamepad1.left_stick_y * myRandom(0.1, 1.0));
+        right.setPower(gamepad1.right_stick_y * myRandom(0.1, 1.0));
 
         telemetry.addData("left", gamepad1.left_stick_y);
         telemetry.addData("right", gamepad1.right_stick_y);
         telemetry.update();
+    }
+
+    double myRandom(double min, double max) {
+        Random r = new Random();
+        return (r.nextInt((int)((max-min)*10+1))+min*10) / 10.0;
     }
 }
