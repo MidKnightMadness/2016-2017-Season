@@ -1,5 +1,6 @@
 package org.tka.robotics.utils;
 
+import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -17,6 +18,7 @@ public class RobotHardware {
 
     private final OpMode parent;
     private final HardwareMap hardwareMap;
+    private double heading;
 
     private DcMotor frontLeft, frontRight, backLeft, backRight;
 
@@ -25,6 +27,8 @@ public class RobotHardware {
         this.hardwareMap = this.parent.hardwareMap;
         initialize();
     }
+    
+    ModernRoboticsI2cGyro gyro;
 
     /**
      * Initializes all the hardware and telemetry on the robot
@@ -39,6 +43,8 @@ public class RobotHardware {
         frontRight = hardwareMap.dcMotor.get("right_front");
         backLeft = hardwareMap.dcMotor.get("left_back");
         backRight = hardwareMap.dcMotor.get("right_back");
+
+        gyro = (ModernRoboticsI2cGyro)hardwareMap.gyroSensor.get("gyro");
 
         backRight.setDirection(DcMotorSimple.Direction.REVERSE);
         frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -144,5 +150,98 @@ public class RobotHardware {
         for(Map.Entry<String, DcMotor> m : this.hardwareMap.dcMotor.entrySet()){
             m.getValue().setMode(prevRunMode.get(m.getValue()));
         }
+    }
+
+    public void turnDegrees(double angle, double power) throws InterruptedException {
+        if(power < 0)
+            throw new IllegalStateException("Power must be positive");
+
+        double initialHeading = heading;
+        double targetAngle = heading + angle;
+        double percentToTarget = 0;
+        int offset = 10; //was 12
+
+
+        if(angle > 0) {
+            turn(power);
+
+            while(heading < targetAngle - offset) {
+                heading = -gyro.getIntegratedZValue();
+                percentToTarget = (heading - initialHeading)/(targetAngle - initialHeading) * 100;
+
+                /*
+                if(percentToTarget > 75 && power >= 0.20) {
+                    turn(power * 0.75);
+                }
+                */
+
+                this.parent.telemetry.addData("% to Target", percentToTarget);
+                this.parent.telemetry.addData("Heading", heading);
+                this.parent.telemetry.update();
+                Thread.yield();
+            }
+
+        }
+        else {
+            turn(-power);
+
+            while(heading > targetAngle + offset) {
+                heading = -gyro.getIntegratedZValue();
+                percentToTarget = (heading - initialHeading)/(targetAngle - initialHeading) * 100;
+
+                /*
+                if(percentToTarget > 75 && power >= 0.20) {
+                    turn(-power * 0.75);
+                }
+                */
+
+                this.parent.telemetry.addData("% to Target", percentToTarget);
+                this.parent.telemetry.addData("Heading", heading);
+                this.parent.telemetry.update();
+                Thread.yield();
+            }
+        }
+
+        stopAllMotors();
+
+
+    }
+
+    public void turn(double power) {
+        getFrontLeftMotor().setPower(power);
+        getBackLeftMotor().setPower(power);
+        getFrontRightMotor().setPower(-power);
+        getBackRightMotor().setPower(-power);
+    }
+
+    public void driveForward(int distance, double power) throws InterruptedException {
+        getFrontRightMotor().setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        getFrontRightMotor().setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        while(getFrontRightMotor().getCurrentPosition() < distance) {
+            setAllMotors(power);
+        }
+
+        stopAllMotors();
+    }
+
+    public void setAllMotors(double power) throws InterruptedException {
+        getFrontLeftMotor().setPower(power);
+        getFrontRightMotor().setPower(power);
+        getBackLeftMotor().setPower(power);
+        getBackRightMotor().setPower(power);
+        Thread.yield();
+    }
+
+    public void forwardLeftDiagonal(double distance, double power) {
+        getFrontRightMotor().setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        getFrontRightMotor().setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        while(getFrontRightMotor().getCurrentPosition() < distance) {
+            getFrontRightMotor().setPower(power);
+            getBackLeftMotor().setPower(power);
+        }
+
+        stopAllMotors();
     }
 }
