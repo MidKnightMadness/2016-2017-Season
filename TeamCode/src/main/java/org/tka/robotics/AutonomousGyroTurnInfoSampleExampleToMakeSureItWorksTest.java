@@ -39,9 +39,26 @@ public class AutonomousGyroTurnInfoSampleExampleToMakeSureItWorksTest extends Li
 
 
 
-        turnDegrees(0.5, 90);
-        sleep(250);
-
+        turnDegrees(0.25, 90);
+        sleep(1000);
+        turnDegrees(0.25, 90);
+        sleep(1000);
+        turnDegrees(0.25, 90);
+        sleep(1000);
+        turnDegrees(0.25, 90);
+        sleep(1000);
+        turnDegrees(0.25, 360);
+        sleep(1000);
+        turnDegrees(0.25, -90);
+        sleep(1000);
+        turnDegrees(0.25, -90);
+        sleep(1000);
+        turnDegrees(0.25, -90);
+        sleep(1000);
+        turnDegrees(0.25, -90);
+        sleep(1000);
+        turnDegrees(0.25, -360);
+        sleep(1000);
 
 
         while(opModeIsActive()) {
@@ -58,25 +75,28 @@ public class AutonomousGyroTurnInfoSampleExampleToMakeSureItWorksTest extends Li
         */
     }
 
-    private void turnDegrees(double power, double angle) throws InterruptedException {
+    public void turnDegrees(double power, double angle) throws InterruptedException {
         if(power < 0)
             throw new IllegalStateException("Power must be positive");
 
         double initialHeading = heading;
         double targetAngle = heading + angle;
         double percentToTarget = 0;
+        int offset = 10; //was 12
 
 
         if(angle > 0) {
             turn(power);
 
-            while(percentToTarget < 90) {
+            while(heading < targetAngle - offset) {
                 heading = -gyro.getIntegratedZValue();
                 percentToTarget = (heading - initialHeading)/(targetAngle - initialHeading) * 100;
 
+                /*
                 if(percentToTarget > 75 && power >= 0.20) {
                     turn(power * 0.75);
                 }
+                */
 
                 telemetry.addData("% to Target", percentToTarget);
                 telemetry.addData("Heading", heading);
@@ -88,13 +108,15 @@ public class AutonomousGyroTurnInfoSampleExampleToMakeSureItWorksTest extends Li
         else {
             turn(-power);
 
-            while(percentToTarget < 90) {
+            while(heading > targetAngle + offset) {
                 heading = -gyro.getIntegratedZValue();
                 percentToTarget = (heading - initialHeading)/(targetAngle - initialHeading) * 100;
 
+                /*
                 if(percentToTarget > 75 && power >= 0.20) {
                     turn(-power * 0.75);
                 }
+                */
 
                 telemetry.addData("% to Target", percentToTarget);
                 telemetry.addData("Heading", heading);
@@ -108,7 +130,7 @@ public class AutonomousGyroTurnInfoSampleExampleToMakeSureItWorksTest extends Li
 
     }
 
-    private void turn(double power) {
+    public void turn(double power) {
         robotHardware.getFrontLeftMotor().setPower(power);
         robotHardware.getBackLeftMotor().setPower(power);
         robotHardware.getFrontRightMotor().setPower(-power);

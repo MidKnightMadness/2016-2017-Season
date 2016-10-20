@@ -12,7 +12,7 @@ import org.tka.robotics.utils.RobotHardware;
  */
 
 @Autonomous(name = "Line Follow Color Detect Gyro Turn Test")
-public class AutonomousLineFollowColorDetectGyroTurnTest extends LinearOpMode {
+public class AutonomousLineFollowColorDetectGyroTurnTestOLD extends LinearOpMode {
     RobotHardware robotHardware;
     LightSensor lightSensor;
 
