@@ -34,8 +34,29 @@ public class AutonomousDoubleBeacon1 extends LinearOpMode {
 
         waitForStart();
 
+        /*
+        robotHardware.setAllMotors(0.2);
+        sleep(750);
+        robotHardware.stopAllMotors();
+        sleep(250);
+        robotHardware.setAllMotors(0.4);
+        sleep(750);
+        robotHardware.stopAllMotors();
+        sleep(250);
+        robotHardware.setAllMotors(0.7);
+        sleep(750);
+        robotHardware.stopAllMotors();
+        sleep(250);
+        robotHardware.setAllMotors(-0.3);
+        sleep(750);
+        robotHardware.stopAllMotors();
+        */
 
-        robotHardware.forwardLeftDiagonal(8000, 0.3);
+
+
+        robotHardware.forwardLeftDiagonal(2000, 0.3);
+
+        sleep(250);
 
 
         while(lightSensor.getLightDetected() < 0.3) {

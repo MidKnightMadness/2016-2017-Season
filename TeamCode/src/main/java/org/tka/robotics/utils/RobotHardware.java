@@ -233,13 +233,23 @@ public class RobotHardware {
         Thread.yield();
     }
 
-    public void forwardLeftDiagonal(double distance, double power) {
+    public void forwardLeftDiagonal(double distance, double power) throws InterruptedException{
         getFrontRightMotor().setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         getFrontRightMotor().setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
+        getBackLeftMotor().setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        getBackLeftMotor().setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        getFrontRightMotor().setPower(power);
+        getBackLeftMotor().setPower(power);
+        getFrontLeftMotor().setPower(0);
+        getBackRightMotor().setPower(0);
+
         while(getFrontRightMotor().getCurrentPosition() < distance) {
-            getFrontRightMotor().setPower(power);
-            getBackLeftMotor().setPower(power);
+            this.parent.telemetry.addData("front right", getFrontRightMotor().getCurrentPosition());
+            this.parent.telemetry.addData("back left", getBackLeftMotor().getCurrentPosition());
+            this.parent.telemetry.update();
+            Thread.yield();
         }
 
         stopAllMotors();

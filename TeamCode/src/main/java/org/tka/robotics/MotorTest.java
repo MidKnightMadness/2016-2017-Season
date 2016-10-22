@@ -77,10 +77,10 @@ public class MotorTest extends LinearOpMode {
 
                 motor.resetDeviceConfigurationForOpMode();
                 motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                motor.setPower(1F);
+                motor.setPower(0.3F);
                 telemetry.log().add("Starting motor " + motorName);
                 time.reset();
-                while (time.seconds() < 5) {
+                while (time.seconds() < 4) {
                     telemetry.addData("Running motor", motorName);
                     telemetry.addData("Time Running", time.seconds());
                     telemetry.update();
@@ -89,8 +89,8 @@ public class MotorTest extends LinearOpMode {
                 telemetry.log().add("Stopping motor " + motorName);
                 motor.setPower(0);
                 time.reset();
-                telemetry.log().add("Waiting for 5 seconds...");
-                while(time.seconds() < 5){
+                telemetry.log().add("Waiting for 3 seconds...");
+                while(time.seconds() < 3){
                     telemetry.addData("Time Running", time.seconds());
                     telemetry.update();
                     idle();
