@@ -53,30 +53,31 @@ public class AutonomousDoubleBeacon1 extends LinearOpMode {
         */
 
 
-
-        robotHardware.forwardLeftDiagonal(2000, 0.3);
-
+        robotHardware.forwardLeftDiagonal(2500, 0.4);
         sleep(250);
 
 
         while(lightSensor.getLightDetected() < 0.3) {
-            robotHardware.setAllMotors(0.25);
+            robotHardware.getFrontRightMotor().setPower(0.3);
+            robotHardware.getBackLeftMotor().setPower(0.3);
+            robotHardware.getFrontLeftMotor().setPower(0);
+            robotHardware.getBackRightMotor().setPower(0);
             idle();
         }
         robotHardware.stopAllMotors();
-        sleep(500);
+        //sleep(500);
 
         while((colorSensor.red() <= 1) && colorSensor.blue() <= 1) {
 
-            if(lightSensor.getLightDetected() < 0.35) {
+            if(lightSensor.getLightDetected() < 0.40) {
                 robotHardware.getFrontLeftMotor().setPower(0);
-                robotHardware.getFrontRightMotor().setPower(0.15);
+                robotHardware.getFrontRightMotor().setPower(0.2);
                 robotHardware.getBackLeftMotor().setPower(0);
-                robotHardware.getBackRightMotor().setPower(0.15);
+                robotHardware.getBackRightMotor().setPower(0.2);
             } else {
-                robotHardware.getFrontLeftMotor().setPower(0.15);
+                robotHardware.getFrontLeftMotor().setPower(0.2);
                 robotHardware.getFrontRightMotor().setPower(0);
-                robotHardware.getBackLeftMotor().setPower(0.15);
+                robotHardware.getBackLeftMotor().setPower(0.2);
                 robotHardware.getBackRightMotor().setPower(0);
             }
 
@@ -88,13 +89,13 @@ public class AutonomousDoubleBeacon1 extends LinearOpMode {
         }
 
         robotHardware.stopAllMotors();
-        sleep(500);
+        //sleep(500);
 
         telemetry.addData("red", colorSensor.red());
         telemetry.addData("blue", colorSensor.blue());
         telemetry.update();
 
-        sleep(1000);
+        //sleep(1000);
 
         //detect blue
 
@@ -103,7 +104,7 @@ public class AutonomousDoubleBeacon1 extends LinearOpMode {
 
             telemetry.addData("", "blue > red");
             telemetry.update();
-            sleep(500);
+            //sleep(500);
 
 
             robotHardware.driveForward(400, 0.2);
@@ -113,17 +114,18 @@ public class AutonomousDoubleBeacon1 extends LinearOpMode {
 
             telemetry.addData("", "red > blue");
             telemetry.update();
-            sleep(500);
+            //sleep(500);
 
             robotHardware.getFrontRightMotor().setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             robotHardware.getFrontRightMotor().setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-            while (robotHardware.getFrontRightMotor().getCurrentPosition() > -250) {
+            while (robotHardware.getFrontRightMotor().getCurrentPosition() > -400) {
                 robotHardware.getFrontLeftMotor().setPower(0.20);
                 robotHardware.getFrontRightMotor().setPower(-0.20);
                 robotHardware.getBackLeftMotor().setPower(-0.20);
                 robotHardware.getBackRightMotor().setPower(0.20);
                 telemetry.addData("frontRight", robotHardware.getFrontRightMotor().getCurrentPosition());
+                telemetry.update();
             }
             robotHardware.stopAllMotors();
 
