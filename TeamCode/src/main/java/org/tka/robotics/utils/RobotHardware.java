@@ -218,9 +218,18 @@ public class RobotHardware {
         getFrontRightMotor().setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         getFrontRightMotor().setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        while(getFrontRightMotor().getCurrentPosition() < distance) {
-            setAllMotors(power);
+        if(distance > 0) {
+            while(getFrontRightMotor().getCurrentPosition() < distance) {
+                setAllMotors(power);
+            }
         }
+        else {
+            while(getFrontRightMotor().getCurrentPosition() > distance) {
+                setAllMotors(-power);
+            }
+        }
+
+
 
         stopAllMotors();
     }
