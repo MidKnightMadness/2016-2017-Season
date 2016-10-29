@@ -2,33 +2,25 @@ package org.tka.robotics.utils.pid;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
 
 @Autonomous(name = "PID Test")
 public class PidOpModeTest extends OpMode{
 
-    private PidMotor motor1;
-    private PidMotor motor2;
-    double power = 0;
 
-    private boolean increasing = true;
+
+    private PidMotor motor;
+    private PidMotor motor2;
 
     @Override
     public void init() {
-
+        motor = new PidMotor(hardwareMap, "motor1");
+        motor2 = new PidMotor(hardwareMap, "motor");
     }
 
     @Override
     public void start() {
-        DcMotor m1 = hardwareMap.dcMotor.get("motor");
-        DcMotor m2 = hardwareMap.dcMotor.get("motor1");
-
-        motor1 = new PidMotor(m1);
-        motor2 = new PidMotor(m2);
-
-
-        motor1.setVelocity(1);
-        motor2.setVelocity(2);
+        motor.addTelemetry(this);
+        motor2.addTelemetry(this);
     }
 
     @Override
@@ -38,5 +30,11 @@ public class PidOpModeTest extends OpMode{
 
     @Override
     public void loop() {
+        motor2.setPower(gamepad1.right_stick_y);
+        motor.setPower(gamepad1.left_stick_y);
+        if(gamepad1.a){
+            motor2.setPosition(0);
+            motor.setPosition(0);
+        }
     }
 }
