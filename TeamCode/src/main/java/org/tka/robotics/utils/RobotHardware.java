@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Func;
+import org.tka.robotics.utils.pid.PidMotor;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,14 +21,14 @@ public class RobotHardware {
     private final HardwareMap hardwareMap;
     private double heading;
 
-    private DcMotor frontLeft, frontRight, backLeft, backRight;
+    private PidMotor frontLeft, frontRight, backLeft, backRight;
 
     public RobotHardware(OpMode opMode) {
         this.parent = opMode;
         this.hardwareMap = this.parent.hardwareMap;
         initialize();
     }
-    
+
     ModernRoboticsI2cGyro gyro;
 
     /**
@@ -39,10 +40,10 @@ public class RobotHardware {
         for (Map.Entry<String, DcMotor> m : this.hardwareMap.dcMotor.entrySet()) {
             m.getValue().resetDeviceConfigurationForOpMode();
         }
-        frontLeft = hardwareMap.dcMotor.get("left_front");
-        frontRight = hardwareMap.dcMotor.get("right_front");
-        backLeft = hardwareMap.dcMotor.get("left_back");
-        backRight = hardwareMap.dcMotor.get("right_back");
+        frontLeft = new PidMotor(hardwareMap, "left_front");
+        frontRight = new PidMotor(hardwareMap, "right_front");
+        backLeft = new PidMotor(hardwareMap, "left_back");
+        backRight = new PidMotor(hardwareMap, "right_back");
 
         gyro = (ModernRoboticsI2cGyro)hardwareMap.gyroSensor.get("gyro");
 
@@ -55,7 +56,7 @@ public class RobotHardware {
      *
      * @return A {@link DcMotor} corresponding to the front left motor
      */
-    public DcMotor getFrontLeftMotor() {
+    public PidMotor getFrontLeftMotor() {
         return this.frontLeft;
     }
 
@@ -64,7 +65,7 @@ public class RobotHardware {
      *
      * @return A {@link DcMotor} corresponding to the front right motor
      */
-    public DcMotor getFrontRightMotor() {
+    public PidMotor getFrontRightMotor() {
         return this.frontRight;
     }
 
@@ -73,7 +74,7 @@ public class RobotHardware {
      *
      * @return A {@link DcMotor} corresponding to the back left motor
      */
-    public DcMotor getBackLeftMotor() {
+    public PidMotor getBackLeftMotor() {
         return this.backLeft;
     }
 
@@ -82,7 +83,7 @@ public class RobotHardware {
      *
      * @return A {@link DcMotor} corresponding to the back right motor
      */
-    public DcMotor getBackRightMotor() {
+    public PidMotor getBackRightMotor() {
         return this.backRight;
     }
 
