@@ -93,7 +93,6 @@ public class PidMotor {
     }
 
     public void setDirection(DcMotorSimple.Direction direction) {
-        motor.setDirection(direction);
         reversed = direction == DcMotorSimple.Direction.REVERSE;
     }
 
