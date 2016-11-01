@@ -152,9 +152,8 @@ public class FtcVuforia {
         if (lastKnownLocation == null) {
             return null;
         }
-        // If the last time we knew the location is 400 milliseconds old, consider it invalid
-        if (lastKnownAt + 500 < System.currentTimeMillis())
-            return null;
+
+
         return lastKnownLocation.getTranslation().getData();
     }
 
@@ -237,9 +236,9 @@ public class FtcVuforia {
             throw new IllegalStateException("Cannot get the robot's location if tracking isn't enabled!");
         List<Target> visibleTargets = this.getVisibleTargets();
         for (Target t : visibleTargets) {
-            if (getRobotPosition(t) != null) {
-                lastKnownAt = System.currentTimeMillis();
-                lastKnownLocation = getRobotPosition(t);
+            OpenGLMatrix location = (getListener(t.trackable).getUpdatedRobotLocation());
+            if (location != null) {
+                lastKnownLocation = location;
                 lastSeenTarget = t;
             }
         }
