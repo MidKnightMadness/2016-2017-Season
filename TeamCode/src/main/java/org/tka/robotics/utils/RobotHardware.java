@@ -264,4 +264,87 @@ public class RobotHardware {
 
         stopAllMotors();
     }
+
+    public void forwardRightDiagonal(double distance, double power) throws InterruptedException{
+        getFrontLeftMotor().setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        getFrontLeftMotor().setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        getBackRightMotor().setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        getBackRightMotor().setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        getFrontRightMotor().setPower(0);
+        getBackLeftMotor().setPower(0);
+        getFrontLeftMotor().setPower(power);
+        getBackRightMotor().setPower(power);
+
+        while(getFrontLeftMotor().getCurrentPosition() < distance) {
+            this.parent.telemetry.addData("front right", getFrontRightMotor().getCurrentPosition());
+            this.parent.telemetry.addData("back left", getBackLeftMotor().getCurrentPosition());
+            this.parent.telemetry.update();
+            Thread.yield();
+        }
+
+        stopAllMotors();
+    }
+
+
+
+    public void backwardLeftDiagonal(double distance, double power) throws InterruptedException{
+        getFrontLeftMotor().setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        getFrontLeftMotor().setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        getBackRightMotor().setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        getBackRightMotor().setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        getFrontRightMotor().setPower(0);
+        getBackLeftMotor().setPower(0);
+        getFrontLeftMotor().setPower(-power);
+        getBackRightMotor().setPower(-power);
+
+        while(getFrontLeftMotor().getCurrentPosition() > -distance) {
+            this.parent.telemetry.addData("front right", getFrontRightMotor().getCurrentPosition());
+            this.parent.telemetry.addData("back left", getBackLeftMotor().getCurrentPosition());
+            this.parent.telemetry.update();
+            Thread.yield();
+        }
+
+        stopAllMotors();
+    }
+
+    public void strafe(double distance, double power) throws InterruptedException{
+        if(power < 0)
+            throw new IllegalStateException("Power must be positive");
+
+        getFrontLeftMotor().setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        getFrontLeftMotor().setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+
+        if(distance > 0) {
+
+
+            while (getFrontLeftMotor().getCurrentPosition() < distance) {
+                getFrontLeftMotor().setPower(power);
+                getFrontRightMotor().setPower(-power);
+                getBackLeftMotor().setPower(-power);
+                getBackRightMotor().setPower(power);
+                this.parent.telemetry.addData("front left", getFrontLeftMotor().getCurrentPosition());
+                this.parent.telemetry.update();
+                Thread.yield();
+            }
+        } else {
+
+            while (getFrontLeftMotor().getCurrentPosition() > distance) {
+                getFrontLeftMotor().setPower(-power);
+                getFrontRightMotor().setPower(power);
+                getBackLeftMotor().setPower(power);
+                getBackRightMotor().setPower(-power);
+                this.parent.telemetry.addData("front right", getFrontRightMotor().getCurrentPosition());
+                this.parent.telemetry.update();
+                Thread.yield();
+            }
+        }
+
+        stopAllMotors();
+
+    }
 }
