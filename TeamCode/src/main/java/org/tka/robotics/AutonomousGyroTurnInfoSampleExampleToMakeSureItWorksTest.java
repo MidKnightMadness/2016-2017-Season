@@ -2,24 +2,21 @@ package org.tka.robotics;
 
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.tka.robotics.utils.RobotHardware;
+import org.tka.robotics.utils.hardware.SoftwareBotHardware;
 
 @Autonomous(name = "Gyro Test", group = "Sensor")
 public class AutonomousGyroTurnInfoSampleExampleToMakeSureItWorksTest extends LinearOpMode {
 
-    RobotHardware robotHardware;
+    SoftwareBotHardware robotHardware;
     ModernRoboticsI2cGyro gyro;
     int heading = 0;
 
     @Override
     public void runOpMode() throws InterruptedException {
 
-        robotHardware = new RobotHardware(this);
+        robotHardware = new SoftwareBotHardware(this);
         gyro = (ModernRoboticsI2cGyro)hardwareMap.gyroSensor.get("gyro");
 
         // start calibrating the gyro.

@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.LightSensor;
 
-import org.tka.robotics.utils.RobotHardware;
+import org.tka.robotics.utils.hardware.SoftwareBotHardware;
 
 /**
  * Created by Joshua on 10/1/2016.
@@ -13,12 +13,12 @@ import org.tka.robotics.utils.RobotHardware;
 
 @Autonomous(name = "Line Follow Color Detect Gyro Turn Test")
 public class AutonomousLineFollowColorDetectGyroTurnTestOLD extends LinearOpMode {
-    RobotHardware robotHardware;
+    SoftwareBotHardware robotHardware;
     LightSensor lightSensor;
 
     @Override
     public void runOpMode() throws InterruptedException {
-        robotHardware = new RobotHardware(this);
+        robotHardware = new SoftwareBotHardware(this);
         lightSensor = hardwareMap.lightSensor.get("light_sensor");
         lightSensor.enableLed(true);
 

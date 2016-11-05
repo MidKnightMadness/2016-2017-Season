@@ -1,13 +1,9 @@
-package org.tka.robotics.utils;
+package org.tka.robotics.utils.hardware;
 
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.HardwareMap;
-
-import org.firstinspires.ftc.robotcore.external.Func;
-import org.tka.robotics.utils.pid.PidMotor;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,18 +11,13 @@ import java.util.Map;
 /**
  * Hardware abstraction for interaction with Carnival Bot
  */
-public class RobotHardware {
-
-    private final OpMode parent;
-    private final HardwareMap hardwareMap;
+public class SoftwareBotHardware extends RobotHardware{
     private double heading;
 
-    private PidMotor frontLeft, frontRight, backLeft, backRight;
+    private DcMotor frontLeft, frontRight, backLeft, backRight;
 
-    public RobotHardware(OpMode opMode) {
-        this.parent = opMode;
-        this.hardwareMap = this.parent.hardwareMap;
-        initialize();
+    public SoftwareBotHardware(OpMode opMode) {
+        super(opMode);
     }
 
     ModernRoboticsI2cGyro gyro;
@@ -34,16 +25,18 @@ public class RobotHardware {
     /**
      * Initializes all the hardware and telemetry on the robot
      */
-    private void initialize() {
+    @Override
+    public void initialize() {
         telemetry();
         // Reset all the motor configurations
         for (Map.Entry<String, DcMotor> m : this.hardwareMap.dcMotor.entrySet()) {
             m.getValue().resetDeviceConfigurationForOpMode();
+            m.getValue().setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
-        frontLeft = new PidMotor(hardwareMap, "left_front");
-        frontRight = new PidMotor(hardwareMap, "right_front");
-        backLeft = new PidMotor(hardwareMap, "left_back");
-        backRight = new PidMotor(hardwareMap, "right_back");
+        frontLeft = hardwareMap.dcMotor.get("left_front");
+        frontRight = hardwareMap.dcMotor.get("right_front");
+        backLeft = hardwareMap.dcMotor.get("left_back");
+        backRight = hardwareMap.dcMotor.get("right_back");
 
         gyro = (ModernRoboticsI2cGyro)hardwareMap.gyroSensor.get("gyro");
 
@@ -56,7 +49,8 @@ public class RobotHardware {
      *
      * @return A {@link DcMotor} corresponding to the front left motor
      */
-    public PidMotor getFrontLeftMotor() {
+    @Override
+    public DcMotor getFrontLeftMotor() {
         return this.frontLeft;
     }
 
@@ -65,7 +59,8 @@ public class RobotHardware {
      *
      * @return A {@link DcMotor} corresponding to the front right motor
      */
-    public PidMotor getFrontRightMotor() {
+    @Override
+    public DcMotor getFrontRightMotor() {
         return this.frontRight;
     }
 
@@ -74,7 +69,8 @@ public class RobotHardware {
      *
      * @return A {@link DcMotor} corresponding to the back left motor
      */
-    public PidMotor getBackLeftMotor() {
+    @Override
+    public DcMotor getBackLeftMotor() {
         return this.backLeft;
     }
 
@@ -83,49 +79,18 @@ public class RobotHardware {
      *
      * @return A {@link DcMotor} corresponding to the back right motor
      */
-    public PidMotor getBackRightMotor() {
+    @Override
+    public DcMotor getBackRightMotor() {
         return this.backRight;
     }
 
     /**
      * Stops <b>all</b> motors on the robot
      */
+    @Override
     public void stopAllMotors() {
         for (Map.Entry<String, DcMotor> m : this.hardwareMap.dcMotor.entrySet()) {
             m.getValue().setPower(0);
-        }
-    }
-
-    /**
-     * Initializes telemetry to be sent to the driver station.
-     * <br><br>
-     * <b>Displays the following data:</b>
-     * <ul>
-     * <li>All motor's power</li>
-     * <li>All motor's current encoder position</li>
-     * <li>All motor's target encoder position</li>
-     * </ul>
-     */
-    public void telemetry() {
-        for (final Map.Entry<String, DcMotor> m : this.hardwareMap.dcMotor.entrySet()) {
-            this.parent.telemetry.addData(m.getKey() + " Power", new Func<Double>() {
-                @Override
-                public Double value() {
-                    return m.getValue().getPower();
-                }
-            });
-            this.parent.telemetry.addData(m.getKey() + " Position", new Func<Integer>() {
-                @Override
-                public Integer value() {
-                    return m.getValue().getCurrentPosition();
-                }
-            });
-            this.parent.telemetry.addData(m.getKey() + " Target", new Func<Integer>() {
-                @Override
-                public Integer value() {
-                    return m.getValue().getTargetPosition();
-                }
-            });
         }
     }
 

@@ -11,7 +11,7 @@ import com.qualcomm.robotcore.util.RobotLog;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.teamcode.R;
-import org.tka.robotics.utils.RobotHardware;
+import org.tka.robotics.utils.hardware.SoftwareBotHardware;
 import org.tka.robotics.utils.vuforia.FtcVuforia;
 
 import java.lang.reflect.Field;
@@ -21,12 +21,12 @@ import java.util.Arrays;
 public class VuforiaBeaconScore extends LinearOpMode {
 
     private static final float MOTOR_POWER = 0.25F;
-    private RobotHardware hardware;
+    private SoftwareBotHardware hardware;
     private FtcVuforia vuforia;
 
     @Override
     public void runOpMode() throws InterruptedException {
-        hardware = new RobotHardware(this);
+        hardware = new SoftwareBotHardware(this);
         vuforia = new FtcVuforia(R.id.cameraMonitorViewId, VuforiaLocalizer.CameraDirection.FRONT);
         vuforia.setTargets(FtcVuforia.locationMatrix(0, 0, -90, 15 * FtcVuforia.MM_PER_INCH,
                 (float) -14.5 * FtcVuforia.MM_PER_INCH, 0));

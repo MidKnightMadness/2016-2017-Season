@@ -4,10 +4,9 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.LightSensor;
 
-import org.tka.robotics.utils.RobotHardware;
+import org.tka.robotics.utils.hardware.SoftwareBotHardware;
 
 /**
  * Created by Joshua on 10/1/2016.
@@ -15,13 +14,13 @@ import org.tka.robotics.utils.RobotHardware;
 
 @Autonomous(name = "Line Follow Color Test")
 public class AutonomousLineFollowColorDetectTest extends LinearOpMode {
-    RobotHardware robotHardware;
+    SoftwareBotHardware robotHardware;
     LightSensor lightSensor;
     ColorSensor colorSensor;
 
     @Override
     public void runOpMode() throws InterruptedException {
-        robotHardware = new RobotHardware(this);
+        robotHardware = new SoftwareBotHardware(this);
         lightSensor = hardwareMap.lightSensor.get("light_sensor");
         colorSensor = hardwareMap.colorSensor.get("color_sensor");
 
