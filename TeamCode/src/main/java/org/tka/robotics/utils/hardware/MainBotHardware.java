@@ -3,13 +3,17 @@ package org.tka.robotics.utils.hardware;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import org.tka.robotics.utils.Utilities;
 
 public class MainBotHardware extends RobotHardware{
 
     private DcMotor front_left, front_right, back_left, back_right;
 
+    private final Utilities utilities;
+
     public MainBotHardware(OpMode opmode) {
         super(opmode);
+        this.utilities = new Utilities(parent, this);
     }
 
     @Override
@@ -42,5 +46,10 @@ public class MainBotHardware extends RobotHardware{
     @Override
     public DcMotor getBackRightMotor() {
         return back_right;
+    }
+
+    @Override
+    public Utilities getUtilities() {
+        return utilities;
     }
 }

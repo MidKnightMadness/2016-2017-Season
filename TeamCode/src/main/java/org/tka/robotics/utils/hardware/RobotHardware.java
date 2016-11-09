@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.Func;
+import org.tka.robotics.utils.Utilities;
 
 import java.util.Map;
 
@@ -40,6 +41,8 @@ public abstract class RobotHardware {
     public abstract DcMotor getFrontRightMotor();
 
     public abstract DcMotor getBackRightMotor();
+
+    public abstract Utilities getUtilities();
 
     public void stopAllMotors(){
         for(DcMotor m :hardwareMap.dcMotor){

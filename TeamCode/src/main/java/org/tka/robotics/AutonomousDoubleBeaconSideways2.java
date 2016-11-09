@@ -209,6 +209,7 @@ public class AutonomousDoubleBeaconSideways2 extends LinearOpMode {
             robotHardware.getBackRightMotor().setPower(0.15);
             telemetry.addData("frontRight", robotHardware.getFrontRightMotor().getCurrentPosition());
             telemetry.update();
+            idle();
         }
 
         while((colorSensor.red() <= 1) && colorSensor.blue() <= 1) {
@@ -271,6 +272,7 @@ public class AutonomousDoubleBeaconSideways2 extends LinearOpMode {
                 robotHardware.getBackRightMotor().setPower(0.2);
                 telemetry.addData("frontRight", robotHardware.getFrontRightMotor().getCurrentPosition());
                 telemetry.update();
+                idle();
             }
             robotHardware.stopAllMotors();
 

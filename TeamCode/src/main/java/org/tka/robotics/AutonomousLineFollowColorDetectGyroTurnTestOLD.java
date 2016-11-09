@@ -11,7 +11,7 @@ import org.tka.robotics.utils.hardware.SoftwareBotHardware;
  * Created by Joshua on 10/1/2016.
  */
 
-@Autonomous(name = "Line Follow Color Detect Gyro Turn Test")
+@Autonomous(name = "Line Follow Color Detect Gyro Drive Test")
 public class AutonomousLineFollowColorDetectGyroTurnTestOLD extends LinearOpMode {
     SoftwareBotHardware robotHardware;
     LightSensor lightSensor;

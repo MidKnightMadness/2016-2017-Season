@@ -83,7 +83,7 @@ public class AutonomousDoubleBeaconSideways extends LinearOpMode {
         telemetry.update();
 
 
-        robotHardware.forwardRightDiagonal(3000, 0.4);
+        robotHardware.getUtilities().forwardRightDiagonal(3000, 0.4);
         sleep(250);
 
 
@@ -148,17 +148,17 @@ public class AutonomousDoubleBeaconSideways extends LinearOpMode {
             telemetry.update();
             //sleep(500);
 
-            robotHardware.driveForward(-400, 0.2);
+            robotHardware.getUtilities().driveForward(-400, 0.2);
 
             // FIX //
             // robotHardware.driveForward(400, 0.2);
         }
 
-        robotHardware.strafe(400, 0.2);
+        robotHardware.getUtilities().strafe(400, 0.2);
 
 
 
-        robotHardware.strafe(-1000, 0.2);
+        robotHardware.getUtilities().strafe(-1000, 0.2);
 
 
         //////////////////
@@ -254,7 +254,7 @@ public class AutonomousDoubleBeaconSideways extends LinearOpMode {
             //sleep(500);
 
 
-            robotHardware.driveForward(400, 0.2);
+            robotHardware.getUtilities().driveForward(400, 0.2);
         }
         else {
             //go right
@@ -276,7 +276,7 @@ public class AutonomousDoubleBeaconSideways extends LinearOpMode {
             }
             robotHardware.stopAllMotors();
 
-            robotHardware.driveForward(400, 0.2);
+            robotHardware.getUtilities().driveForward(400, 0.2);
         }
 
 

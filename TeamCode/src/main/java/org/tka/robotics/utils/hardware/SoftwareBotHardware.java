@@ -4,20 +4,22 @@ import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import org.tka.robotics.utils.Utilities;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
  * Hardware abstraction for interaction with Carnival Bot
  */
 public class SoftwareBotHardware extends RobotHardware{
-    private double heading;
 
     private DcMotor frontLeft, frontRight, backLeft, backRight;
 
+    private final Utilities utilities;
+
     public SoftwareBotHardware(OpMode opMode) {
         super(opMode);
+        this.utilities = new Utilities(parent, this);
     }
 
     ModernRoboticsI2cGyro gyro;
@@ -84,6 +86,11 @@ public class SoftwareBotHardware extends RobotHardware{
         return this.backRight;
     }
 
+    @Override
+    public Utilities getUtilities() {
+        return utilities;
+    }
+
     /**
      * Stops <b>all</b> motors on the robot
      */
@@ -94,222 +101,5 @@ public class SoftwareBotHardware extends RobotHardware{
         }
     }
 
-    /**
-     * Reset all encoders on the robot. This will wait until the motors
-     */
-    public void resetAllEncoders(){
-        Map<DcMotor, DcMotor.RunMode> prevRunMode = new HashMap<>();
-        for(Map.Entry<String, DcMotor> m : this.hardwareMap.dcMotor.entrySet()){
-            prevRunMode.put(m.getValue(), m.getValue().getMode());
-            m.getValue().setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        }
-        boolean encodersReset = false;
-        while(!encodersReset){
-            encodersReset = true;
-            for(Map.Entry<String, DcMotor> m : this.hardwareMap.dcMotor.entrySet()){
-                if(Math.abs(m.getValue().getCurrentPosition()) < 10){
-                    encodersReset = false;
-                }
-            }
-            Thread.yield();
-        }
-        for(Map.Entry<String, DcMotor> m : this.hardwareMap.dcMotor.entrySet()){
-            m.getValue().setMode(prevRunMode.get(m.getValue()));
-        }
-    }
 
-    public void turnDegrees(double angle, double power) throws InterruptedException {
-        if(power < 0)
-            throw new IllegalStateException("Power must be positive");
-
-        double initialHeading = heading;
-        double targetAngle = heading + angle;
-        double percentToTarget = 0;
-        int offset = 10; //was 12
-
-
-        if(angle > 0) {
-            turn(power);
-
-            while(heading < targetAngle - offset) {
-                heading = -gyro.getIntegratedZValue();
-                percentToTarget = (heading - initialHeading)/(targetAngle - initialHeading) * 100;
-
-                /*
-                if(percentToTarget > 75 && power >= 0.20) {
-                    turn(power * 0.75);
-                }
-                */
-
-                this.parent.telemetry.addData("% to Target", percentToTarget);
-                this.parent.telemetry.addData("Heading", heading);
-                this.parent.telemetry.update();
-                Thread.yield();
-            }
-
-        }
-        else {
-            turn(-power);
-
-            while(heading > targetAngle + offset) {
-                heading = -gyro.getIntegratedZValue();
-                percentToTarget = (heading - initialHeading)/(targetAngle - initialHeading) * 100;
-
-                /*
-                if(percentToTarget > 75 && power >= 0.20) {
-                    turn(-power * 0.75);
-                }
-                */
-
-                this.parent.telemetry.addData("% to Target", percentToTarget);
-                this.parent.telemetry.addData("Heading", heading);
-                this.parent.telemetry.update();
-                Thread.yield();
-            }
-        }
-
-        stopAllMotors();
-
-
-    }
-
-    public void turn(double power) {
-        getFrontLeftMotor().setPower(power);
-        getBackLeftMotor().setPower(power);
-        getFrontRightMotor().setPower(-power);
-        getBackRightMotor().setPower(-power);
-    }
-
-    public void driveForward(int distance, double power) throws InterruptedException {
-        getFrontRightMotor().setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        getFrontRightMotor().setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        if(distance > 0) {
-            while(getFrontRightMotor().getCurrentPosition() < distance) {
-                setAllMotors(power);
-            }
-        }
-        else {
-            while(getFrontRightMotor().getCurrentPosition() > distance) {
-                setAllMotors(-power);
-            }
-        }
-
-
-
-        stopAllMotors();
-    }
-
-    public void setAllMotors(double power) throws InterruptedException {
-        getFrontLeftMotor().setPower(power);
-        getFrontRightMotor().setPower(power);
-        getBackLeftMotor().setPower(power);
-        getBackRightMotor().setPower(power);
-        Thread.yield();
-    }
-
-    public void forwardLeftDiagonal(double distance, double power) throws InterruptedException{
-        getFrontRightMotor().setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        getFrontRightMotor().setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        getBackLeftMotor().setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        getBackLeftMotor().setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        getFrontRightMotor().setPower(power);
-        getBackLeftMotor().setPower(power);
-        getFrontLeftMotor().setPower(0);
-        getBackRightMotor().setPower(0);
-
-        while(getFrontRightMotor().getCurrentPosition() < distance) {
-            this.parent.telemetry.addData("front right", getFrontRightMotor().getCurrentPosition());
-            this.parent.telemetry.addData("back left", getBackLeftMotor().getCurrentPosition());
-            this.parent.telemetry.update();
-            Thread.yield();
-        }
-
-        stopAllMotors();
-    }
-
-    public void forwardRightDiagonal(double distance, double power) throws InterruptedException{
-        getFrontLeftMotor().setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        getFrontLeftMotor().setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        getBackRightMotor().setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        getBackRightMotor().setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        getFrontRightMotor().setPower(0);
-        getBackLeftMotor().setPower(0);
-        getFrontLeftMotor().setPower(power);
-        getBackRightMotor().setPower(power);
-
-        while(getFrontLeftMotor().getCurrentPosition() < distance) {
-            this.parent.telemetry.addData("front right", getFrontRightMotor().getCurrentPosition());
-            this.parent.telemetry.addData("back left", getBackLeftMotor().getCurrentPosition());
-            this.parent.telemetry.update();
-            Thread.yield();
-        }
-
-        stopAllMotors();
-    }
-
-
-
-    public void backwardLeftDiagonal(double distance, double power) throws InterruptedException{
-        getFrontLeftMotor().setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        getFrontLeftMotor().setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        getBackRightMotor().setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        getBackRightMotor().setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        getFrontRightMotor().setPower(0);
-        getBackLeftMotor().setPower(0);
-        getFrontLeftMotor().setPower(-power);
-        getBackRightMotor().setPower(-power);
-
-        while(getFrontLeftMotor().getCurrentPosition() > -distance) {
-            this.parent.telemetry.addData("front right", getFrontRightMotor().getCurrentPosition());
-            this.parent.telemetry.addData("back left", getBackLeftMotor().getCurrentPosition());
-            this.parent.telemetry.update();
-            Thread.yield();
-        }
-
-        stopAllMotors();
-    }
-
-    public void strafe(double distance, double power) throws InterruptedException{
-        if(power < 0)
-            throw new IllegalStateException("Power must be positive");
-
-        getFrontLeftMotor().setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        getFrontLeftMotor().setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-
-        if(distance > 0) {
-
-
-            while (getFrontLeftMotor().getCurrentPosition() < distance) {
-                getFrontLeftMotor().setPower(power);
-                getFrontRightMotor().setPower(-power);
-                getBackLeftMotor().setPower(-power);
-                getBackRightMotor().setPower(power);
-                this.parent.telemetry.addData("front left", getFrontLeftMotor().getCurrentPosition());
-                this.parent.telemetry.update();
-                Thread.yield();
-            }
-        } else {
-
-            while (getFrontLeftMotor().getCurrentPosition() > distance) {
-                getFrontLeftMotor().setPower(-power);
-                getFrontRightMotor().setPower(power);
-                getBackLeftMotor().setPower(power);
-                getBackRightMotor().setPower(-power);
-                this.parent.telemetry.addData("front right", getFrontRightMotor().getCurrentPosition());
-                this.parent.telemetry.update();
-                Thread.yield();
-            }
-        }
-
-        stopAllMotors();
-
-    }
 }
