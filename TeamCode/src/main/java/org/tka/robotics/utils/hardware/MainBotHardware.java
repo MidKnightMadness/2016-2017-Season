@@ -1,8 +1,13 @@
 package org.tka.robotics.utils.hardware;
 
+import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.GyroSensor;
+import com.qualcomm.robotcore.hardware.LightSensor;
+
 import org.tka.robotics.utils.Utilities;
 
 public class MainBotHardware extends RobotHardware{
@@ -16,12 +21,20 @@ public class MainBotHardware extends RobotHardware{
         this.utilities = new Utilities(parent, this);
     }
 
+    ModernRoboticsI2cGyro gyro;
+    LightSensor lightSensor;
+    ColorSensor colorSensor;
+
     @Override
     public void initialize() {
         front_left = hardwareMap.dcMotor.get("front_left");
         front_right = hardwareMap.dcMotor.get("front_right");
         back_left = hardwareMap.dcMotor.get("back_left");
         back_right = hardwareMap.dcMotor.get("back_right");
+
+        gyro = (ModernRoboticsI2cGyro)hardwareMap.gyroSensor.get("gyro");
+        lightSensor = hardwareMap.lightSensor.get("light_sensor");
+        colorSensor = hardwareMap.colorSensor.get("color_sensor");
 
         back_left.setDirection(DcMotorSimple.Direction.REVERSE);
         back_right.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -52,4 +65,13 @@ public class MainBotHardware extends RobotHardware{
     public Utilities getUtilities() {
         return utilities;
     }
+
+    @Override
+    public GyroSensor getGyroSensor() { return gyro; }
+
+    @Override
+    public LightSensor getLightSensor() { return lightSensor; }
+
+    @Override
+    public ColorSensor getColorSensor() { return colorSensor; }
 }

@@ -146,4 +146,31 @@ public class Utilities {
 
         this.hardware.stopAllMotors();
     }
+
+    public void setDriveMotorsMode(DcMotor.RunMode runMode) {
+        hardware.getFrontLeftMotor().setMode(runMode);
+        hardware.getFrontRightMotor().setMode(runMode);
+        hardware.getBackLeftMotor().setMode(runMode);
+        hardware.getBackRightMotor().setMode(runMode);
+    }
+
+    public void resetDriveMotors() {
+        setDriveMotorsMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        setDriveMotorsMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
+    public void navigateToBeacon() throws InterruptedException{
+        hardware.getUtilities().backwardLeftDiagonal(3000, 0.4);
+
+
+        while(hardware.getLightSensor().getLightDetected() < 0.4) {
+            hardware.getFrontLeftMotor().setPower(-0.2);
+            hardware.getFrontRightMotor().setPower(0);
+            hardware.getBackLeftMotor().setPower(0);
+            hardware.getBackRightMotor().setPower(-0.2);
+            Thread.yield();
+        }
+
+        hardware.stopAllMotors();
+    }
 }

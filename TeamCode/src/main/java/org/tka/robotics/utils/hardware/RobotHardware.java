@@ -2,8 +2,12 @@ package org.tka.robotics.utils.hardware;
 
 import android.util.Log;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.GyroSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.LightSensor;
+
 import org.firstinspires.ftc.robotcore.external.Func;
 import org.tka.robotics.utils.Utilities;
 
@@ -43,6 +47,12 @@ public abstract class RobotHardware {
     public abstract DcMotor getBackRightMotor();
 
     public abstract Utilities getUtilities();
+
+    public abstract GyroSensor getGyroSensor();
+
+    public abstract LightSensor getLightSensor();
+
+    public abstract ColorSensor getColorSensor();
 
     public void stopAllMotors(){
         for(DcMotor m :hardwareMap.dcMotor){

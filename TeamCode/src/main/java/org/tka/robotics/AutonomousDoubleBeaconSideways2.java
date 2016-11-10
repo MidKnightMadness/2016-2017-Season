@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.LightSensor;
 
+import org.tka.robotics.utils.hardware.RobotHardware;
 import org.tka.robotics.utils.hardware.SoftwareBotHardware;
 
 /**
@@ -25,7 +26,7 @@ public class AutonomousDoubleBeaconSideways2 extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         robotHardware = new SoftwareBotHardware(this);
-        lightSensor = hardwareMap.lightSensor.get("light_sensor");
+        lightSensor = robotHardware.getLightSensor();
         colorSensor = hardwareMap.colorSensor.get("color_sensor");
 
 
@@ -45,18 +46,7 @@ public class AutonomousDoubleBeaconSideways2 extends LinearOpMode {
 //        double highLight = 0.48;
 //        double average = (lowLight + highLight) / 2;
 
-        robotHardware.getFrontLeftMotor().setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robotHardware.getFrontLeftMotor().setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        robotHardware.getFrontRightMotor().setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robotHardware.getFrontRightMotor().setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        robotHardware.getBackLeftMotor().setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robotHardware.getBackLeftMotor().setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        robotHardware.getBackRightMotor().setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robotHardware.getBackRightMotor().setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
+        robotHardware.getUtilities().resetDriveMotors();
 
         waitForStart();
 
@@ -83,18 +73,7 @@ public class AutonomousDoubleBeaconSideways2 extends LinearOpMode {
         telemetry.update();
 
 
-        robotHardware.getUtilities().backwardLeftDiagonal(3000, 0.4);
-        sleep(250);
-
-
-        while(lightSensor.getLightDetected() < 0.4) {
-            robotHardware.getFrontLeftMotor().setPower(-0.2);
-            robotHardware.getFrontRightMotor().setPower(0);
-            robotHardware.getBackLeftMotor().setPower(0);
-            robotHardware.getBackRightMotor().setPower(-0.2);
-            idle();
-        }
-        robotHardware.stopAllMotors();
+        robotHardware.getUtilities().navigateToBeacon();
         //sleep(500);
 
         while((colorSensor.red() <= 1) && colorSensor.blue() <= 1) {
