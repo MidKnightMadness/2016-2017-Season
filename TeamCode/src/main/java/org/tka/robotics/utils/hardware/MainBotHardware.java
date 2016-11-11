@@ -32,12 +32,12 @@ public class MainBotHardware extends RobotHardware{
         back_left = hardwareMap.dcMotor.get("back_left");
         back_right = hardwareMap.dcMotor.get("back_right");
 
-        gyro = (ModernRoboticsI2cGyro)hardwareMap.gyroSensor.get("gyro");
+        //gyro = (ModernRoboticsI2cGyro)hardwareMap.gyroSensor.get("gyro");
         lightSensor = hardwareMap.lightSensor.get("light_sensor");
         colorSensor = hardwareMap.colorSensor.get("color_sensor");
 
+        front_left.setDirection(DcMotorSimple.Direction.REVERSE);
         back_left.setDirection(DcMotorSimple.Direction.REVERSE);
-        back_right.setDirection(DcMotorSimple.Direction.REVERSE);
         telemetry();
     }
 
@@ -67,7 +67,7 @@ public class MainBotHardware extends RobotHardware{
     }
 
     @Override
-    public GyroSensor getGyroSensor() { return gyro; }
+    public GyroSensor getGyroSensor() { return null; }
 
     @Override
     public LightSensor getLightSensor() { return lightSensor; }

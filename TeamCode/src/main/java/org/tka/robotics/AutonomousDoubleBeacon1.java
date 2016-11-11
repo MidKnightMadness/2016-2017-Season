@@ -2,6 +2,7 @@ package org.tka.robotics;
 
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -14,6 +15,7 @@ import org.tka.robotics.utils.hardware.SoftwareBotHardware;
  */
 
 @Autonomous(name = "Double Beacon")
+@Disabled
 public class AutonomousDoubleBeacon1 extends LinearOpMode {
     SoftwareBotHardware robotHardware;
     LightSensor lightSensor;

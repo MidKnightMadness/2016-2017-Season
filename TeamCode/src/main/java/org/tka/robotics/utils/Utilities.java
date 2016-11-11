@@ -1,5 +1,6 @@
 package org.tka.robotics.utils;
 
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import org.tka.robotics.utils.hardware.RobotHardware;
@@ -28,12 +29,12 @@ public class Utilities {
         if (distance > 0) {
             while (this.hardware.getFrontRightMotor().getCurrentPosition() < distance) {
                 setAllMotors(power);
-                Thread.yield();
+                idle();
             }
         } else {
             while (this.hardware.getFrontRightMotor().getCurrentPosition() > distance) {
                 setAllMotors(-power);
-                Thread.yield();
+                idle();
             }
         }
 
@@ -63,7 +64,7 @@ public class Utilities {
             this.parent.telemetry.addData("front right", this.hardware.getFrontRightMotor().getCurrentPosition());
             this.parent.telemetry.addData("back left", this.hardware.getBackLeftMotor().getCurrentPosition());
             this.parent.telemetry.update();
-            Thread.yield();
+            idle();
         }
 
         this.hardware.stopAllMotors();
@@ -85,7 +86,7 @@ public class Utilities {
             this.parent.telemetry.addData("front right", this.hardware.getFrontRightMotor().getCurrentPosition());
             this.parent.telemetry.addData("back left", this.hardware.getBackLeftMotor().getCurrentPosition());
             this.parent.telemetry.update();
-            Thread.yield();
+            idle();
         }
 
         this.hardware.stopAllMotors();
@@ -105,10 +106,10 @@ public class Utilities {
         this.hardware.getBackRightMotor().setPower(-power);
 
         while (this.hardware.getFrontLeftMotor().getCurrentPosition() > -distance) {
-            this.parent.telemetry.addData("front right", this.hardware.getFrontRightMotor().getCurrentPosition());
-            this.parent.telemetry.addData("back left", this.hardware.getBackLeftMotor().getCurrentPosition());
+            this.parent.telemetry.addData("front left", this.hardware.getFrontLeftMotor().getCurrentPosition());
+            this.parent.telemetry.addData("back right", this.hardware.getBackRightMotor().getCurrentPosition());
             this.parent.telemetry.update();
-            Thread.yield();
+            idle();
         }
 
         this.hardware.stopAllMotors();
@@ -130,7 +131,7 @@ public class Utilities {
                 this.hardware.getBackRightMotor().setPower(power);
                 this.parent.telemetry.addData("front left", this.hardware.getFrontLeftMotor().getCurrentPosition());
                 this.parent.telemetry.update();
-                Thread.yield();
+                idle();
             }
         } else {
             while (this.hardware.getFrontLeftMotor().getCurrentPosition() > distance) {
@@ -140,7 +141,7 @@ public class Utilities {
                 this.hardware.getBackRightMotor().setPower(-power);
                 this.parent.telemetry.addData("front right", this.hardware.getFrontRightMotor().getCurrentPosition());
                 this.parent.telemetry.update();
-                Thread.yield();
+                idle();
             }
         }
 
@@ -168,9 +169,38 @@ public class Utilities {
             hardware.getFrontRightMotor().setPower(0);
             hardware.getBackLeftMotor().setPower(0);
             hardware.getBackRightMotor().setPower(-0.2);
-            Thread.yield();
+            idle();
         }
 
         hardware.stopAllMotors();
+    }
+
+    public void sideLineFollow() throws InterruptedException{
+        while((hardware.getColorSensor().red() <= 1) && hardware.getColorSensor().blue() <= 1) {
+
+            if(hardware.getLightSensor().getLightDetected() < 0.4) {
+                hardware.getFrontLeftMotor().setPower(-0.1+0.05);
+                hardware.getFrontRightMotor().setPower(0.1);
+                hardware.getBackLeftMotor().setPower(0.1+0.05);
+                hardware.getBackRightMotor().setPower(-0.1);
+            } else {
+                hardware.getFrontLeftMotor().setPower(-0.1-0.05);
+                hardware.getFrontRightMotor().setPower(0.1);
+                hardware.getBackLeftMotor().setPower(0.1-0.05);
+                hardware.getBackRightMotor().setPower(-0.1);
+            }
+
+            this.parent.telemetry.addData("red", hardware.getColorSensor().red());
+            this.parent.telemetry.addData("blue", hardware.getColorSensor().blue());
+            this.parent.telemetry.update();
+
+            idle();
+        }
+    }
+    
+    public void idle() throws InterruptedException {
+        if(parent instanceof LinearOpMode) {
+            ((LinearOpMode) parent).idle();
+        }
     }
 }

@@ -5,8 +5,10 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.HardwareDevice;
 import com.qualcomm.robotcore.hardware.LightSensor;
 
+import org.tka.robotics.utils.hardware.MainBotHardware;
 import org.tka.robotics.utils.hardware.RobotHardware;
 import org.tka.robotics.utils.hardware.SoftwareBotHardware;
 
@@ -16,31 +18,29 @@ import org.tka.robotics.utils.hardware.SoftwareBotHardware;
 
 @Autonomous(name = "Updated Double Beacon Sideways")
 public class AutonomousDoubleBeaconSideways2 extends LinearOpMode {
-    SoftwareBotHardware robotHardware;
-    LightSensor lightSensor;
-    ColorSensor colorSensor;
-    ModernRoboticsI2cGyro gyro;
+    MainBotHardware robotHardware;
+    //LightSensor lightSensor;
+    //ColorSensor colorSensor;
+    //ModernRoboticsI2cGyro gyro;
     int heading = 0;
     double offset = 0.05;
 
     @Override
     public void runOpMode() throws InterruptedException {
-        robotHardware = new SoftwareBotHardware(this);
-        lightSensor = robotHardware.getLightSensor();
-        colorSensor = hardwareMap.colorSensor.get("color_sensor");
-
-
-        gyro = (ModernRoboticsI2cGyro)hardwareMap.gyroSensor.get("gyro");
+        robotHardware = new MainBotHardware(this);
+        //lightSensor = robotHardware.getLightSensor();
+        //colorSensor = hardwareMap.colorSensor.get("color_sensor");
+        //gyro = (ModernRoboticsI2cGyro)hardwareMap.gyroSensor.get("gyro");
 
         // start calibrating the gyro.
         telemetry.addData(">", "Gyro Calibrating. Do Not move!");
         telemetry.update();
-        gyro.calibrate();
-        heading = -gyro.getIntegratedZValue();
+        //robotHardware.getGyroSensor().calibrate();
+        //heading = -robotHardware.getGyroSensor().getIntegratedZValue();
 
         //gyro declared in SoftwareBotHardware
 
-        lightSensor.enableLed(true);
+        robotHardware.getLightSensor().enableLed(true);
 
 //        double lowLight = 0.28;
 //        double highLight = 0.48;
@@ -50,25 +50,7 @@ public class AutonomousDoubleBeaconSideways2 extends LinearOpMode {
 
         waitForStart();
 
-        /*
-        robotHardware.setAllMotors(0.2);
-        sleep(750);
-        robotHardware.stopAllMotors();
-        sleep(250);
-        robotHardware.setAllMotors(0.4);
-        sleep(750);
-        robotHardware.stopAllMotors();
-        sleep(250);
-        robotHardware.setAllMotors(0.7);
-        sleep(750);
-        robotHardware.stopAllMotors();
-        sleep(250);
-        robotHardware.setAllMotors(-0.3);
-        sleep(750);
-        robotHardware.stopAllMotors();
-        */
-
-        heading = -gyro.getIntegratedZValue();
+        //heading = -robotHardware.getGyroSensor().getIntegratedZValue();
         telemetry.addData("heading", heading);
         telemetry.update();
 
@@ -76,39 +58,20 @@ public class AutonomousDoubleBeaconSideways2 extends LinearOpMode {
         robotHardware.getUtilities().navigateToBeacon();
         //sleep(500);
 
-        while((colorSensor.red() <= 1) && colorSensor.blue() <= 1) {
-
-            if(lightSensor.getLightDetected() < 0.4) {
-                robotHardware.getFrontLeftMotor().setPower(-0.1+0.05);
-                robotHardware.getFrontRightMotor().setPower(0.1);
-                robotHardware.getBackLeftMotor().setPower(0.1+0.05);
-                robotHardware.getBackRightMotor().setPower(-0.1);
-            } else {
-                robotHardware.getFrontLeftMotor().setPower(-0.1-0.05);
-                robotHardware.getFrontRightMotor().setPower(0.1);
-                robotHardware.getBackLeftMotor().setPower(0.1-0.05);
-                robotHardware.getBackRightMotor().setPower(-0.1);
-            }
-
-            telemetry.addData("red", colorSensor.red());
-            telemetry.addData("blue", colorSensor.blue());
-            telemetry.update();
-
-            idle();
-        }
+        robotHardware.getUtilities().sideLineFollow();
 
         robotHardware.stopAllMotors();
         sleep(1000);
 
-        telemetry.addData("red", colorSensor.red());
-        telemetry.addData("blue", colorSensor.blue());
+        telemetry.addData("red", robotHardware.getColorSensor().red());
+        telemetry.addData("blue", robotHardware.getColorSensor().blue());
         telemetry.update();
 
         //sleep(1000);
 
         //detect blue
 
-        if(colorSensor.blue() > colorSensor.red()) {
+        if(robotHardware.getColorSensor().blue() > robotHardware.getColorSensor().red()) {
             //go forward
 
             telemetry.addData("", "blue > red");
@@ -167,7 +130,7 @@ public class AutonomousDoubleBeaconSideways2 extends LinearOpMode {
 
         // UPDATE
 
-        while(lightSensor.getLightDetected() < 0.4) {
+        while(robotHardware.getLightSensor().getLightDetected() < 0.4) {
             robotHardware.getFrontLeftMotor().setPower(-0.15);
             robotHardware.getFrontRightMotor().setPower(0.15);
             robotHardware.getBackLeftMotor().setPower(0.15);
@@ -191,9 +154,9 @@ public class AutonomousDoubleBeaconSideways2 extends LinearOpMode {
             idle();
         }
 
-        while((colorSensor.red() <= 1) && colorSensor.blue() <= 1) {
+        while((robotHardware.getColorSensor().red() <= 1) && robotHardware.getColorSensor().blue() <= 1) {
 
-            if(lightSensor.getLightDetected() < 0.4) {
+            if(robotHardware.getLightSensor().getLightDetected() < 0.4) {
                 robotHardware.getFrontLeftMotor().setPower(0);
                 robotHardware.getFrontRightMotor().setPower(0.2);
                 robotHardware.getBackLeftMotor().setPower(0);
@@ -205,8 +168,8 @@ public class AutonomousDoubleBeaconSideways2 extends LinearOpMode {
                 robotHardware.getBackRightMotor().setPower(0);
             }
 
-            telemetry.addData("red", colorSensor.red());
-            telemetry.addData("blue", colorSensor.blue());
+            telemetry.addData("red", robotHardware.getColorSensor().red());
+            telemetry.addData("blue", robotHardware.getColorSensor().blue());
             telemetry.update();
 
             idle();
@@ -216,15 +179,15 @@ public class AutonomousDoubleBeaconSideways2 extends LinearOpMode {
         robotHardware.stopAllMotors();
         //sleep(500);
 
-        telemetry.addData("red", colorSensor.red());
-        telemetry.addData("blue", colorSensor.blue());
+        telemetry.addData("red", robotHardware.getColorSensor().red());
+        telemetry.addData("blue", robotHardware.getColorSensor().blue());
         telemetry.update();
 
         //sleep(1000);
 
         //detect blue
 
-        if(colorSensor.blue() > colorSensor.red()) {
+        if(robotHardware.getColorSensor().blue() > robotHardware.getColorSensor().red()) {
             //go forward
 
             telemetry.addData("", "blue > red");
