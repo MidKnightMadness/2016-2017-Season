@@ -75,8 +75,7 @@ public class FtcOpModeRegister implements OpModeRegister {
          */
         AnnotatedOpModeRegistrar.register(manager);
 
-        RedBlueOpModeRegistrar.loadOpModes(manager);
-
+        RedBlueOpModeRegistrar.register(manager);
         /**
          * Any manual OpMode class registrations should go here.
          */
