@@ -18,7 +18,7 @@ import org.tka.robotics.utils.hardware.SoftwareBotHardware;
 
 @Autonomous(name = "Updated Double Beacon Sideways")
 public class AutonomousDoubleBeaconSideways2 extends LinearOpMode {
-    MainBotHardware robotHardware;
+    SoftwareBotHardware robotHardware;
     //LightSensor lightSensor;
     //ColorSensor colorSensor;
     //ModernRoboticsI2cGyro gyro;
@@ -27,7 +27,7 @@ public class AutonomousDoubleBeaconSideways2 extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        robotHardware = new MainBotHardware(this);
+        robotHardware = new SoftwareBotHardware(this);
         //lightSensor = robotHardware.getLightSensor();
         //colorSensor = hardwareMap.colorSensor.get("color_sensor");
         //gyro = (ModernRoboticsI2cGyro)hardwareMap.gyroSensor.get("gyro");
@@ -71,38 +71,9 @@ public class AutonomousDoubleBeaconSideways2 extends LinearOpMode {
 
         //detect blue
 
-        if(robotHardware.getColorSensor().blue() > robotHardware.getColorSensor().red()) {
-            //go forward
-
-            telemetry.addData("", "blue > red");
-            telemetry.update();
-            //sleep(500);
-
-
-            // FIX //
-            // robotHardware.driveForward(400, 0.2);
-
-        }
-        else {
-            //go right
-
-            telemetry.addData("", "red > blue");
-            telemetry.update();
-            //sleep(500);
-
-            robotHardware.getUtilities().driveForward(400, 0.2);
-
-            // FIX //
-            // robotHardware.driveForward(400, 0.2);
-        }
-
-        robotHardware.getUtilities().strafe(-400, 0.2);
-
-
+        robotHardware.getUtilities().detectBeaconColorAndAdjust();
 
         robotHardware.getUtilities().strafe(1000, 0.2);
-
-        sleep(10000);
 
 
         //////////////////
@@ -122,59 +93,25 @@ public class AutonomousDoubleBeaconSideways2 extends LinearOpMode {
         //////////////////////////////////
 
 
-        robotHardware.getFrontRightMotor().setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robotHardware.getFrontRightMotor().setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        robotHardware.getUtilities().driveForward(-1000, 0.4);
+        robotHardware.getUtilities().driveForward(-1000, 0.3);
 
 
         // UPDATE
 
         while(robotHardware.getLightSensor().getLightDetected() < 0.4) {
             robotHardware.getFrontLeftMotor().setPower(-0.15);
-            robotHardware.getFrontRightMotor().setPower(0.15);
-            robotHardware.getBackLeftMotor().setPower(0.15);
+            robotHardware.getFrontRightMotor().setPower(-0.15);
+            robotHardware.getBackLeftMotor().setPower(-0.15);
             robotHardware.getBackRightMotor().setPower(-0.15);
             idle();
         }
 
         // readjust to the right slightly
 
-        robotHardware.getFrontRightMotor().setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robotHardware.getFrontRightMotor().setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
+        robotHardware.getUtilities().driveForward(100, 0.3);
 
-        while (robotHardware.getFrontRightMotor().getCurrentPosition() > -100) {
-            robotHardware.getFrontLeftMotor().setPower(0.15);
-            robotHardware.getFrontRightMotor().setPower(-0.15);
-            robotHardware.getBackLeftMotor().setPower(-0.15);
-            robotHardware.getBackRightMotor().setPower(0.15);
-            telemetry.addData("frontRight", robotHardware.getFrontRightMotor().getCurrentPosition());
-            telemetry.update();
-            idle();
-        }
-
-        while((robotHardware.getColorSensor().red() <= 1) && robotHardware.getColorSensor().blue() <= 1) {
-
-            if(robotHardware.getLightSensor().getLightDetected() < 0.4) {
-                robotHardware.getFrontLeftMotor().setPower(0);
-                robotHardware.getFrontRightMotor().setPower(0.2);
-                robotHardware.getBackLeftMotor().setPower(0);
-                robotHardware.getBackRightMotor().setPower(0.2);
-            } else {
-                robotHardware.getFrontLeftMotor().setPower(0.2);
-                robotHardware.getFrontRightMotor().setPower(0);
-                robotHardware.getBackLeftMotor().setPower(0.2);
-                robotHardware.getBackRightMotor().setPower(0);
-            }
-
-            telemetry.addData("red", robotHardware.getColorSensor().red());
-            telemetry.addData("blue", robotHardware.getColorSensor().blue());
-            telemetry.update();
-
-            idle();
-        }
-
+        robotHardware.getUtilities().sideLineFollow();
 
         robotHardware.stopAllMotors();
         //sleep(500);
@@ -187,39 +124,9 @@ public class AutonomousDoubleBeaconSideways2 extends LinearOpMode {
 
         //detect blue
 
-        if(robotHardware.getColorSensor().blue() > robotHardware.getColorSensor().red()) {
-            //go forward
+        robotHardware.getUtilities().detectBeaconColorAndAdjust();
 
-            telemetry.addData("", "blue > red");
-            telemetry.update();
-            //sleep(500);
-
-
-            robotHardware.getUtilities().driveForward(400, 0.2);
-        }
-        else {
-            //go right
-
-            telemetry.addData("", "red > blue");
-            telemetry.update();
-            //sleep(500);
-
-            robotHardware.getFrontRightMotor().setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            robotHardware.getFrontRightMotor().setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-            while (robotHardware.getFrontRightMotor().getCurrentPosition() > -200) {
-                robotHardware.getFrontLeftMotor().setPower(0.2);
-                robotHardware.getFrontRightMotor().setPower(-0.2);
-                robotHardware.getBackLeftMotor().setPower(-0.2);
-                robotHardware.getBackRightMotor().setPower(0.2);
-                telemetry.addData("frontRight", robotHardware.getFrontRightMotor().getCurrentPosition());
-                telemetry.update();
-                idle();
-            }
-            robotHardware.stopAllMotors();
-
-            robotHardware.getUtilities().driveForward(400, 0.2);
-        }
+        robotHardware.getUtilities().strafe(1000, 0.2);
 
 
         /*

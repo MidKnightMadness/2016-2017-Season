@@ -203,4 +203,27 @@ public class Utilities {
             ((LinearOpMode) parent).idle();
         }
     }
+
+    public void detectBeaconColorAndAdjust() throws InterruptedException {
+        if(hardware.getColorSensor().blue() > hardware.getColorSensor().red()) {
+            //go forward
+
+            parent.telemetry.addData("", "blue > red");
+            parent.telemetry.update();
+            //sleep(500);
+
+
+            driveForward(-150, 0.2);
+        }
+        else {
+            //go right
+
+            parent.telemetry.addData("", "red > blue");
+            parent.telemetry.update();
+            //sleep(500);
+
+        }
+
+        hardware.getUtilities().strafe(-325, 0.2);
+    }
 }
