@@ -18,7 +18,7 @@ import org.tka.robotics.utils.hardware.SoftwareBotHardware;
 
 @Autonomous(name = "Updated Double Beacon Sideways")
 public class AutonomousDoubleBeaconSideways2 extends LinearOpMode {
-    SoftwareBotHardware robotHardware;
+    MainBotHardware robotHardware;
     //LightSensor lightSensor;
     //ColorSensor colorSensor;
     //ModernRoboticsI2cGyro gyro;
@@ -27,7 +27,7 @@ public class AutonomousDoubleBeaconSideways2 extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        robotHardware = new SoftwareBotHardware(this);
+        robotHardware = new MainBotHardware(this);
         //lightSensor = robotHardware.getLightSensor();
         //colorSensor = hardwareMap.colorSensor.get("color_sensor");
         //gyro = (ModernRoboticsI2cGyro)hardwareMap.gyroSensor.get("gyro");
