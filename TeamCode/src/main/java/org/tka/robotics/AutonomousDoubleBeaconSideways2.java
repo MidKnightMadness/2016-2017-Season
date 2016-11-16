@@ -41,6 +41,7 @@ public class AutonomousDoubleBeaconSideways2 extends LinearOpMode {
         //gyro declared in SoftwareBotHardware
 
         robotHardware.getLightSensor().enableLed(true);
+        robotHardware.getColorSensor().enableLed(false);
 
 //        double lowLight = 0.28;
 //        double highLight = 0.48;
