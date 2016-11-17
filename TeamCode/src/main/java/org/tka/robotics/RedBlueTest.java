@@ -10,14 +10,15 @@ public class RedBlueTest extends RedBlueOpMode {
     ElapsedTime time;
 
     @Override
-    public void init() {
+    public void runOpMode() throws InterruptedException {
         time = new ElapsedTime();
-    }
 
-    @Override
-    public void loop() {
-        telemetry.addData("Time elapsed", time.seconds());
-        telemetry.addData("Color", teamColor);
-        telemetry.update();
+        waitForStart();
+
+        while(opModeIsActive()){
+            telemetry.addData("Time elapsed", time.seconds());
+            telemetry.addData("Color", teamColor);
+            telemetry.update();
+        }
     }
 }
