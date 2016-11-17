@@ -4,43 +4,67 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 import org.tka.robotics.utils.hardware.MainBotHardware;
 
 @TeleOp(name = "Main Bot Teleop")
 public class MainBotTeleop extends OpMode {
 
+    /**
+     * The intake motor for collecting particles off the field
+     */
     private DcMotor intake;
 
+    private DcMotor elevator;
+
+    /**
+     * The main robot hardware
+     */
     private MainBotHardware hardware;
 
     private boolean intakeToggle = false;
     private boolean intakeTogglePressed = true;
 
 
+
     @Override
     public void init() {
         hardware = new MainBotHardware(this);
         intake = hardwareMap.dcMotor.get("intake");
+        elevator = hardwareMap.dcMotor.get("elevator");
+        elevator.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         intake.resetDeviceConfigurationForOpMode();
         intake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         intake.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        elevator.setDirection(DcMotorSimple.Direction.REVERSE);
+
     }
 
     @Override
     public void loop() {
-        double[] motorPwr = calculateMotorValues(gamepad1.left_stick_x, gamepad1.left_stick_y,
-                gamepad1.right_stick_x, gamepad1.right_stick_y);
-        hardware.getFrontLeftMotor().setPower(motorPwr[0]);
-        hardware.getFrontRightMotor().setPower(motorPwr[1]);
-        hardware.getBackLeftMotor().setPower(motorPwr[2]);
-        hardware.getBackRightMotor().setPower(motorPwr[3]);
-
+        tankDrive(scaleInput(gamepad1.left_stick_y), scaleInput(gamepad1.right_stick_y));
         updateIntake();
-        intake.setPower(intakeToggle? 1.0F : 0.0F);
+        intake.setPower(intakeToggle ? 1.0F : 0.0F);
+
+        updateElevator();
     }
 
+    private static final int ELEVATOR_UP_POSITION = 16000;
+
+    private void updateElevator() {
+        if (gamepad1.b) {
+            elevator.setTargetPosition(0);
+        }
+        if (gamepad1.y) {
+            elevator.setPower(0.75F);
+            elevator.setTargetPosition(ELEVATOR_UP_POSITION);
+        }
+    }
+
+    // TODO: Broken, fix soon™
     private double[] calculateMotorValues(float joyLX, float joyLY, float joyRX, float joyRY) {
         double[] motorPower = new double[]{0, 0, 0, 0};
         joyRY = scaleInput(joyRY);
@@ -82,9 +106,23 @@ public class MainBotTeleop extends OpMode {
         return scaled / 2;
     }
 
-    private void updateIntake(){
-        if(gamepad1.a){
-            if(!intakeTogglePressed) {
+    /**
+     * Tank Drive (Run the left and right motors in the same direction
+     *
+     * @param leftPower  The power to the left motors
+     * @param rightPower The power to the right motors
+     */
+    private void tankDrive(float leftPower, float rightPower) {
+        hardware.getFrontLeftMotor().setPower(-leftPower);
+        hardware.getBackLeftMotor().setPower(-leftPower);
+
+        hardware.getFrontRightMotor().setPower(-rightPower);
+        hardware.getBackRightMotor().setPower(-rightPower);
+    }
+
+    private void updateIntake() {
+        if (gamepad1.a) {
+            if (!intakeTogglePressed) {
                 intakeTogglePressed = true;
                 intakeToggle = !intakeToggle;
             }
