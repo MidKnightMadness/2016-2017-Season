@@ -18,6 +18,8 @@ public class MainBotTeleop extends OpMode {
 
     private DcMotor elevator;
 
+    private CRServo elevatorRetainer;
+
     /**
      * The main robot hardware
      */
@@ -33,6 +35,7 @@ public class MainBotTeleop extends OpMode {
         hardware = new MainBotHardware(this);
         intake = hardwareMap.dcMotor.get("intake");
         elevator = hardwareMap.dcMotor.get("elevator");
+        elevatorRetainer = hardwareMap.crservo.get("elevator_retainer");
         elevator.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         intake.resetDeviceConfigurationForOpMode();
@@ -54,10 +57,20 @@ public class MainBotTeleop extends OpMode {
 
 
         updateElevator();
+        elevatorClamp();
     }
 
     private static final int ELEVATOR_UP_POSITION = 18000; // was 16000
 
+    private void elevatorClamp(){
+        if(gamepad1.left_bumper){
+            elevatorRetainer.setPower(1);
+        } else if(gamepad1.left_trigger > 0.5){
+            elevatorRetainer.setPower(-1);
+        } else {
+            elevatorRetainer.setPower(0);
+        }
+    }
     private void updateElevator() {
         if (gamepad1.b) {
             elevator.setPower(0.75F);
