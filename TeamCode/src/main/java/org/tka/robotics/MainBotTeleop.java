@@ -2,9 +2,9 @@ package org.tka.robotics;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 import org.tka.robotics.utils.hardware.MainBotHardware;
 
@@ -53,9 +53,6 @@ public class MainBotTeleop extends OpMode {
         updateIntake();
         intake.setPower(intakeToggle ? 1.0F : 0.0F);
 
-
-
-
         updateElevator();
         elevatorClamp();
     }
@@ -75,11 +72,31 @@ public class MainBotTeleop extends OpMode {
         if (gamepad1.b) {
             elevator.setPower(0.75F);
             elevator.setTargetPosition(0);
-        } if (gamepad1.y) {
+        }
+        if (gamepad1.y) {
             elevator.setPower(0.75F);
             elevator.setTargetPosition(ELEVATOR_UP_POSITION);
-        } else {
-            elevator.setPower(0);
+        }
+        if (gamepad1.right_bumper || gamepad2.right_bumper){
+            elevator.setPower(0.75);
+            elevator.setTargetPosition(elevator.getCurrentPosition() + 100);
+        }
+        if(gamepad1.right_trigger > 0.5 || gamepad2.right_trigger > 0.5){
+            elevator.setPower(0.75);
+            elevator.setTargetPosition(elevator.getCurrentPosition() - 100);
+        }
+
+        if(gamepad2.y){
+            elevator.setPower(0.75);
+            elevator.setTargetPosition(ELEVATOR_UP_POSITION);
+        }
+        if(gamepad2.b){
+            elevator.setPower(0.75);
+            elevator.setTargetPosition(0);
+        }
+        if(gamepad2.x){
+            elevator.setPower(0.75);
+            elevator.setTargetPosition(600);
         }
     }
 
