@@ -36,8 +36,15 @@ public class MainBotHardware extends RobotHardware{
         lightSensor = hardwareMap.lightSensor.get("light_sensor");
         colorSensor = hardwareMap.colorSensor.get("color_sensor");
 
-        front_left.setDirection(DcMotorSimple.Direction.REVERSE);
-        back_left.setDirection(DcMotorSimple.Direction.REVERSE);
+        //front_left.setDirection(DcMotorSimple.Direction.REVERSE);
+        //back_left.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        // Flipped reversals due to hardware gear changes
+
+        front_right.setDirection(DcMotorSimple.Direction.REVERSE);
+        back_right.setDirection(DcMotorSimple.Direction.REVERSE);
+
+
         telemetry();
     }
 

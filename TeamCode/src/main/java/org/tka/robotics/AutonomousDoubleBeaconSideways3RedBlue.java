@@ -1,8 +1,5 @@
 package org.tka.robotics;
 
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-
 import org.tka.robotics.opmode.RedBlueAutonomous;
 import org.tka.robotics.opmode.RedBlueOpMode;
 import org.tka.robotics.opmode.TeamColor;
@@ -12,8 +9,8 @@ import org.tka.robotics.utils.hardware.MainBotHardware;
  * Created by Joshua on 10/1/2016.
  */
 
-@RedBlueAutonomous(name = "Red/Blue Double Beacon Sideways")
-public class AutonomousDoubleBeaconSideways2RedBlue extends RedBlueOpMode {
+@RedBlueAutonomous(name = "Red/Blue Double Beacon Sideways (x2 distance)")
+public class AutonomousDoubleBeaconSideways3RedBlue extends RedBlueOpMode {
     MainBotHardware robotHardware;
     //LightSensor lightSensor;
     //ColorSensor colorSensor;
@@ -78,7 +75,7 @@ public class AutonomousDoubleBeaconSideways2RedBlue extends RedBlueOpMode {
         if(teamColor == TeamColor.RED)
             robotHardware.getUtilities().detectBeaconColorAndAdjustRed();
 
-        robotHardware.getUtilities().strafe(1000, 0.2);
+        robotHardware.getUtilities().strafe(2000, 0.4);
 
 
         //////////////////
@@ -99,10 +96,10 @@ public class AutonomousDoubleBeaconSideways2RedBlue extends RedBlueOpMode {
 
 
         if(teamColor == TeamColor.BLUE)
-            robotHardware.getUtilities().driveForward(-1000, 0.3);
+            robotHardware.getUtilities().driveForward(-2000, 0.6);
 
         if(teamColor == TeamColor.RED)
-            robotHardware.getUtilities().driveForward(1000, 0.3);
+            robotHardware.getUtilities().driveForward(2000, 0.6);
 
 
         // UPDATE
@@ -131,7 +128,7 @@ public class AutonomousDoubleBeaconSideways2RedBlue extends RedBlueOpMode {
         // readjust to the right slightly
 
 
-        robotHardware.getUtilities().driveForward(100, 0.3);
+        robotHardware.getUtilities().driveForward(200, 0.6);
 
         robotHardware.getUtilities().sideLineFollow();
 
@@ -152,7 +149,7 @@ public class AutonomousDoubleBeaconSideways2RedBlue extends RedBlueOpMode {
         if(teamColor == TeamColor.RED)
             robotHardware.getUtilities().detectBeaconColorAndAdjustRed();
 
-        robotHardware.getUtilities().strafe(1000, 0.2);
+        robotHardware.getUtilities().strafe(2000, 0.4);
 
 
         /*

@@ -160,15 +160,30 @@ public class Utilities {
         setDriveMotorsMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
-    public void navigateToBeacon() throws InterruptedException{
-        hardware.getUtilities().backwardLeftDiagonal(3000, 0.4);
+    public void navigateToBeaconBlue() throws InterruptedException{
+        hardware.getUtilities().backwardLeftDiagonal(6000, 0.8); // doubled
 
 
         while(hardware.getLightSensor().getLightDetected() < 0.4) {
-            hardware.getFrontLeftMotor().setPower(-0.2);
+            hardware.getFrontLeftMotor().setPower(-0.4);
             hardware.getFrontRightMotor().setPower(0);
             hardware.getBackLeftMotor().setPower(0);
-            hardware.getBackRightMotor().setPower(-0.2);
+            hardware.getBackRightMotor().setPower(-0.4);
+            idle();
+        }
+
+        hardware.stopAllMotors();
+    }
+
+    public void navigateToBeaconRed() throws InterruptedException{
+        hardware.getUtilities().forwardLeftDiagonal(6000, 0.8); // doubled
+
+
+        while(hardware.getLightSensor().getLightDetected() < 0.4) {
+            hardware.getFrontLeftMotor().setPower(0);
+            hardware.getFrontRightMotor().setPower(0.4);
+            hardware.getBackLeftMotor().setPower(0.4);
+            hardware.getBackRightMotor().setPower(0);
             idle();
         }
 
@@ -204,7 +219,7 @@ public class Utilities {
         }
     }
 
-    public void detectBeaconColorAndAdjust() throws InterruptedException {
+    public void detectBeaconColorAndAdjustBlue() throws InterruptedException {
         if(hardware.getColorSensor().blue() > hardware.getColorSensor().red()) {
             //go forward
 
@@ -213,7 +228,7 @@ public class Utilities {
             //sleep(500);
 
 
-            driveForward(-150, 0.2);
+            driveForward(-300, 0.4); // doubled
         }
         else {
             //go right
@@ -224,6 +239,31 @@ public class Utilities {
 
         }
 
-        hardware.getUtilities().strafe(-325, 0.2);
+        hardware.getUtilities().strafe(-650, 0.4); // doubled
+    }
+
+    public void detectBeaconColorAndAdjustRed() throws InterruptedException {
+        if(hardware.getColorSensor().blue() > hardware.getColorSensor().red()) {
+            //go forward
+
+            parent.telemetry.addData("", "blue > red");
+            parent.telemetry.update();
+            //sleep(500);
+
+
+
+        }
+        else {
+            //go right
+
+            parent.telemetry.addData("", "red > blue");
+            parent.telemetry.update();
+            //sleep(500);
+
+            driveForward(-300, 0.4); // doubled
+
+        }
+
+        hardware.getUtilities().strafe(-650, 0.4); // doubled
     }
 }

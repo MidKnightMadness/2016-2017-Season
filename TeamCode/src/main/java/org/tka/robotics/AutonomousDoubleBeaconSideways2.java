@@ -56,7 +56,7 @@ public class AutonomousDoubleBeaconSideways2 extends LinearOpMode {
         telemetry.update();
 
 
-        robotHardware.getUtilities().navigateToBeacon();
+        robotHardware.getUtilities().navigateToBeaconBlue();
         //sleep(500);
 
         robotHardware.getUtilities().sideLineFollow();
@@ -72,7 +72,7 @@ public class AutonomousDoubleBeaconSideways2 extends LinearOpMode {
 
         //detect blue
 
-        robotHardware.getUtilities().detectBeaconColorAndAdjust();
+        robotHardware.getUtilities().detectBeaconColorAndAdjustBlue();
 
         robotHardware.getUtilities().strafe(1000, 0.2);
 
@@ -125,7 +125,7 @@ public class AutonomousDoubleBeaconSideways2 extends LinearOpMode {
 
         //detect blue
 
-        robotHardware.getUtilities().detectBeaconColorAndAdjust();
+        robotHardware.getUtilities().detectBeaconColorAndAdjustBlue();
 
         robotHardware.getUtilities().strafe(1000, 0.2);
 

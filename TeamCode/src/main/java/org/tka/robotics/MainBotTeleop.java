@@ -45,22 +45,28 @@ public class MainBotTeleop extends OpMode {
 
     @Override
     public void loop() {
-        tankDrive(scaleInput(gamepad1.left_stick_y), scaleInput(gamepad1.right_stick_y));
+        tankDrive(scaleInput(-gamepad1.left_stick_y), scaleInput(-gamepad1.right_stick_y));
+        omniDrive();
         updateIntake();
         intake.setPower(intakeToggle ? 1.0F : 0.0F);
+
+
+
 
         updateElevator();
     }
 
-    private static final int ELEVATOR_UP_POSITION = 16000;
+    private static final int ELEVATOR_UP_POSITION = 18000; // was 16000
 
     private void updateElevator() {
         if (gamepad1.b) {
+            elevator.setPower(0.75F);
             elevator.setTargetPosition(0);
-        }
-        if (gamepad1.y) {
+        } if (gamepad1.y) {
             elevator.setPower(0.75F);
             elevator.setTargetPosition(ELEVATOR_UP_POSITION);
+        } else {
+            elevator.setPower(0);
         }
     }
 
@@ -113,11 +119,33 @@ public class MainBotTeleop extends OpMode {
      * @param rightPower The power to the right motors
      */
     private void tankDrive(float leftPower, float rightPower) {
-        hardware.getFrontLeftMotor().setPower(-leftPower);
-        hardware.getBackLeftMotor().setPower(-leftPower);
+        if (!(gamepad1.dpad_up || gamepad1.dpad_left || gamepad1.dpad_down || gamepad1.dpad_right)) {
+            hardware.getFrontLeftMotor().setPower(leftPower);
+            hardware.getBackLeftMotor().setPower(leftPower);
 
-        hardware.getFrontRightMotor().setPower(-rightPower);
-        hardware.getBackRightMotor().setPower(-rightPower);
+            hardware.getFrontRightMotor().setPower(rightPower);
+            hardware.getBackRightMotor().setPower(rightPower);
+        }
+    }
+
+    private void omniDrive() {
+        if ( gamepad1.dpad_up && gamepad1.dpad_right ) {
+            setEachMotor(1, 0, 0, 1);
+        } else if ( gamepad1.dpad_right && gamepad1.dpad_down ) {
+            setEachMotor(0, -1, -1, 0);
+        } else if (gamepad1.dpad_down && gamepad1.dpad_left ) {
+            setEachMotor(-1, 0, 0, -1);
+        } else if (gamepad1.dpad_left && gamepad1.dpad_up ) {
+            setEachMotor(0, 1, 1, 0);
+        } else if (gamepad1.dpad_up) {
+            setEachMotor(1, 1, 1, 1);
+        } else if (gamepad1.dpad_right) {
+            setEachMotor(1, -1, -1, 1);
+        } else if (gamepad1.dpad_down) {
+            setEachMotor(-1, -1, -1, -1);
+        } else if (gamepad1.dpad_left) {
+            setEachMotor(-1, 1, 1, -1);
+        }
     }
 
     private void updateIntake() {
@@ -129,5 +157,13 @@ public class MainBotTeleop extends OpMode {
         } else {
             intakeTogglePressed = false;
         }
+    }
+
+    private void setEachMotor(float frontLeft, float frontRight, float backLeft, float backRight) {
+        hardware.getFrontLeftMotor().setPower(frontLeft);
+        hardware.getFrontRightMotor().setPower(frontRight);
+
+        hardware.getBackLeftMotor().setPower(backLeft);
+        hardware.getBackRightMotor().setPower(backRight);
     }
 }
