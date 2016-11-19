@@ -70,32 +70,32 @@ public class MainBotTeleop extends OpMode {
     }
     private void updateElevator() {
         if (gamepad1.b) {
-            elevator.setPower(0.75F);
+            elevator.setPower(1);
             elevator.setTargetPosition(0);
         }
         if (gamepad1.y) {
-            elevator.setPower(0.75F);
+            elevator.setPower(1);
             elevator.setTargetPosition(ELEVATOR_UP_POSITION);
         }
         if (gamepad1.right_bumper || gamepad2.right_bumper){
-            elevator.setPower(0.75);
+            elevator.setPower(1);
             elevator.setTargetPosition(elevator.getCurrentPosition() + 100);
         }
         if(gamepad1.right_trigger > 0.5 || gamepad2.right_trigger > 0.5){
-            elevator.setPower(0.75);
+            elevator.setPower(1);
             elevator.setTargetPosition(elevator.getCurrentPosition() - 100);
         }
 
         if(gamepad2.y){
-            elevator.setPower(0.75);
+            elevator.setPower(1);
             elevator.setTargetPosition(ELEVATOR_UP_POSITION);
         }
         if(gamepad2.b){
-            elevator.setPower(0.75);
+            elevator.setPower(1);
             elevator.setTargetPosition(0);
         }
         if(gamepad2.x){
-            elevator.setPower(0.75);
+            elevator.setPower(1);
             elevator.setTargetPosition(600);
         }
     }
