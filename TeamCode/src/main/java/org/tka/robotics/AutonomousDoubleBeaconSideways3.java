@@ -9,8 +9,8 @@ import org.tka.robotics.utils.hardware.MainBotHardware;
  * Created by Joshua on 10/1/2016.
  */
 
-@RedBlueAutonomous(name = "Red/Blue Double Beacon Sideways (x2 distance)")
-public class AutonomousDoubleBeaconSideways3RedBlue extends RedBlueOpMode {
+@RedBlueAutonomous(name = "Double Beacon Sideways")
+public class AutonomousDoubleBeaconSideways3 extends RedBlueOpMode {
     MainBotHardware robotHardware;
     //LightSensor lightSensor;
     //ColorSensor colorSensor;
@@ -75,7 +75,7 @@ public class AutonomousDoubleBeaconSideways3RedBlue extends RedBlueOpMode {
         if(teamColor == TeamColor.RED)
             robotHardware.getUtilities().detectBeaconColorAndAdjustRed();
 
-        robotHardware.getUtilities().strafe(2000, 0.4);
+        robotHardware.getUtilities().strafe(1750, 0.4);
 
 
         //////////////////
@@ -90,16 +90,13 @@ public class AutonomousDoubleBeaconSideways3RedBlue extends RedBlueOpMode {
         */
 
 
-        //////////////////////////////////
-        // NOT UPDATED BELOW THIS POINT //
-        //////////////////////////////////
 
 
         if(teamColor == TeamColor.BLUE)
-            robotHardware.getUtilities().driveForward(-2000, 0.6);
+            robotHardware.getUtilities().driveForward(-2500, 0.8);
 
         if(teamColor == TeamColor.RED)
-            robotHardware.getUtilities().driveForward(2000, 0.6);
+            robotHardware.getUtilities().driveForward(2500, 0.8);
 
 
         // UPDATE
@@ -127,8 +124,11 @@ public class AutonomousDoubleBeaconSideways3RedBlue extends RedBlueOpMode {
 
         // readjust to the right slightly
 
+        if(teamColor == TeamColor.BLUE)
+            robotHardware.getUtilities().driveForward(200, 0.5);
+        if(teamColor == TeamColor.RED)
+            robotHardware.getUtilities().driveForward(-200, 0.5);
 
-        robotHardware.getUtilities().driveForward(200, 0.6);
 
         robotHardware.getUtilities().sideLineFollow();
 
@@ -149,7 +149,7 @@ public class AutonomousDoubleBeaconSideways3RedBlue extends RedBlueOpMode {
         if(teamColor == TeamColor.RED)
             robotHardware.getUtilities().detectBeaconColorAndAdjustRed();
 
-        robotHardware.getUtilities().strafe(2000, 0.4);
+        robotHardware.getUtilities().strafe(1750, 0.4);
 
 
         /*

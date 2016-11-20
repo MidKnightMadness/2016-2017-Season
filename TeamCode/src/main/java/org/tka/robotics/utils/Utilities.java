@@ -239,7 +239,7 @@ public class Utilities {
 
         }
 
-        hardware.getUtilities().strafe(-650, 0.4); // doubled
+        hardware.getUtilities().strafe(-850, 0.4); // doubled
     }
 
     public void detectBeaconColorAndAdjustRed() throws InterruptedException {
@@ -264,6 +264,6 @@ public class Utilities {
 
         }
 
-        hardware.getUtilities().strafe(-650, 0.4); // doubled
+        hardware.getUtilities().strafe(-850, 0.4); // doubled
     }
 }
