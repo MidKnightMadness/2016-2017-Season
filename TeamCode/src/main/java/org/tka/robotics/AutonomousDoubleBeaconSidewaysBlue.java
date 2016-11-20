@@ -1,10 +1,9 @@
 
 package org.tka.robotics;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.tka.robotics.opmode.RedBlueAutonomous;
-import org.tka.robotics.opmode.RedBlueOpMode;
 import org.tka.robotics.opmode.TeamColor;
 import org.tka.robotics.utils.hardware.MainBotHardware;
 
@@ -12,9 +11,8 @@ import org.tka.robotics.utils.hardware.MainBotHardware;
  * Created by Joshua on 10/1/2016.
  */
 
-@RedBlueAutonomous(name = "Double Beacon Sideways")
-@Disabled
-public class AutonomousDoubleBeaconSideways3 extends RedBlueOpMode {
+@Autonomous(name = "[B] Double Beacon Sideways")
+public class AutonomousDoubleBeaconSidewaysBlue extends LinearOpMode {
     MainBotHardware robotHardware;
     //LightSensor lightSensor;
     //ColorSensor colorSensor;
@@ -22,7 +20,7 @@ public class AutonomousDoubleBeaconSideways3 extends RedBlueOpMode {
     int heading = 0;
     double offset = 0.05;
 
-    private TeamColor tc;
+    private TeamColor teamColor = TeamColor.BLUE;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -103,6 +101,21 @@ public class AutonomousDoubleBeaconSideways3 extends RedBlueOpMode {
 
         if(teamColor == TeamColor.RED)
             robotHardware.getUtilities().driveForward(2500, 0.8);
+        /*this.robotHardware.getFrontRightMotor().setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        this.robotHardware.getFrontRightMotor().setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        if(teamColor== TeamColor.BLUE){
+            robotHardware.getUtilities().setAllMotors(-0.8);
+            while(robotHardware.getFrontRightMotor().getCurrentPosition() < -2500){
+                idle();
+            }
+        }
+
+        if(teamColor == TeamColor.RED){
+            robotHardware.getUtilities().setAllMotors(0.8);
+            while(robotHardware.getFrontRightMotor().getCurrentPosition() > 2500){
+                idle();
+            }
+        }*/
 
 
         // UPDATE
