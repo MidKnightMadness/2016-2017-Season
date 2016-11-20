@@ -41,6 +41,10 @@ public class MainBotHardware extends RobotHardware{
 
         // Flipped reversals due to hardware gear changes
 
+        for(DcMotor m : hardwareMap.dcMotor){
+            m.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        }
+
         front_right.setDirection(DcMotorSimple.Direction.REVERSE);
         back_right.setDirection(DcMotorSimple.Direction.REVERSE);
 
