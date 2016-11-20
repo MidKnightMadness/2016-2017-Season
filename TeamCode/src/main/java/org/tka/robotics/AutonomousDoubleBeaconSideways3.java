@@ -1,5 +1,6 @@
 package org.tka.robotics;
 
+import com.qualcomm.robotcore.hardware.TouchSensor;
 import org.tka.robotics.opmode.RedBlueAutonomous;
 import org.tka.robotics.opmode.RedBlueOpMode;
 import org.tka.robotics.opmode.TeamColor;
@@ -12,6 +13,8 @@ import org.tka.robotics.utils.hardware.MainBotHardware;
 @RedBlueAutonomous(name = "Double Beacon Sideways")
 public class AutonomousDoubleBeaconSideways3 extends RedBlueOpMode {
     MainBotHardware robotHardware;
+
+    TouchSensor touchSensor;
     //LightSensor lightSensor;
     //ColorSensor colorSensor;
     //ModernRoboticsI2cGyro gyro;
@@ -21,6 +24,7 @@ public class AutonomousDoubleBeaconSideways3 extends RedBlueOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         robotHardware = new MainBotHardware(this);
+        touchSensor = hardwareMap.touchSensor.get("touch");
         //lightSensor = robotHardware.getLightSensor();
         //colorSensor = hardwareMap.colorSensor.get("color_sensor");
         //gyro = (ModernRoboticsI2cGyro)hardwareMap.gyroSensor.get("gyro");
@@ -75,7 +79,13 @@ public class AutonomousDoubleBeaconSideways3 extends RedBlueOpMode {
         if(teamColor == TeamColor.RED)
             robotHardware.getUtilities().detectBeaconColorAndAdjustRed();
 
-        robotHardware.getUtilities().strafe(1750, 0.4);
+        while (!touchSensor.isPressed()) {
+            this.robotHardware.getFrontLeftMotor().setPower(0.4);
+            this.robotHardware.getFrontRightMotor().setPower(-0.4);
+            this.robotHardware.getBackLeftMotor().setPower(-0.4);
+            this.robotHardware.getBackRightMotor().setPower(0.4);
+            idle();
+        }
 
 
         //////////////////
@@ -149,7 +159,13 @@ public class AutonomousDoubleBeaconSideways3 extends RedBlueOpMode {
         if(teamColor == TeamColor.RED)
             robotHardware.getUtilities().detectBeaconColorAndAdjustRed();
 
-        robotHardware.getUtilities().strafe(1750, 0.4);
+        while (!touchSensor.isPressed()) {
+            this.robotHardware.getFrontLeftMotor().setPower(0.4);
+            this.robotHardware.getFrontRightMotor().setPower(-0.4);
+            this.robotHardware.getBackLeftMotor().setPower(-0.4);
+            this.robotHardware.getBackRightMotor().setPower(0.4);
+            idle();
+        }
 
 
         /*
