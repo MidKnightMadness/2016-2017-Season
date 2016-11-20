@@ -50,8 +50,13 @@ public class MainBotTeleop extends OpMode {
     public void loop() {
         tankDrive(scaleInput(-gamepad1.left_stick_y), scaleInput(-gamepad1.right_stick_y));
         omniDrive();
-        updateIntake();
-        intake.setPower(intakeToggle ? 1.0F : 0.0F);
+
+        if (gamepad1.x)
+            intake.setPower(-1);
+        else if (gamepad1.a)
+            intake.setPower(1);
+        else
+            intake.setPower(0);
 
         updateElevator();
         elevatorClamp();
@@ -59,15 +64,16 @@ public class MainBotTeleop extends OpMode {
 
     private static final int ELEVATOR_UP_POSITION = 18000; // was 16000
 
-    private void elevatorClamp(){
-        if(gamepad1.left_bumper){
+    private void elevatorClamp() {
+        if (gamepad1.left_bumper) {
             elevatorRetainer.setPower(1);
-        } else if(gamepad1.left_trigger > 0.5){
+        } else if (gamepad1.left_trigger > 0.5) {
             elevatorRetainer.setPower(-1);
         } else {
             elevatorRetainer.setPower(0);
         }
     }
+
     private void updateElevator() {
         if (gamepad1.b) {
             elevator.setPower(1);
@@ -77,24 +83,24 @@ public class MainBotTeleop extends OpMode {
             elevator.setPower(1);
             elevator.setTargetPosition(ELEVATOR_UP_POSITION);
         }
-        if (gamepad1.right_bumper || gamepad2.right_bumper){
+        if (gamepad1.right_bumper || gamepad2.right_bumper) {
             elevator.setPower(1);
             elevator.setTargetPosition(elevator.getCurrentPosition() + 100);
         }
-        if(gamepad1.right_trigger > 0.5 || gamepad2.right_trigger > 0.5){
+        if (gamepad1.right_trigger > 0.5 || gamepad2.right_trigger > 0.5) {
             elevator.setPower(1);
             elevator.setTargetPosition(elevator.getCurrentPosition() - 100);
         }
 
-        if(gamepad2.y){
+        if (gamepad2.y) {
             elevator.setPower(1);
             elevator.setTargetPosition(ELEVATOR_UP_POSITION);
         }
-        if(gamepad2.b){
+        if (gamepad2.b) {
             elevator.setPower(1);
             elevator.setTargetPosition(0);
         }
-        if(gamepad2.x){
+        if (gamepad2.x) {
             elevator.setPower(1);
             elevator.setTargetPosition(600);
         }
@@ -159,13 +165,13 @@ public class MainBotTeleop extends OpMode {
     }
 
     private void omniDrive() {
-        if ( gamepad1.dpad_up && gamepad1.dpad_right ) {
+        if (gamepad1.dpad_up && gamepad1.dpad_right) {
             setEachMotor(1, 0, 0, 1);
-        } else if ( gamepad1.dpad_right && gamepad1.dpad_down ) {
+        } else if (gamepad1.dpad_right && gamepad1.dpad_down) {
             setEachMotor(0, -1, -1, 0);
-        } else if (gamepad1.dpad_down && gamepad1.dpad_left ) {
+        } else if (gamepad1.dpad_down && gamepad1.dpad_left) {
             setEachMotor(-1, 0, 0, -1);
-        } else if (gamepad1.dpad_left && gamepad1.dpad_up ) {
+        } else if (gamepad1.dpad_left && gamepad1.dpad_up) {
             setEachMotor(0, 1, 1, 0);
         } else if (gamepad1.dpad_up) {
             setEachMotor(1, 1, 1, 1);
