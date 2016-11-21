@@ -3,6 +3,8 @@ package org.tka.robotics.utils;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.TouchSensor;
+
 import org.tka.robotics.utils.hardware.RobotHardware;
 
 public class Utilities {
@@ -10,9 +12,13 @@ public class Utilities {
     private RobotHardware hardware;
     private OpMode parent;
 
+    // TODO: 11/20/16 Move to RobotHardware
+    private TouchSensor touchSensor;
+
     public Utilities(OpMode parent, RobotHardware hardware) {
         this.hardware = hardware;
         this.parent = parent;
+        touchSensor = parent.hardwareMap.touchSensor.get("touch");
     }
 
     public void turn(double power) {
@@ -239,7 +245,21 @@ public class Utilities {
 
         }
 
-        hardware.getUtilities().strafe(-850, 0.4); // doubled
+        strafeUntilTouchSensor();
+    }
+
+    private void strafeUntilTouchSensor() throws InterruptedException {
+        int encMax = this.hardware.getFrontRightMotor().getCurrentPosition() + 500; //was 5000 for some reason
+        while (!touchSensor.isPressed() && this.hardware.getFrontLeftMotor().getCurrentPosition() < encMax) {
+            this.hardware.getFrontLeftMotor().setPower(-0.4);
+            this.hardware.getFrontRightMotor().setPower(0.4);
+            this.hardware.getBackLeftMotor().setPower(0.4);
+            this.hardware.getBackRightMotor().setPower(-0.4);
+            idle();
+        }
+        hardware.stopAllMotors();
+        strafe(-400, 0.4);
+        hardware.stopAllMotors();
     }
 
     public void detectBeaconColorAndAdjustRed() throws InterruptedException {
@@ -264,6 +284,6 @@ public class Utilities {
 
         }
 
-        hardware.getUtilities().strafe(-850, 0.4); // doubled
+        strafeUntilTouchSensor();
     }
 }
