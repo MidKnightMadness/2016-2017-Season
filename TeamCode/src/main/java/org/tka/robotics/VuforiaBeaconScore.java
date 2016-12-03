@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.util.RobotLog;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.teamcode.R;
+import org.tka.robotics.utils.hardware.MainBotHardware;
 import org.tka.robotics.utils.hardware.SoftwareBotHardware;
 import org.tka.robotics.utils.vuforia.FtcVuforia;
 
@@ -21,12 +22,12 @@ import java.util.Arrays;
 public class VuforiaBeaconScore extends LinearOpMode {
 
     private static final float MOTOR_POWER = 0.25F;
-    private SoftwareBotHardware hardware;
+    private MainBotHardware hardware;
     private FtcVuforia vuforia;
 
     @Override
     public void runOpMode() throws InterruptedException {
-        hardware = new SoftwareBotHardware(this);
+        hardware = new MainBotHardware(this);
         vuforia = new FtcVuforia(R.id.cameraMonitorViewId, VuforiaLocalizer.CameraDirection.FRONT);
         vuforia.setTargets(FtcVuforia.locationMatrix(0, 0, -90, 15 * FtcVuforia.MM_PER_INCH,
                 (float) -14.5 * FtcVuforia.MM_PER_INCH, 0));
@@ -56,13 +57,13 @@ public class VuforiaBeaconScore extends LinearOpMode {
         // Drive sideways until we get a position from the targets
         while (vuforia.getRobotPosition() == null) {
             logPositionData(vuforia);
-            driveForward(-.25f);
+            driveBackLeftDiagonal(0.25f);
             idle();
         }
         telemetry.log().add("Found target, stopping");
         hardware.stopAllMotors();
 
-        driveToTarget(580, 1318, 0.3F);
+        driveToTarget(360, 1330, 0.3F); //580, 1318
 
         
 /*        telemetry.log().add("Following line");
@@ -161,6 +162,13 @@ public class VuforiaBeaconScore extends LinearOpMode {
         hardware.getFrontRightMotor().setPower(motorPower);
         hardware.getBackLeftMotor().setPower(motorPower);
         hardware.getBackRightMotor().setPower(motorPower);
+    }
+
+    private void driveBackLeftDiagonal(float motorPower) {
+        hardware.getFrontLeftMotor().setPower(-motorPower);
+        hardware.getFrontRightMotor().setPower(0);
+        hardware.getBackLeftMotor().setPower(0);
+        hardware.getBackRightMotor().setPower(-motorPower);
     }
 
     private float scalePower(float power, float target, float actual){

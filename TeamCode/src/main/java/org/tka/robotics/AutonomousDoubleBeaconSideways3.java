@@ -5,6 +5,7 @@ import org.tka.robotics.opmode.RedBlueAutonomous;
 import org.tka.robotics.opmode.RedBlueOpMode;
 import org.tka.robotics.opmode.TeamColor;
 import org.tka.robotics.utils.hardware.MainBotHardware;
+import org.tka.robotics.utils.hardware.SoftwareBotHardware;
 
 /**
  * Created by Joshua on 10/1/2016.
@@ -12,7 +13,7 @@ import org.tka.robotics.utils.hardware.MainBotHardware;
 
 @RedBlueAutonomous(name = "Double Beacon Sideways")
 public class AutonomousDoubleBeaconSideways3 extends RedBlueOpMode {
-    MainBotHardware robotHardware;
+    SoftwareBotHardware robotHardware;
 
     TouchSensor touchSensor;
     //LightSensor lightSensor;
@@ -20,10 +21,11 @@ public class AutonomousDoubleBeaconSideways3 extends RedBlueOpMode {
     //ModernRoboticsI2cGyro gyro;
     int heading = 0;
     double offset = 0.05;
+    
 
     @Override
     public void runOpMode() throws InterruptedException {
-        robotHardware = new MainBotHardware(this);
+        robotHardware = new SoftwareBotHardware(this);
         touchSensor = hardwareMap.touchSensor.get("touch");
         //lightSensor = robotHardware.getLightSensor();
         //colorSensor = hardwareMap.colorSensor.get("color_sensor");
@@ -159,13 +161,13 @@ public class AutonomousDoubleBeaconSideways3 extends RedBlueOpMode {
         if(teamColor == TeamColor.RED)
             robotHardware.getUtilities().detectBeaconColorAndAdjustRed();
 
-        while (!touchSensor.isPressed()) {
+        /*while (!touchSensor.isPressed()) {
             this.robotHardware.getFrontLeftMotor().setPower(0.4);
             this.robotHardware.getFrontRightMotor().setPower(-0.4);
             this.robotHardware.getBackLeftMotor().setPower(-0.4);
             this.robotHardware.getBackRightMotor().setPower(0.4);
             idle();
-        }
+        }*/
 
 
         /*

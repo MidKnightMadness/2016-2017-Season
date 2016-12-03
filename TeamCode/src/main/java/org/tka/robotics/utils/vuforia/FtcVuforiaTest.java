@@ -15,7 +15,7 @@ public class FtcVuforiaTest extends OpMode {
 
     @Override
     public void init() {
-       vuforia =  new FtcVuforia(R.id.cameraMonitorViewId, VuforiaLocalizer.CameraDirection.BACK);
+       vuforia =  new FtcVuforia(R.id.cameraMonitorViewId, VuforiaLocalizer.CameraDirection.FRONT);
         vuforia.setTargets(FtcVuforia.locationMatrix(0, 0, 0, 6 * FtcVuforia.MM_PER_INCH, 0, 0));
     }
 
