@@ -35,7 +35,7 @@ public class SoftwareBotHardware extends RobotHardware{
      */
     @Override
     public void initialize() {
-        telemetry();
+        //telemetry();
         // Reset all the motor configurations
         for (Map.Entry<String, DcMotor> m : this.hardwareMap.dcMotor.entrySet()) {
             m.getValue().resetDeviceConfigurationForOpMode();

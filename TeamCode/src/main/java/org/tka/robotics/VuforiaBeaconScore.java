@@ -22,19 +22,16 @@ import java.util.Arrays;
 public class VuforiaBeaconScore extends LinearOpMode {
 
     private static final float MOTOR_POWER = 0.25F;
-    private MainBotHardware hardware;
+    private SoftwareBotHardware hardware;
     private FtcVuforia vuforia;
 
     @Override
     public void runOpMode() throws InterruptedException {
-        hardware = new MainBotHardware(this);
+        hardware = new SoftwareBotHardware(this);
         vuforia = new FtcVuforia(R.id.cameraMonitorViewId, VuforiaLocalizer.CameraDirection.FRONT);
         vuforia.setTargets(FtcVuforia.locationMatrix(0, 0, -90, 15 * FtcVuforia.MM_PER_INCH,
                 (float) -14.5 * FtcVuforia.MM_PER_INCH, 0));
 
-        ColorSensor colorSensor = hardwareMap.colorSensor.get("color_sensor");
-        LightSensor lightSensor = hardwareMap.lightSensor.get("light_sensor");
-        lightSensor.enableLed(true);
 
         telemetry.log().setCapacity(10);
         telemetry.log().setDisplayOrder(Telemetry.Log.DisplayOrder.NEWEST_FIRST);
@@ -42,7 +39,7 @@ public class VuforiaBeaconScore extends LinearOpMode {
         double lowLight = 0;
 
         for (int i = 0; i < 10; i++) {
-            lowLight += lightSensor.getLightDetected();
+            lowLight += hardware.getLightSensor().getLightDetected();
         }
 
         lowLight /= 10.0D;
@@ -57,13 +54,13 @@ public class VuforiaBeaconScore extends LinearOpMode {
         // Drive sideways until we get a position from the targets
         while (vuforia.getRobotPosition() == null) {
             logPositionData(vuforia);
-            driveBackLeftDiagonal(0.25f);
+            driveBackLeftDiagonal(0.15f);
             idle();
         }
         telemetry.log().add("Found target, stopping");
         hardware.stopAllMotors();
 
-        driveToTarget(360, 1330, 0.3F); //580, 1318
+        driveToTarget(700, 1250, 0.15F); //580, 1318
 
         
 /*        telemetry.log().add("Following line");
@@ -123,34 +120,26 @@ public class VuforiaBeaconScore extends LinearOpMode {
         float[] robotPosition = vuforia.getRobotPosition();
         if (robotPosition == null)
             return;
-        while (true) {
+        while (Math.abs(robotPosition[0] - targetX) > 10) {
             robotPosition = vuforia.getRobotPosition();
-            scalePower(motorPower, targetX, robotPosition[0]);
             logPositionData(vuforia);
             if (robotPosition[0] < targetX) {
                 driveForward(motorPower);
             } else {
                 driveForward(-motorPower);
             }
-            if (Math.abs(robotPosition[0] - targetX) < 10) {
-                break;
-            }
             idle();
         }
         hardware.stopAllMotors();
         sleep(1000);
         telemetry.log().add("Driving to Y=" + targetY);
-        while (true) {
+        while (Math.abs(robotPosition[1] - targetY) > 10) {
             robotPosition = vuforia.getRobotPosition();
-            scalePower(motorPower, targetX, robotPosition[1]);
             logPositionData(vuforia);
             if (robotPosition[1] < targetY) {
                 driveSideways(-motorPower * .5);
             } else {
                 driveSideways(motorPower * .5);
-            }
-            if (Math.abs(robotPosition[1] - targetY) < 10) {
-                break;
             }
             idle();
         }
