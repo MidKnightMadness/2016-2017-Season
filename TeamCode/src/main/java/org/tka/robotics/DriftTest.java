@@ -3,43 +3,70 @@ package org.tka.robotics;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsUsbDcMotorController;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.DifferentialControlLoopCoefficients;
+import org.firstinspires.ftc.robotcore.external.Func;
 import org.tka.robotics.utils.hardware.MainBotHardware;
 
 @Autonomous(name = "ITS TIME TO DRIFT")
-public class DriftTest extends LinearOpMode{
+public class DriftTest extends LinearOpMode {
 
     private MainBotHardware hardware;
+    private long startTime;
 
     @Override
     public void runOpMode() throws InterruptedException {
         hardware = new MainBotHardware(this);
 
 
-        tunePid();
+//        tunePid();
         hardware.getUtilities().resetDriveMotors();
+        hardware.getUtilities().setDriveMotorsMode(DcMotor.RunMode.RUN_TO_POSITION);
         waitForStart();
 
-        hardware.getFrontRightMotor().setPower(0.8);
-        hardware.getBackLeftMotor().setPower(0.8);
+        startTime = System.currentTimeMillis();
+
+        telemetry.addData("Current Position", new Func<Integer>() {
+            @Override
+            public Integer value() {
+                return calculatePosition();
+            }
+        });
+
+        hardware.getFrontRightMotor().setPower(1.0);
+        hardware.getBackLeftMotor().setPower(1.0);
         hardware.getFrontLeftMotor().setPower(0);
         hardware.getBackRightMotor().setPower(0);
 
-        long stopTime = System.currentTimeMillis() + 5000;
-        while(stopTime > System.currentTimeMillis()){
+        while (hardware.getFrontRightMotor().getCurrentPosition() < 1500) {
             telemetry.update();
             idle();
         }
 
-        hardware.stopAllMotors();
+       /* while(this.calculatePosition() < 16000){
+            hardware.getFrontRightMotor().setTargetPosition(this.calculatePosition());
+            hardware.getBackLeftMotor().setTargetPosition(this.calculatePosition());
+            telemetry.update();
+            idle();
+        }*/
 
-        while(opModeIsActive()){
+        hardware.getFrontRightMotor().setPower(0);
+        hardware.getBackRightMotor().setPower(0);
+        hardware.getFrontLeftMotor().setPower(0);
+        hardware.getBackLeftMotor().setPower(0);
+
+        while (opModeIsActive()) {
             telemetry.update();
             idle();
         }
+
     }
 
-    private void tunePid(){
+    private int calculatePosition() {
+        return (int) Math.round((System.currentTimeMillis() - startTime) * 0.6);
+    }
+
+    private void tunePid() {
         ModernRoboticsUsbDcMotorController leftMotors = (ModernRoboticsUsbDcMotorController) hardware.getFrontLeftMotor().getController();
         ModernRoboticsUsbDcMotorController rightMotors = (ModernRoboticsUsbDcMotorController) hardware.getBackRightMotor().getController();
 
