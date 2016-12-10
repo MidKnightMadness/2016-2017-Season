@@ -205,6 +205,7 @@ public class Utilities {
                 hardware.getBackRightMotor().setPower(-0.1);
             }
 
+            this.parent.telemetry.addData("light", hardware.getLightSensor().getLightDetected());
             this.parent.telemetry.addData("red", hardware.getColorSensor().red());
             this.parent.telemetry.addData("blue", hardware.getColorSensor().blue());
             this.parent.telemetry.update();
