@@ -1,5 +1,9 @@
 package org.tka.robotics;
 
+import com.qualcomm.robotcore.hardware.TouchSensor;
+import org.tka.robotics.opmode.RedBlueAutonomous;
+import org.tka.robotics.opmode.RedBlueOpMode;
+import org.tka.robotics.opmode.TeamColor;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
@@ -11,6 +15,7 @@ import com.qualcomm.robotcore.util.RobotLog;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.teamcode.R;
+import org.tka.robotics.opmode.TeamColor;
 import org.tka.robotics.utils.hardware.MainBotHardware;
 import org.tka.robotics.utils.hardware.SoftwareBotHardware;
 import org.tka.robotics.utils.vuforia.FtcVuforia;
@@ -18,8 +23,8 @@ import org.tka.robotics.utils.vuforia.FtcVuforia;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 
-@Autonomous(name = "VuforiaBeaconScore")
-public class VuforiaBeaconScore extends LinearOpMode {
+@RedBlueAutonomous(name = "VuforiaBeaconScore")
+public class VuforiaBeaconScore extends RedBlueOpMode {
 
     private static final float MOTOR_POWER = 0.25F;
     private SoftwareBotHardware hardware;
@@ -27,6 +32,8 @@ public class VuforiaBeaconScore extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
+        TouchSensor touchSensor;
+        touchSensor = hardwareMap.touchSensor.get("touch");
         hardware = new SoftwareBotHardware(this);
         vuforia = new FtcVuforia(R.id.cameraMonitorViewId, VuforiaLocalizer.CameraDirection.FRONT);
         vuforia.setTargets(FtcVuforia.locationMatrix(0, 0, -90, 15 * FtcVuforia.MM_PER_INCH,
@@ -50,7 +57,7 @@ public class VuforiaBeaconScore extends LinearOpMode {
 
         vuforia.setTrackingEnabled(true);
 
-        telemetry.log().add("Staring driving until we find a location from the target");
+        telemetry.log().add("Starting driving until we find a location from the target");
         // Drive sideways until we get a position from the targets
         while (vuforia.getRobotPosition() == null) {
             logPositionData(vuforia);
@@ -60,9 +67,12 @@ public class VuforiaBeaconScore extends LinearOpMode {
         telemetry.log().add("Found target, stopping");
         hardware.stopAllMotors();
 
-        sleep(1000);
+        sleep(500);
 
-        driveToTarget(680, 1250, 0.15F); //580, 1318
+        ///////////////////////////////
+        //NATHAN B CHANGED 680 to 570//
+        ///////////////////////////////
+        driveToTarget(570, 1250, 0.15F); //580, 1318
 
         
 /*        telemetry.log().add("Following line");
@@ -91,11 +101,27 @@ public class VuforiaBeaconScore extends LinearOpMode {
 
          */
 
-        sleep(2000);
+        sleep(500);
 
         hardware.getLightSensor().enableLed(true);
         hardware.getUtilities().sideLineFollow();
         hardware.stopAllMotors();
+
+        ////////////////////////
+        //ADDED BEACON SCORING//
+        ////////////////////////
+        if(teamColor == TeamColor.BLUE)
+            hardware.getUtilities().detectBeaconColorAndAdjustBlue();
+        if(teamColor == TeamColor.RED)
+            hardware.getUtilities().detectBeaconColorAndAdjustRed();
+
+        while (!touchSensor.isPressed()) {
+            this.hardware.getFrontLeftMotor().setPower(0.4);
+            this.hardware.getFrontRightMotor().setPower(-0.4);
+            this.hardware.getBackLeftMotor().setPower(-0.4);
+            this.hardware.getBackRightMotor().setPower(0.4);
+            idle();
+        }
 
         while (opModeIsActive())
             idle();
