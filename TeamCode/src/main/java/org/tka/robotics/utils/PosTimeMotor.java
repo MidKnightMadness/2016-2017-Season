@@ -2,6 +2,7 @@ package org.tka.robotics.utils;
 
 import android.widget.TextView;
 import com.qualcomm.ftccommon.UpdateUI;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorController;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -13,13 +14,14 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * A {@link DcMotor} for higher accuracy, translating power to a ticking encoder
+ * A {@link DcMotor} for higher accuracy, translating commandedPower to a ticking encoder
  */
 // TODO: 12/10/2016 Fix stopping motors doing bad things
 public class PosTimeMotor implements DcMotor {
 
     private static final double ENCODER_CONSTANT = 2.7;
-    protected double power = 0;
+    public OpMode opMode;
+    protected double commandedPower = 0;
     int offset = 0;
     private DcMotor motor;
     private long referenceTime;
@@ -111,7 +113,7 @@ public class PosTimeMotor implements DcMotor {
 
     @Override
     public double getPower() {
-        return power;
+        return commandedPower;
     }
 
     @Override
@@ -120,11 +122,14 @@ public class PosTimeMotor implements DcMotor {
             motor.setPower(power);
         } else {
             // Do some fancyness with our encoder tick thing
-            if (power != this.power && power != 0) {
+            if (power != this.commandedPower && power != 0) {
                 referenceTime = System.currentTimeMillis();
-                this.power = power;
+                this.commandedPower = power;
                 this.offset = motor.getCurrentPosition();
             }
+            if(power == 0)
+                this.commandedPower = 0;
+            updatePower();
         }
     }
 
@@ -134,7 +139,13 @@ public class PosTimeMotor implements DcMotor {
     }
 
     public int getTarget() {
-        return (int) (Math.round(System.currentTimeMillis() - referenceTime) * (ENCODER_CONSTANT * power)) + offset;
+        long f = System.currentTimeMillis() - referenceTime;
+        int i = (int) (Math.round(f) * (ENCODER_CONSTANT * commandedPower)) + offset;
+        if(opMode != null) {
+            opMode.telemetry.log().add("Pos: " + f);
+            opMode.telemetry.log().add("i: " + i);
+        }
+        return i;
     }
 
     @Override
@@ -180,7 +191,7 @@ public class PosTimeMotor implements DcMotor {
     }
 
     public void updatePower() {
-        if (power != 0)
+        if (commandedPower != 0)
             motor.setTargetPosition(getTarget());
     }
 
@@ -202,25 +213,38 @@ public class PosTimeMotor implements DcMotor {
         private boolean running = true;
         private HardwareMap map;
         private Field updateUIField, robotState;
+        private static final Object motorLock = new Object();
 
         public Updater(HardwareMap map, PosTimeMotor... motors) {
             this.map = map;
-            Collections.addAll(motorsToUpdate, motors);
+            synchronized (motorLock) {
+                Collections.addAll(motorsToUpdate, motors);
+            }
+        }
+
+        public void addMotor(PosTimeMotor motor){
+            synchronized (motorLock){
+                motorsToUpdate.add(motor);
+            }
         }
 
         @Override
         public void run() {
             while (running) {
-                for (PosTimeMotor m : motorsToUpdate) {
-                    m.updatePower();
+                synchronized (motorLock) {
+                    for (PosTimeMotor m : motorsToUpdate) {
+                        m.updatePower();
+                    }
                 }
                 if (runningOpMode().equalsIgnoreCase("stop robot"))
                     running = false;
                 Thread.yield();
             }
 
-            for (PosTimeMotor m : motorsToUpdate) {
-                m.setPower(0);
+            synchronized (motorLock) {
+                for (PosTimeMotor m : motorsToUpdate) {
+                    m.setPower(0);
+                }
             }
         }
 

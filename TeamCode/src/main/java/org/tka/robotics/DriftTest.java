@@ -38,17 +38,11 @@ public class DriftTest extends LinearOpMode {
         hardware.getFrontLeftMotor().setPower(0);
         hardware.getBackRightMotor().setPower(0);
 
-        while (hardware.getFrontRightMotor().getCurrentPosition() < 1500) {
+        // TODO: 12/13/2016 Not make target position the actual position we should be checking
+        while (hardware.getFrontRightMotor().getTargetPosition() < 2500) {
             telemetry.update();
             idle();
         }
-
-       /* while(this.calculatePosition() < 16000){
-            hardware.getFrontRightMotor().setTargetPosition(this.calculatePosition());
-            hardware.getBackLeftMotor().setTargetPosition(this.calculatePosition());
-            telemetry.update();
-            idle();
-        }*/
 
         hardware.getFrontRightMotor().setPower(0);
         hardware.getBackRightMotor().setPower(0);
