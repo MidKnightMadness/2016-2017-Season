@@ -61,7 +61,7 @@ public class VuforiaBeaconScore extends RedBlueOpMode {
         // Drive sideways until we get a position from the targets
         while (vuforia.getRobotPosition() == null) {
             logPositionData(vuforia);
-            driveBackLeftDiagonal(0.15f);
+            driveBackLeftDiagonal(0.30f);
             idle();
         }
         telemetry.log().add("Found target, stopping");
@@ -72,7 +72,8 @@ public class VuforiaBeaconScore extends RedBlueOpMode {
         ///////////////////////////////
         //NATHAN B CHANGED 680 to 570//
         ///////////////////////////////
-        driveToTarget(570, 1250, 0.15F); //580, 1318
+        driveToTarget(550, 1350, 0.5F); //580, 1318
+        hardware.stopAllMotors();
 
         
 /*        telemetry.log().add("Following line");
@@ -101,7 +102,7 @@ public class VuforiaBeaconScore extends RedBlueOpMode {
 
          */
 
-        sleep(500);
+        /*sleep(500);
 
         hardware.getLightSensor().enableLed(true);
         hardware.getUtilities().sideLineFollow();
@@ -110,6 +111,8 @@ public class VuforiaBeaconScore extends RedBlueOpMode {
         ////////////////////////
         //ADDED BEACON SCORING//
         ////////////////////////
+
+
         if(teamColor == TeamColor.BLUE)
             hardware.getUtilities().detectBeaconColorAndAdjustBlue();
         if(teamColor == TeamColor.RED)
@@ -121,7 +124,7 @@ public class VuforiaBeaconScore extends RedBlueOpMode {
             this.hardware.getBackLeftMotor().setPower(-0.4);
             this.hardware.getBackRightMotor().setPower(0.4);
             idle();
-        }
+        }*/
 
         while (opModeIsActive())
             idle();
@@ -157,7 +160,6 @@ public class VuforiaBeaconScore extends RedBlueOpMode {
     }
 
     private void driveToTarget(float targetX, float targetY, float motorPower) throws InterruptedException {
-        telemetry.log().add("Driving to X=" + targetX);
         float[] robotPosition = vuforia.getRobotPosition();
 
         float frontLeftMotorPower = 0;
@@ -175,7 +177,7 @@ public class VuforiaBeaconScore extends RedBlueOpMode {
             logPositionData(vuforia);
 
             deltaX = Math.abs(targetX - robotPosition[0]);
-            multiplierX = Range.clip(deltaX / 250, 0.3F, 1);
+            multiplierX = Range.clip(deltaX / 750, 0.10F, 0.3F);
             if (robotPosition[0] < targetX) {
                 frontLeftMotorPower = motorPower * multiplierX;
                 frontRightMotorPower = motorPower * multiplierX;
@@ -189,17 +191,17 @@ public class VuforiaBeaconScore extends RedBlueOpMode {
             }
 
             deltaY = Math.abs(targetY - robotPosition[1]);
-            multiplierY = Range.clip(deltaY / 250, 0.3F, 1);
+            multiplierY = Range.clip(deltaY / 750, 0.10F, 0.3F);
             if (robotPosition[1] < targetY) {
-                frontLeftMotorPower += -motorPower * 0.5F * multiplierY;
-                frontRightMotorPower += motorPower * 0.5F * multiplierY;
-                backLeftMotorPower += motorPower * 0.5F * multiplierY;
-                backRightMotorPower += -motorPower * 0.5F * multiplierY;
+                frontLeftMotorPower += -motorPower * multiplierY;
+                frontRightMotorPower += motorPower * multiplierY;
+                backLeftMotorPower += motorPower * multiplierY;
+                backRightMotorPower += -motorPower * multiplierY;
             } else {
-                frontLeftMotorPower += motorPower * 0.5F * multiplierY;
-                frontRightMotorPower += -motorPower * 0.5F * multiplierY;
-                backLeftMotorPower += -motorPower * 0.5F * multiplierY;
-                backRightMotorPower += motorPower * 0.5F * multiplierY;
+                frontLeftMotorPower += motorPower * multiplierY;
+                frontRightMotorPower += -motorPower * multiplierY;
+                backLeftMotorPower += -motorPower * multiplierY;
+                backRightMotorPower += motorPower * multiplierY;
             }
 
 
@@ -209,21 +211,11 @@ public class VuforiaBeaconScore extends RedBlueOpMode {
             hardware.getBackLeftMotor().setPower(backLeftMotorPower);
             hardware.getBackRightMotor().setPower(backRightMotorPower);
 
+//            telemetry.addData("x", robotPosition[0]);
+//            telemetry.addData("y", robotPosition[1]);
+
             idle();
         }
-        sleep(1000);
-        telemetry.log().add("Driving to Y=" + targetY);
-        while (Math.abs(robotPosition[1] - targetY) > 15) {
-            robotPosition = vuforia.getRobotPosition();
-            logPositionData(vuforia);
-            if (robotPosition[1] < targetY) {
-                driveSideways(-motorPower * .5);
-            } else {
-                driveSideways(motorPower * .5);
-            }
-            idle();
-        }
-        hardware.stopAllMotors();
     }
 
     private void driveForward(float motorPower) {
