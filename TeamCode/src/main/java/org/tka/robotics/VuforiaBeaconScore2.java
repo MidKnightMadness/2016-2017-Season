@@ -10,6 +10,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.teamcode.R;
 import org.tka.robotics.opmode.RedBlueAutonomous;
 import org.tka.robotics.opmode.RedBlueOpMode;
+import org.tka.robotics.opmode.TeamColor;
+import org.tka.robotics.utils.hardware.MainBotHardware;
 import org.tka.robotics.utils.hardware.SoftwareBotHardware;
 import org.tka.robotics.utils.vuforia.FtcVuforia;
 
@@ -20,14 +22,14 @@ import java.util.Arrays;
 public class VuforiaBeaconScore2 extends RedBlueOpMode {
 
     private static final float MOTOR_POWER = 0.25F;
-    private SoftwareBotHardware hardware;
+    private MainBotHardware hardware;
     private FtcVuforia vuforia;
 
     @Override
     public void runOpMode() throws InterruptedException {
         TouchSensor touchSensor;
         touchSensor = hardwareMap.touchSensor.get("touch");
-        hardware = new SoftwareBotHardware(this);
+        hardware = new MainBotHardware(this);
         vuforia = new FtcVuforia(R.id.cameraMonitorViewId, VuforiaLocalizer.CameraDirection.FRONT);
         vuforia.setTargets(FtcVuforia.locationMatrix(0, 0, -90, 15 * FtcVuforia.MM_PER_INCH,
                 (float) -14.5 * FtcVuforia.MM_PER_INCH, 0));
@@ -54,7 +56,7 @@ public class VuforiaBeaconScore2 extends RedBlueOpMode {
         // Drive sideways until we get a position from the targets
         while (vuforia.getRobotPosition() == null) {
             logPositionData(vuforia);
-            driveBackLeftDiagonal(0.30f);
+            driveBackLeftDiagonal(0.50f); // doubled
             idle();
         }
         telemetry.log().add("Found target, stopping");
@@ -66,42 +68,16 @@ public class VuforiaBeaconScore2 extends RedBlueOpMode {
         ///////////////////////////////
         //NATHAN B CHANGED 680 to 570//
         ///////////////////////////////
-        driveToTarget(1350, 0.5F); //580, 1318
+        driveToTarget(1350/*, 0.5F*/); //580, 1318
         hardware.stopAllMotors();
 
-        //hardware.getUtilities().sideLineFollow();
+        sleep(500);
 
+        pushBeacon(touchSensor);
 
+        driveToSecondBeacon();
 
-        /*
-        Trials:
-
-
-         */
-
-        /*sleep(500);
-
-        hardware.getLightSensor().enableLed(true);
-        hardware.getUtilities().sideLineFollow();
-        hardware.stopAllMotors();
-
-        ////////////////////////
-        //ADDED BEACON SCORING//
-        ////////////////////////
-
-
-        if(teamColor == TeamColor.BLUE)
-            hardware.getUtilities().detectBeaconColorAndAdjustBlue();
-        if(teamColor == TeamColor.RED)
-            hardware.getUtilities().detectBeaconColorAndAdjustRed();
-
-        while (!touchSensor.isPressed()) {
-            this.hardware.getFrontLeftMotor().setPower(0.4);
-            this.hardware.getFrontRightMotor().setPower(-0.4);
-            this.hardware.getBackLeftMotor().setPower(-0.4);
-            this.hardware.getBackRightMotor().setPower(0.4);
-            idle();
-        }*/
+        pushBeacon(touchSensor);
 
         while (opModeIsActive())
             idle();
@@ -136,7 +112,7 @@ public class VuforiaBeaconScore2 extends RedBlueOpMode {
         }
     }
 
-    private void driveToTarget(float targetY, float motorPower) throws InterruptedException {
+    private void driveToTarget(float targetY/*, float motorPower*/) throws InterruptedException {
         float[] robotPosition = vuforia.getRobotPosition();
 
         float frontLeftMotorPower = 0;
@@ -149,19 +125,22 @@ public class VuforiaBeaconScore2 extends RedBlueOpMode {
         float multiplierY;
         if (robotPosition == null)
             return;
-        while (hardware.getLightSensor().getLightDetected() < 0.4) { // TODO DEBUG
+
+        hardware.getLightSensor().enableLed(true);
+
+        while (hardware.getLightSensor().getLightDetected() < 0.4) {
             robotPosition = vuforia.getRobotPosition();
             logPositionData(vuforia);
 
 
-            frontLeftMotorPower = -0.05F;
-            frontRightMotorPower = -0.05F;
-            backLeftMotorPower = -0.05F;
-            backRightMotorPower = -0.05F;
+            frontLeftMotorPower = -0.1F;
+            frontRightMotorPower = -0.1F;
+            backLeftMotorPower = -0.1F;
+            backRightMotorPower = -0.1F;
 
 
             deltaY = Math.abs(targetY - robotPosition[1]);
-            multiplierY = Range.clip(deltaY / 750, 0.08F, 0.15F);
+            multiplierY = Range.clip(deltaY / 750, 0.1F, 0.2F);
             if (Math.abs(targetY - robotPosition[1]) > 25) {
                 if (robotPosition[1] < targetY) {
                     frontLeftMotorPower -= multiplierY;
@@ -187,6 +166,8 @@ public class VuforiaBeaconScore2 extends RedBlueOpMode {
             telemetry.addData("back left", backLeftMotorPower);
             telemetry.addData("back right", backRightMotorPower);
 
+            telemetry.addData("light sensor", hardware.getLightSensor().getLightDetected());
+
             idle();
         }
     }
@@ -198,17 +179,18 @@ public class VuforiaBeaconScore2 extends RedBlueOpMode {
         hardware.getBackRightMotor().setPower(motorPower);
     }
 
-    private void driveBackLeftDiagonal(float motorPower) {
+    private void driveBackLeftDiagonal(float motorPower) throws InterruptedException {
         hardware.getFrontLeftMotor().setPower(-motorPower);
         hardware.getFrontRightMotor().setPower(0);
         hardware.getBackLeftMotor().setPower(0);
         hardware.getBackRightMotor().setPower(-motorPower);
+        idle();
     }
 
-    private float scalePower(float power, float target, float actual){
+    private float scalePower(float power, float target, float actual) {
         float delta = target - actual;
         float newPower = (float) (power * (delta * 0.5));
-        telemetry.addData("scaledPower",newPower);
+        telemetry.addData("scaledPower", newPower);
         telemetry.addData("DeltaPosition", newPower);
         telemetry.update();
         return Range.clip(newPower, -power, power);
@@ -241,5 +223,45 @@ public class VuforiaBeaconScore2 extends RedBlueOpMode {
             idle();
         }
         hardware.stopAllMotors();
+    }
+
+    private void pushBeacon(TouchSensor touchSensor) throws InterruptedException{
+        hardware.getUtilities().sideLineFollow();
+
+        if (teamColor == TeamColor.BLUE)
+            hardware.getUtilities().detectBeaconColorAndAdjustBlue();
+        if (teamColor == TeamColor.RED)
+            hardware.getUtilities().detectBeaconColorAndAdjustRed();
+
+        while (!touchSensor.isPressed()) {
+            this.hardware.getFrontLeftMotor().setPower(-0.2);
+            this.hardware.getFrontRightMotor().setPower(0.2);
+            this.hardware.getBackLeftMotor().setPower(0.2);
+            this.hardware.getBackRightMotor().setPower(-0.2);
+            idle();
+        }
+        hardware.stopAllMotors();
+    }
+
+    private void driveToSecondBeacon() throws InterruptedException {
+        if (teamColor == TeamColor.BLUE)
+            hardware.getUtilities().driveForward(-2500, 0.8);
+
+        if (teamColor == TeamColor.RED)
+            hardware.getUtilities().driveForward(2500, 0.8);
+
+        if (teamColor == TeamColor.BLUE) {
+            while (hardware.getLightSensor().getLightDetected() < 0.4) {
+                hardware.getUtilities().setAllMotors(-0.2);
+                idle();
+            }
+        }
+
+        if (teamColor == TeamColor.RED) {
+            while (hardware.getLightSensor().getLightDetected() < 0.4) {
+                hardware.getUtilities().setAllMotors(0.2);
+                idle();
+            }
+        }
     }
 }

@@ -190,19 +190,19 @@ public class Utilities {
         hardware.stopAllMotors();
     }
 
-    public void sideLineFollow() throws InterruptedException{
+    public void sideLineFollow() throws InterruptedException {
         while((hardware.getColorSensor().red() <= 1) && hardware.getColorSensor().blue() <= 1) {
 
             if(hardware.getLightSensor().getLightDetected() < 0.4) {
-                hardware.getFrontLeftMotor().setPower(-0.1+0.05);
-                hardware.getFrontRightMotor().setPower(0.1);
-                hardware.getBackLeftMotor().setPower(0.1+0.05);
-                hardware.getBackRightMotor().setPower(-0.1);
+                hardware.getFrontLeftMotor().setPower(-0.08+0.04);
+                hardware.getFrontRightMotor().setPower(0.08);
+                hardware.getBackLeftMotor().setPower(0.08+0.04);
+                hardware.getBackRightMotor().setPower(-0.08);
             } else {
-                hardware.getFrontLeftMotor().setPower(-0.1-0.05);
-                hardware.getFrontRightMotor().setPower(0.1);
-                hardware.getBackLeftMotor().setPower(0.1-0.05);
-                hardware.getBackRightMotor().setPower(-0.1);
+                hardware.getFrontLeftMotor().setPower(-0.08-0.04);
+                hardware.getFrontRightMotor().setPower(0.08);
+                hardware.getBackLeftMotor().setPower(0.08-0.04);
+                hardware.getBackRightMotor().setPower(-0.08);
             }
 
             this.parent.telemetry.addData("light", hardware.getLightSensor().getLightDetected());
@@ -212,6 +212,8 @@ public class Utilities {
 
             idle();
         }
+
+        hardware.stopAllMotors();
     }
     
     public void idle() throws InterruptedException {
@@ -229,7 +231,7 @@ public class Utilities {
             //sleep(500);
 
 
-            driveForward(-300, 0.4); // doubled
+            driveForward(-300, 0.4);
         }
         else {
             //go right
@@ -240,7 +242,7 @@ public class Utilities {
 
         }
 
-        hardware.getUtilities().strafe(-850, 0.4); // doubled
+        hardware.getUtilities().strafe(-400, 0.4);
     }
 
     public void detectBeaconColorAndAdjustRed() throws InterruptedException {
@@ -261,10 +263,10 @@ public class Utilities {
             parent.telemetry.update();
             //sleep(500);
 
-            driveForward(-300, 0.4); // doubled
+            driveForward(-300, 0.4);
 
         }
 
-        hardware.getUtilities().strafe(-850, 0.4); // doubled
+        hardware.getUtilities().strafe(-400, 0.4);
     }
 }
