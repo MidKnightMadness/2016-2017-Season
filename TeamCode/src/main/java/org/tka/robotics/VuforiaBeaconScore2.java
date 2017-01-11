@@ -27,8 +27,13 @@ public class VuforiaBeaconScore2 extends RedBlueOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        TouchSensor touchSensor;
-        touchSensor = hardwareMap.touchSensor.get("touch");
+        TouchSensor touchSensor1;
+        TouchSensor touchSensor2;
+        touchSensor1 = hardwareMap.touchSensor.get("touch1");
+        touchSensor2 = hardwareMap.touchSensor.get("touch2");
+
+        // TODO add touch sensors to RobotHardware
+
         hardware = new MainBotHardware(this);
         vuforia = new FtcVuforia(R.id.cameraMonitorViewId, VuforiaLocalizer.CameraDirection.FRONT);
         vuforia.setTargets(FtcVuforia.locationMatrix(0, 0, -90, 15 * FtcVuforia.MM_PER_INCH,
@@ -73,11 +78,15 @@ public class VuforiaBeaconScore2 extends RedBlueOpMode {
 
         sleep(500);
 
-        pushBeacon(touchSensor);
+        pushBeacon(touchSensor1, touchSensor2);
 
+        // add backup
+        /*
         driveToSecondBeacon();
 
-        pushBeacon(touchSensor);
+        pushBeacon(touchSensor1, touchSensor2);
+
+        */
 
         while (opModeIsActive())
             idle();
@@ -225,7 +234,7 @@ public class VuforiaBeaconScore2 extends RedBlueOpMode {
         hardware.stopAllMotors();
     }
 
-    private void pushBeacon(TouchSensor touchSensor) throws InterruptedException{
+    private void pushBeacon(TouchSensor touchSensor1, TouchSensor touchSensor2) throws InterruptedException{
         hardware.getUtilities().sideLineFollow();
 
         if (teamColor == TeamColor.BLUE)
@@ -233,13 +242,17 @@ public class VuforiaBeaconScore2 extends RedBlueOpMode {
         if (teamColor == TeamColor.RED)
             hardware.getUtilities().detectBeaconColorAndAdjustRed();
 
-        while (!touchSensor.isPressed()) {
+        while (!(touchSensor1.isPressed()) || touchSensor2.isPressed()) {
             this.hardware.getFrontLeftMotor().setPower(-0.2);
             this.hardware.getFrontRightMotor().setPower(0.2);
             this.hardware.getBackLeftMotor().setPower(0.2);
             this.hardware.getBackRightMotor().setPower(-0.2);
+            telemetry.addData("touch1", touchSensor1.isPressed());
+            telemetry.addData("touch2", touchSensor2.isPressed());
             idle();
         }
+
+        hardware.getUtilities().strafe(2000, 0.3);
         hardware.stopAllMotors();
     }
 
