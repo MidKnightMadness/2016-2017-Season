@@ -11,6 +11,11 @@ import org.tka.robotics.utils.hardware.MainBotHardware;
 @TeleOp(name = "Main Bot Teleop")
 public class MainBotTeleop extends OpMode {
 
+    private static final int FRONT_LEFT = 0;
+    private static final int FRONT_RIGHT = 1;
+    private static final int BACK_LEFT = 2;
+    private static final int BACK_RIGHT = 3;
+
     /**
      * The intake motor for collecting particles off the field
      */
@@ -27,7 +32,6 @@ public class MainBotTeleop extends OpMode {
 
     private boolean intakeToggle = false;
     private boolean intakeTogglePressed = true;
-
 
 
     @Override
@@ -116,14 +120,11 @@ public class MainBotTeleop extends OpMode {
 
         float modX = -(joyLX + joyRX) / 2;
         telemetry.addData("modX: ", modX);
-        // front_left
-        motorPower[0] = modX + joyLY;
-        // front_right
-        motorPower[1] = modX - joyRY;
-        // back_left
-        motorPower[2] = modX - joyLY;
-        // back_right
-        motorPower[3] = modX + joyRY;
+        
+        motorPower[FRONT_LEFT] = modX + joyLY;
+        motorPower[FRONT_RIGHT] = modX - joyRY;
+        motorPower[BACK_LEFT] = modX - joyLY;
+        motorPower[BACK_RIGHT] = modX + joyRY;
 
         // limit range
         for (int i = 0; i < motorPower.length; i++) {
