@@ -52,8 +52,14 @@ public class MainBotTeleop extends OpMode {
 
     @Override
     public void loop() {
-        tankDrive(scaleInput(-gamepad1.left_stick_y), scaleInput(-gamepad1.right_stick_y));
-        omniDrive();
+        double[] motors = calculateMotorValues(gamepad1.left_stick_x, gamepad1.left_stick_y,
+                gamepad1.right_stick_x, gamepad1.right_stick_y);
+
+        hardware.getFrontLeftMotor().setPower(motors[FRONT_LEFT]);
+        hardware.getFrontRightMotor().setPower(motors[FRONT_RIGHT]);
+        hardware.getBackLeftMotor().setPower(motors[BACK_LEFT]);
+        hardware.getBackRightMotor().setPower(motors[BACK_RIGHT]);
+
 
         if (gamepad1.x)
             intake.setPower(-1);
@@ -110,7 +116,6 @@ public class MainBotTeleop extends OpMode {
         }
     }
 
-    // TODO: Broken, fix soon™
     private double[] calculateMotorValues(float joyLX, float joyLY, float joyRX, float joyRY) {
         double[] motorPower = new double[]{0, 0, 0, 0};
         joyRY = scaleInput(joyRY);
@@ -120,10 +125,10 @@ public class MainBotTeleop extends OpMode {
 
         float modX = -(joyLX + joyRX) / 2;
         telemetry.addData("modX: ", modX);
-        
+
         motorPower[FRONT_LEFT] = modX + joyLY;
-        motorPower[FRONT_RIGHT] = modX - joyRY;
-        motorPower[BACK_LEFT] = modX - joyLY;
+        motorPower[FRONT_RIGHT] = joyRY - modX;
+        motorPower[BACK_LEFT] = joyLY - modX;
         motorPower[BACK_RIGHT] = modX + joyRY;
 
         // limit range
