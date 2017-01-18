@@ -34,6 +34,17 @@ public class FtcVuforiaTest extends OpMode {
             String position = String.format(Locale.ENGLISH, "%.2f, %.2f, %.2f", pos[0], pos[1], pos[2]);
             telemetry.addData("Robot Pos: ", position);
         }
+        float[] rot = vuforia.getRobotOrientation();
+        if(rot == null){
+            telemetry.addData("Robot Rot", "Unknown");
+        } else {
+            String rotation = String.format(Locale.ENGLISH, "%.2f, %,2f %.2f", rot[0], rot[1], rot[2]);
+            telemetry.addData("Robot Rot", rotation);
+        }
+        if(vuforia.getLastKnownLocation() != null)
+        telemetry.addData("Location", vuforia.getLastKnownLocation().formatAsTransform());
+        else
+        telemetry.addData("Location", "Unknown");
         telemetry.update();
     }
 }

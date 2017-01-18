@@ -2,14 +2,7 @@ package org.tka.robotics.utils.vuforia;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
-import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
+import org.firstinspires.ftc.robotcore.external.navigation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -155,6 +148,33 @@ public class FtcVuforia {
 
 
         return lastKnownLocation.getTranslation().getData();
+    }
+
+    /**
+     * Gets the last known robot location
+     *
+     * @return The last known location
+     */
+    public OpenGLMatrix getLastKnownLocation() {
+        return lastKnownLocation;
+    }
+
+    /**
+     * Gets the robot's rotation on the field
+     *
+     * @return A float array with the following indexes:
+     * <ul>
+     * <li><strong>0: </strong>X rotation (degrees)</li>
+     * <li><strong>1: </strong>Y rotation (degrees)</li>
+     * <li><strong>2: </strong>Z rotation (degrees)</li>
+     * </ul>
+     */
+    public float[] getRobotOrientation() {
+        if (lastKnownLocation == null)
+            return null;
+
+        Orientation orientation = Orientation.getOrientation(lastKnownLocation, AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES);
+        return new float[]{orientation.firstAngle, orientation.secondAngle, orientation.thirdAngle};
     }
 
     /**
