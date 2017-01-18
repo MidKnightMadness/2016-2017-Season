@@ -4,32 +4,33 @@ import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.tka.robotics.utils.hardware.MainBotHardware;
 import org.tka.robotics.utils.hardware.SoftwareBotHardware;
 
 @Autonomous(name = "Gyro Test", group = "Sensor")
 public class AutonomousGyroTurnInfoSampleExampleToMakeSureItWorksTest extends LinearOpMode {
 
-    SoftwareBotHardware robotHardware;
-    ModernRoboticsI2cGyro gyro;
+    MainBotHardware robotHardware;
+    //ModernRoboticsI2cGyro gyro;
     int heading = 0;
 
     @Override
     public void runOpMode() throws InterruptedException {
 
-        robotHardware = new SoftwareBotHardware(this);
-        gyro = (ModernRoboticsI2cGyro)hardwareMap.gyroSensor.get("gyro");
+        robotHardware = new MainBotHardware(this);
+        //gyro = (ModernRoboticsI2cGyro)hardwareMap.gyroSensor.get("gyro");
 
         // start calibrating the gyro.
         telemetry.addData(">", "Gyro Calibrating. Do Not move!");
         telemetry.update();
-        gyro.calibrate();
+        robotHardware.getGyroSensor().calibrate();
 
-        while (gyro.isCalibrating())  {
+        while (robotHardware.getGyroSensor().isCalibrating())  {
             Thread.sleep(50);
             idle();
         }
 
-        telemetry.addData(">", "Gyro Calibrated.  Press Start.");
+        telemetry.addData(">", "Gyro Calibrated. Press Start.");
         telemetry.update();
 
         waitForStart();
@@ -86,7 +87,7 @@ public class AutonomousGyroTurnInfoSampleExampleToMakeSureItWorksTest extends Li
             turn(power);
 
             while(heading < targetAngle - offset) {
-                heading = -gyro.getIntegratedZValue();
+                heading = -robotHardware.getGyroSensor().getIntegratedZValue();
                 percentToTarget = (heading - initialHeading)/(targetAngle - initialHeading) * 100;
 
                 /*
@@ -106,7 +107,7 @@ public class AutonomousGyroTurnInfoSampleExampleToMakeSureItWorksTest extends Li
             turn(-power);
 
             while(heading > targetAngle + offset) {
-                heading = -gyro.getIntegratedZValue();
+                heading = -robotHardware.getGyroSensor().getIntegratedZValue();
                 percentToTarget = (heading - initialHeading)/(targetAngle - initialHeading) * 100;
 
                 /*
