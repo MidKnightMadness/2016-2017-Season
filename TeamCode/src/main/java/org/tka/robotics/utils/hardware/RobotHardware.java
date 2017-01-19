@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.LightSensor;
 
 import org.firstinspires.ftc.robotcore.external.Func;
+import org.tka.robotics.utils.BallScorer;
 import org.tka.robotics.utils.Utilities;
 
 import java.util.Map;
@@ -53,6 +54,8 @@ public abstract class RobotHardware {
     public abstract LightSensor getLightSensor();
 
     public abstract ColorSensor getColorSensor();
+
+    public abstract BallScorer getBallScorer();
 
     public void stopAllMotors(){
         for(DcMotor m :hardwareMap.dcMotor){

@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.GyroSensor;
 import com.qualcomm.robotcore.hardware.LightSensor;
 
+import org.tka.robotics.utils.BallScorer;
 import org.tka.robotics.utils.Utilities;
 
 public class MainBotHardware extends RobotHardware{
@@ -15,6 +16,8 @@ public class MainBotHardware extends RobotHardware{
     private DcMotor front_left, front_right, back_left, back_right;
 
     private final Utilities utilities;
+
+    private BallScorer ballScorer;
 
     public MainBotHardware(OpMode opmode) {
         super(opmode);
@@ -35,6 +38,9 @@ public class MainBotHardware extends RobotHardware{
         //gyro = (ModernRoboticsI2cGyro)hardwareMap.gyroSensor.get("gyro");
         lightSensor = hardwareMap.lightSensor.get("light_sensor");
         colorSensor = hardwareMap.colorSensor.get("color_sensor");
+
+        ballScorer = new BallScorer(parent,hardwareMap.dcMotor.get("ball_scorer_motor"),
+                hardwareMap.crservo.get("ball_scorer_servo"), hardwareMap.touchSensor.get("ball_scorer_sensor"));
 
         //front_left.setDirection(DcMotorSimple.Direction.REVERSE);
         //back_left.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -85,4 +91,9 @@ public class MainBotHardware extends RobotHardware{
 
     @Override
     public ColorSensor getColorSensor() { return colorSensor; }
+
+    @Override
+    public BallScorer getBallScorer() {
+        return ballScorer;
+    }
 }

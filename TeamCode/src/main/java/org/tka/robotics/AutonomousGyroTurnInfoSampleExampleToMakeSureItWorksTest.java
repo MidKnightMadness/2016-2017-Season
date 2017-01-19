@@ -1,11 +1,8 @@
 package org.tka.robotics;
 
-import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-
 import org.tka.robotics.utils.hardware.MainBotHardware;
-import org.tka.robotics.utils.hardware.SoftwareBotHardware;
 
 @Autonomous(name = "Gyro Test", group = "Sensor")
 public class AutonomousGyroTurnInfoSampleExampleToMakeSureItWorksTest extends LinearOpMode {
@@ -87,7 +84,7 @@ public class AutonomousGyroTurnInfoSampleExampleToMakeSureItWorksTest extends Li
             turn(power);
 
             while(heading < targetAngle - offset) {
-                heading = -robotHardware.getGyroSensor().getIntegratedZValue();
+//                heading = -robotHardware.getGyroSensor().getIntegratedZValue();
                 percentToTarget = (heading - initialHeading)/(targetAngle - initialHeading) * 100;
 
                 /*
@@ -107,7 +104,7 @@ public class AutonomousGyroTurnInfoSampleExampleToMakeSureItWorksTest extends Li
             turn(-power);
 
             while(heading > targetAngle + offset) {
-                heading = -robotHardware.getGyroSensor().getIntegratedZValue();
+//                heading = -robotHardware.getGyroSensor().getIntegratedZValue();
                 percentToTarget = (heading - initialHeading)/(targetAngle - initialHeading) * 100;
 
                 /*

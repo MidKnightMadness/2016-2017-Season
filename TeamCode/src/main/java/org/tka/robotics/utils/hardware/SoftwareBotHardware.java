@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.GyroSensor;
 import com.qualcomm.robotcore.hardware.LightSensor;
 
+import org.tka.robotics.utils.BallScorer;
 import org.tka.robotics.utils.Utilities;
 
 import java.util.Map;
@@ -107,6 +108,11 @@ public class SoftwareBotHardware extends RobotHardware{
 
     @Override
     public ColorSensor getColorSensor() { return colorSensor; }
+
+    @Override
+    public BallScorer getBallScorer() {
+        throw new UnsupportedOperationException("No ball scorer on software bot.");
+    }
 
     /**
      * Stops <b>all</b> motors on the robot
