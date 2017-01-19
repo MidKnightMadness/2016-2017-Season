@@ -5,6 +5,8 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
+import static org.tka.robotics.utils.BallScorer.State.RETRACTING;
+
 public class BallScorer implements Runnable {
 
 
@@ -13,7 +15,9 @@ public class BallScorer implements Runnable {
     private final TouchSensor touchSensor;
     private final OpMode opMode;
 
-    private State state = State.RETRACTING;
+    private State state = RETRACTING;
+
+    private long waitUntil = -1;
     private boolean running = true;
 
     public BallScorer(OpMode opMode, DcMotor motor, CRServo servo, TouchSensor touchSensor) {
@@ -46,9 +50,15 @@ public class BallScorer implements Runnable {
                 case FIRING:
                     if (!touchSensor.isPressed()) {
                         servo.setPower(0);
-                        state = State.RETRACTING;
+                        state = State.WAITING_FOR_FIRE;
+                        waitUntil = System.currentTimeMillis() + 250;
                     } else {
                         servo.setPower(1);
+                    }
+                    break;
+                case WAITING_FOR_FIRE:
+                    if(System.currentTimeMillis() > waitUntil){
+                        state = RETRACTING;
                     }
                     break;
                 case RETRACTING:
@@ -83,6 +93,7 @@ public class BallScorer implements Runnable {
     public enum State {
         WAITING,
         FIRING,
+        WAITING_FOR_FIRE,
         RETRACTING,
         EXTENDING;
     }
