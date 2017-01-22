@@ -19,6 +19,8 @@ public class MainBotHardware extends RobotHardware{
 
     private BallScorer ballScorer;
 
+    private Thread ballScorerThread;
+
     public MainBotHardware(OpMode opmode) {
         super(opmode);
         this.utilities = new Utilities(parent, this);
@@ -40,8 +42,13 @@ public class MainBotHardware extends RobotHardware{
         colorSensor = hardwareMap.colorSensor.get("color_sensor");
 
         // TODO: 1/21/2017 AW - Implement ball scorer
-        ballScorer = new BallScorer(parent,hardwareMap.dcMotor.get("ball_scorer_motor"),
-                hardwareMap.servo.get("ball_scorer_servo"), hardwareMap.touchSensor.get("ball_scorer_sensor"));
+        ballScorer = new BallScorer(parent, hardwareMap.dcMotor.get("pinball_motor"),
+                hardwareMap.servo.get("pinball_servo"), hardwareMap.touchSensor.get("pinball_touch"));
+
+        ballScorerThread = new Thread(ballScorer);
+        ballScorerThread.setName("BallScorer");
+        ballScorerThread.setDaemon(true);
+        ballScorerThread.start();
 
         //front_left.setDirection(DcMotorSimple.Direction.REVERSE);
         //back_left.setDirection(DcMotorSimple.Direction.REVERSE);
