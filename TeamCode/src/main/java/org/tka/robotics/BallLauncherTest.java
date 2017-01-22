@@ -14,8 +14,8 @@ public class BallLauncherTest extends OpMode {
 
     @Override
     public void init() {
-        scorer = new BallScorer(this, hardwareMap.dcMotor.get("motor"),
-                hardwareMap.crservo.get("servo"), hardwareMap.touchSensor.get("touch_sensor"));
+        scorer = new BallScorer(this, hardwareMap.dcMotor.get("pinball_motor"),
+                hardwareMap.servo.get("pinball_servo"), hardwareMap.touchSensor.get("pinball_touch"));
         ballScorerThread = new Thread(scorer);
         ballScorerThread.setDaemon(true);
         ballScorerThread.setName("BallScorerThread");
@@ -28,8 +28,8 @@ public class BallLauncherTest extends OpMode {
 
     @Override
     public void loop() {
-        if (gamepad1.x && scorer.getState() == BallScorer.State.WAITING) {
-            scorer.LAUNCHDATHING();
+        if (gamepad1.x) {
+            scorer.launch();
         }
         telemetry.addData("State", scorer.getState());
         telemetry.update();

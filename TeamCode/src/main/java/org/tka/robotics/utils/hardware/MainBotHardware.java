@@ -39,8 +39,9 @@ public class MainBotHardware extends RobotHardware{
         lightSensor = hardwareMap.lightSensor.get("light_sensor");
         colorSensor = hardwareMap.colorSensor.get("color_sensor");
 
+        // TODO: 1/21/2017 AW - Implement ball scorer
         ballScorer = new BallScorer(parent,hardwareMap.dcMotor.get("ball_scorer_motor"),
-                hardwareMap.crservo.get("ball_scorer_servo"), hardwareMap.touchSensor.get("ball_scorer_sensor"));
+                hardwareMap.servo.get("ball_scorer_servo"), hardwareMap.touchSensor.get("ball_scorer_sensor"));
 
         //front_left.setDirection(DcMotorSimple.Direction.REVERSE);
         //back_left.setDirection(DcMotorSimple.Direction.REVERSE);

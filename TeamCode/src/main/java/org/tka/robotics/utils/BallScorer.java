@@ -1,26 +1,30 @@
 package org.tka.robotics.utils;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
-import static org.tka.robotics.utils.BallScorer.State.RETRACTING;
+import static org.tka.robotics.utils.BallScorer.State.*;
 
 public class BallScorer implements Runnable {
 
+    private static final int ENCODER_EXTEND_POSITION = -4342;
+
 
     private final DcMotor motor;
-    private final CRServo servo;
+    private final Servo servo;
     private final TouchSensor touchSensor;
     private final OpMode opMode;
 
-    private State state = RETRACTING;
+    private State state = HOMING;
 
     private long waitUntil = -1;
     private boolean running = true;
 
-    public BallScorer(OpMode opMode, DcMotor motor, CRServo servo, TouchSensor touchSensor) {
+    private int targetPos = 0;
+
+    public BallScorer(OpMode opMode, DcMotor motor, Servo servo, TouchSensor touchSensor) {
         this.motor = motor;
         this.servo = servo;
         this.touchSensor = touchSensor;
@@ -31,7 +35,7 @@ public class BallScorer implements Runnable {
         return motor;
     }
 
-    public CRServo getServo() {
+    public Servo getServo() {
         return servo;
     }
 
@@ -39,25 +43,42 @@ public class BallScorer implements Runnable {
         return touchSensor;
     }
 
-    public void LAUNCHDATHING(){
-        state = State.FIRING;
+    public void launch() {
+        if(state == WAITING)
+            state = FIRING;
+    }
+
+    public void home(){
+        state = HOMING;
     }
 
     @Override
     public void run() {
         while (running) {
             switch (state) {
+                case HOMING:
+                    if (!touchSensor.isPressed()) {
+                        motor.setPower(1);
+                        servo.setPosition(0);
+                    } else {
+                        motor.setPower(0);
+                        DcMotor.RunMode lastMode = motor.getMode();
+                        motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                        motor.setMode(lastMode);
+                        state = RETRACTING;
+                    }
+                    break;
                 case FIRING:
                     if (!touchSensor.isPressed()) {
-                        servo.setPower(0);
+                        servo.setPosition(0);
                         state = State.WAITING_FOR_FIRE;
                         waitUntil = System.currentTimeMillis() + 250;
                     } else {
-                        servo.setPower(1);
+                        servo.setPosition(0.5);
                     }
                     break;
                 case WAITING_FOR_FIRE:
-                    if(System.currentTimeMillis() > waitUntil){
+                    if (System.currentTimeMillis() > waitUntil) {
                         state = RETRACTING;
                     }
                     break;
@@ -66,12 +87,24 @@ public class BallScorer implements Runnable {
                         motor.setPower(1);
                     } else {
                         motor.setPower(0);
-                        state = State.EXTENDING;
+                        state = State.RETRACTING_PHASE_2;
+                        targetPos = motor.getCurrentPosition() + 200;
+                    }
+                    break;
+                case RETRACTING_PHASE_2:
+                    if (motor.getCurrentPosition() >= targetPos) {
+                        motor.setPower(0);
+                        state = EXTENDING;
+                    } else {
+                        motor.setPower(1);
                     }
                     break;
                 case EXTENDING:
-                    if (motor.getCurrentPosition() < 10) {
-                        state = State.WAITING;
+                    if (motor.getCurrentPosition() < ENCODER_EXTEND_POSITION) {
+                        if (touchSensor.isPressed())
+                            state = WAITING;
+                        else
+                            state = RETRACTING;
                         motor.setPower(0);
                     } else {
                         motor.setPower(-1);
@@ -91,10 +124,12 @@ public class BallScorer implements Runnable {
     }
 
     public enum State {
+        HOMING,
         WAITING,
         FIRING,
         WAITING_FOR_FIRE,
         RETRACTING,
-        EXTENDING;
+        RETRACTING_PHASE_2,
+        EXTENDING
     }
 }
