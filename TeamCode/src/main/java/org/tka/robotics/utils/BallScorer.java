@@ -17,7 +17,7 @@ public class BallScorer implements Runnable {
     private final TouchSensor touchSensor;
     private final OpMode opMode;
 
-    private State state = HOMING;
+    private State state = HOME_FIRING;
 
     private long waitUntil = -1;
     private boolean running = true;
@@ -49,13 +49,25 @@ public class BallScorer implements Runnable {
     }
 
     public void home(){
-        state = HOMING;
+        state = HOME_FIRING;
     }
 
     @Override
     public void run() {
         while (running) {
             switch (state) {
+                case HOME_FIRING:
+                    servo.setPosition(0.5);
+                    waitUntil = System.currentTimeMillis() + 250;
+                    state = HOME_FIRING_WAITING;
+                    break;
+                case HOME_FIRING_WAITING:
+                    if(System.currentTimeMillis() > waitUntil){
+                        waitUntil = -1;
+                        state = HOMING;
+                        servo.setPosition(0);
+                    }
+                    break;
                 case HOMING:
                     if (!touchSensor.isPressed()) {
                         motor.setPower(1);
@@ -124,6 +136,8 @@ public class BallScorer implements Runnable {
     }
 
     public enum State {
+        HOME_FIRING,
+        HOME_FIRING_WAITING,
         HOMING,
         WAITING,
         FIRING,
