@@ -1,5 +1,6 @@
 package org.tka.robotics.utils;
 
+import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -15,7 +16,7 @@ public class Utilities {
         this.parent = parent;
     }
 
-    public void turn(double power) {
+    public void turnRight(double power) {
         this.hardware.getFrontLeftMotor().setPower(power);
         this.hardware.getBackLeftMotor().setPower(power);
         this.hardware.getFrontRightMotor().setPower(-power);
@@ -224,21 +225,20 @@ public class Utilities {
 
     public void detectBeaconColorAndAdjustBlue() throws InterruptedException {
         if(hardware.getColorSensor().blue() > hardware.getColorSensor().red()) {
-            //go forward
+            //go backward
 
             parent.telemetry.addData("", "blue > red");
             parent.telemetry.update();
-            //sleep(500);
-
 
             driveForward(-300, 0.4);
         }
         else {
-            //go right
+            //go forward
 
             parent.telemetry.addData("", "red > blue");
             parent.telemetry.update();
-            //sleep(500);
+
+            driveForward(300, 0.4);
 
         }
 
@@ -253,11 +253,13 @@ public class Utilities {
             parent.telemetry.update();
             //sleep(500);
 
+            driveForward(300, 0.4);
+
 
 
         }
         else {
-            //go right
+            //go backward
 
             parent.telemetry.addData("", "red > blue");
             parent.telemetry.update();
@@ -268,5 +270,13 @@ public class Utilities {
         }
 
         hardware.getUtilities().strafe(-400, 0.4);
+    }
+
+    public void gyroReadjust(float target, ModernRoboticsI2cGyro gyroSensor) {
+        while(Math.abs(target - gyroSensor.getIntegratedZValue()) > 2) {
+            turnRight(0.1);
+            this.parent.telemetry.addData("target", target);
+            this.parent.telemetry.addData("gyroSensor", gyroSensor.getIntegratedZValue());
+        }
     }
 }

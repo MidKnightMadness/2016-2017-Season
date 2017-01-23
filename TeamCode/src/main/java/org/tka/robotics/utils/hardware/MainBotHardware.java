@@ -26,7 +26,7 @@ public class MainBotHardware extends RobotHardware{
         this.utilities = new Utilities(parent, this);
     }
 
-    ModernRoboticsI2cGyro gyro;
+    ModernRoboticsI2cGyro gyroSensor;
     LightSensor lightSensor;
     ColorSensor colorSensor;
 
@@ -37,9 +37,10 @@ public class MainBotHardware extends RobotHardware{
         back_left = hardwareMap.dcMotor.get("back_left");
         back_right = hardwareMap.dcMotor.get("back_right");
 
-        //gyro = (ModernRoboticsI2cGyro)hardwareMap.gyroSensor.get("gyro");
+        gyroSensor = (ModernRoboticsI2cGyro)hardwareMap.gyroSensor.get("gyro_sensor");
         lightSensor = hardwareMap.lightSensor.get("light_sensor");
         colorSensor = hardwareMap.colorSensor.get("color_sensor");
+
 
         // TODO: 1/21/2017 AW - Implement ball scorer
         ballScorer = new BallScorer(parent, hardwareMap.dcMotor.get("pinball_motor"),
@@ -92,7 +93,7 @@ public class MainBotHardware extends RobotHardware{
     }
 
     @Override
-    public GyroSensor getGyroSensor() { return null; }
+    public ModernRoboticsI2cGyro getGyroSensor() { return gyroSensor; }
 
     @Override
     public LightSensor getLightSensor() { return lightSensor; }

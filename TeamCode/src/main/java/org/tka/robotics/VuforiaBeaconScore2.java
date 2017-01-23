@@ -11,6 +11,7 @@ import org.firstinspires.ftc.teamcode.R;
 import org.tka.robotics.opmode.RedBlueAutonomous;
 import org.tka.robotics.opmode.RedBlueOpMode;
 import org.tka.robotics.opmode.TeamColor;
+import org.tka.robotics.utils.BallScorer;
 import org.tka.robotics.utils.hardware.MainBotHardware;
 import org.tka.robotics.utils.hardware.SoftwareBotHardware;
 import org.tka.robotics.utils.vuforia.FtcVuforia;
@@ -24,6 +25,7 @@ public class VuforiaBeaconScore2 extends RedBlueOpMode {
     private static final float MOTOR_POWER = 0.25F;
     private MainBotHardware hardware;
     private FtcVuforia vuforia;
+    private static float INITIAL_HEADING;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -43,6 +45,20 @@ public class VuforiaBeaconScore2 extends RedBlueOpMode {
         telemetry.log().setCapacity(10);
         telemetry.log().setDisplayOrder(Telemetry.Log.DisplayOrder.NEWEST_FIRST);
 
+        telemetry.addData(">", "Gyro Calibrating. Do Not move!");
+        telemetry.update();
+        hardware.getGyroSensor().calibrate();
+
+        while (hardware.getGyroSensor().isCalibrating())  {
+            Thread.sleep(50);
+            idle();
+        }
+
+        INITIAL_HEADING = hardware.getGyroSensor().getIntegratedZValue();
+
+        telemetry.addData(">", "Gyro Calibrated.  Press Start.");
+        telemetry.update();
+
         double lowLight = 0;
 
         for (int i = 0; i < 10; i++) {
@@ -54,6 +70,7 @@ public class VuforiaBeaconScore2 extends RedBlueOpMode {
         telemetry.log().add("Initialized and ready!");
 
         waitForStart();
+
 
         vuforia.setTrackingEnabled(true);
 
@@ -70,23 +87,31 @@ public class VuforiaBeaconScore2 extends RedBlueOpMode {
         sleep(500);
 
 
+
         ///////////////////////////////
         //NATHAN B CHANGED 680 to 570//
         ///////////////////////////////
+
+
         driveToTarget(1350/*, 0.5F*/); //580, 1318
         hardware.stopAllMotors();
 
+        //hardware.getBallScorer().launch();
+
         sleep(500);
+
+
+        //hardware.getUtilities().gyroReadjust(INITIAL_HEADING, hardware.getGyroSensor());
+
 
         pushBeacon(touchSensor1, touchSensor2);
 
-        // add backup
-        /*
+
         driveToSecondBeacon();
 
         pushBeacon(touchSensor1, touchSensor2);
 
-        */
+
 
         while (opModeIsActive())
             idle();
@@ -242,15 +267,25 @@ public class VuforiaBeaconScore2 extends RedBlueOpMode {
         if (teamColor == TeamColor.RED)
             hardware.getUtilities().detectBeaconColorAndAdjustRed();
 
-        while (!(touchSensor1.isPressed()) || touchSensor2.isPressed()) {
+        boolean eitherTouchPressed = touchSensor1.isPressed() || touchSensor2.isPressed();
+
+
+        this.resetStartTime();
+
+        // run until the wall until either one of touch sensors is pressed or the timer reaches 5 seconds
+
+        while (this.getRuntime() < 1.5) {
             this.hardware.getFrontLeftMotor().setPower(-0.2);
             this.hardware.getFrontRightMotor().setPower(0.2);
             this.hardware.getBackLeftMotor().setPower(0.2);
             this.hardware.getBackRightMotor().setPower(-0.2);
             telemetry.addData("touch1", touchSensor1.isPressed());
             telemetry.addData("touch2", touchSensor2.isPressed());
+            telemetry.addData("timer", this.getRuntime());
             idle();
         }
+
+        hardware.stopAllMotors();
 
         hardware.getUtilities().strafe(2000, 0.3);
         hardware.stopAllMotors();
