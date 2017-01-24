@@ -2,10 +2,12 @@ package org.tka.robotics;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
+import org.firstinspires.ftc.robotcore.external.Func;
+import org.tka.robotics.utils.BallScorer;
 import org.tka.robotics.utils.hardware.MainBotHardware;
 
 @TeleOp(name = "Main Bot Teleop")
@@ -16,6 +18,9 @@ public class MainBotTeleop extends OpMode {
     private static final int BACK_LEFT = 2;
     private static final int BACK_RIGHT = 3;
 
+    private static final double ELEVATOR_CLOSE = 0;
+    private static final double ELEVATOR_OPEN = 1;
+
     /**
      * The intake motor for collecting particles off the field
      */
@@ -23,7 +28,7 @@ public class MainBotTeleop extends OpMode {
 
     private DcMotor elevator;
 
-    //private CRServo elevatorRetainer;
+    private Servo elevatorRetainer;
 
     /**
      * The main robot hardware
@@ -36,11 +41,19 @@ public class MainBotTeleop extends OpMode {
 
     @Override
     public void init() {
+        telemetry.addData("Ball Launcher", new Func<String>() {
+            @Override
+            public String value() {
+                if(hardware == null)
+                    return "Unknown";
+                return hardware.getBallScorer().getState() == BallScorer.State.WAITING? "Ready" : "Not Ready";
+            }
+        });
         hardware = new MainBotHardware(this);
         intake = hardwareMap.dcMotor.get("intake");
         elevator = hardwareMap.dcMotor.get("elevator");
 
-        //elevatorRetainer = hardwareMap.crservo.get("elevator_retainer");
+        elevatorRetainer = hardwareMap.servo.get("elevator_retainer");
 
         elevator.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
@@ -49,6 +62,9 @@ public class MainBotTeleop extends OpMode {
         intake.setDirection(DcMotorSimple.Direction.REVERSE);
 
         elevator.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        elevatorRetainer.setDirection(Servo.Direction.REVERSE);
+        elevatorRetainer.setPosition(ELEVATOR_CLOSE);
 
     }
 
@@ -63,58 +79,40 @@ public class MainBotTeleop extends OpMode {
         hardware.getBackRightMotor().setPower(motors[BACK_RIGHT]);
 
 
-        if (gamepad1.x)
+        // Intake
+        if (gamepad1.left_trigger > 0.5 || gamepad2.x)
+            // Out
             intake.setPower(-1);
-        else if (gamepad1.a)
+        else if (gamepad1.right_trigger > 0.5 || gamepad2.a)
+            // In
             intake.setPower(1);
         else
             intake.setPower(0);
 
         updateElevator();
-        //elevatorClamp();
+        elevatorClamp();
+
+        if(gamepad1.x || (gamepad2.start || gamepad2.back || gamepad2.left_bumper || gamepad2.right_bumper)){
+            hardware.getBallScorer().launch();
+        }
     }
 
-    private static final int ELEVATOR_UP_POSITION = 18000; // was 16000
-
-//    private void elevatorClamp() {
-//        if (gamepad1.left_bumper) {
-//            elevatorRetainer.setPower(1);
-//        } else if (gamepad1.left_trigger > 0.5) {
-//            elevatorRetainer.setPower(-1);
-//        } else {
-//            elevatorRetainer.setPower(0);
-//        }
-//    }
+    private void elevatorClamp() {
+        if (gamepad1.b || gamepad2.dpad_right) {
+            elevatorRetainer.setPosition(ELEVATOR_OPEN);
+        } else if (gamepad1.y || gamepad2.dpad_left) {
+            elevatorRetainer.setPosition(ELEVATOR_CLOSE);
+        }
+    }
 
     private void updateElevator() {
-        if (gamepad1.b) {
-            elevator.setPower(1);
-            elevator.setTargetPosition(0);
-        }
-        if (gamepad1.y) {
-            elevator.setPower(1);
-            elevator.setTargetPosition(ELEVATOR_UP_POSITION);
-        }
-        if (gamepad1.right_bumper || gamepad2.right_bumper) {
+        if (gamepad1.right_bumper || gamepad2.dpad_up) {
             elevator.setPower(1);
             elevator.setTargetPosition(elevator.getCurrentPosition() + 100);
         }
-        if (gamepad1.right_trigger > 0.5 || gamepad2.right_trigger > 0.5) {
+        if (gamepad1.left_bumper || gamepad2.dpad_down) {
             elevator.setPower(1);
             elevator.setTargetPosition(elevator.getCurrentPosition() - 100);
-        }
-
-        if (gamepad2.y) {
-            elevator.setPower(1);
-            elevator.setTargetPosition(ELEVATOR_UP_POSITION);
-        }
-        if (gamepad2.b) {
-            elevator.setPower(1);
-            elevator.setTargetPosition(0);
-        }
-        if (gamepad2.x) {
-            elevator.setPower(1);
-            elevator.setTargetPosition(600);
         }
     }
 
