@@ -26,6 +26,7 @@ public class VuforiaBeaconScore2 extends RedBlueOpMode {
     private MainBotHardware hardware;
     private FtcVuforia vuforia;
     private static float INITIAL_HEADING;
+    int heading = 0;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -74,6 +75,11 @@ public class VuforiaBeaconScore2 extends RedBlueOpMode {
 
         vuforia.setTrackingEnabled(true);
 
+        hardware.getUtilities().strafe(3250, 0.4);
+        launchBall();
+        hardware.getUtilities().turnDegrees(0.4, -90);
+
+
         telemetry.log().add("Starting driving until we find a location from the target");
         // Drive sideways until we get a position from the targets
         while (vuforia.getRobotPosition() == null) {
@@ -84,7 +90,6 @@ public class VuforiaBeaconScore2 extends RedBlueOpMode {
         telemetry.log().add("Found target, stopping");
         hardware.stopAllMotors();
 
-        sleep(500);
 
 
 
@@ -93,10 +98,10 @@ public class VuforiaBeaconScore2 extends RedBlueOpMode {
         ///////////////////////////////
 
 
+
+
         driveToTarget(1350/*, 0.5F*/); //580, 1318
         hardware.stopAllMotors();
-
-        //hardware.getBallScorer().launch();
 
         sleep(500);
 
@@ -106,7 +111,6 @@ public class VuforiaBeaconScore2 extends RedBlueOpMode {
 
         pushBeacon(touchSensor1, touchSensor2);
 
-
         driveToSecondBeacon();
 
         pushBeacon(touchSensor1, touchSensor2);
@@ -115,6 +119,14 @@ public class VuforiaBeaconScore2 extends RedBlueOpMode {
 
         while (opModeIsActive())
             idle();
+    }
+
+    private void launchBall() throws InterruptedException {
+        while(hardware.getBallScorer().getState() != BallScorer.State.WAITING) {
+            idle();
+        }
+
+        hardware.getBallScorer().launch();
     }
 
     private void logPositionData(FtcVuforia vuforia) {

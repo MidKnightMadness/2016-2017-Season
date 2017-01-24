@@ -84,7 +84,7 @@ public class AutonomousGyroTurnInfoSampleExampleToMakeSureItWorksTest extends Li
             turn(power);
 
             while(heading < targetAngle - offset) {
-//                heading = -robotHardware.getGyroSensor().getIntegratedZValue();
+                heading = -robotHardware.getGyroSensor().getIntegratedZValue();
                 percentToTarget = (heading - initialHeading)/(targetAngle - initialHeading) * 100;
 
                 /*
@@ -104,7 +104,7 @@ public class AutonomousGyroTurnInfoSampleExampleToMakeSureItWorksTest extends Li
             turn(-power);
 
             while(heading > targetAngle + offset) {
-//                heading = -robotHardware.getGyroSensor().getIntegratedZValue();
+                heading = -robotHardware.getGyroSensor().getIntegratedZValue();
                 percentToTarget = (heading - initialHeading)/(targetAngle - initialHeading) * 100;
 
                 /*

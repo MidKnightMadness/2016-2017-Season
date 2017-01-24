@@ -11,9 +11,14 @@ public class Utilities {
     private RobotHardware hardware;
     private OpMode parent;
 
+    private ModernRoboticsI2cGyro gyro;
+
     public Utilities(OpMode parent, RobotHardware hardware) {
         this.hardware = hardware;
         this.parent = parent;
+
+        if(hardware.getGyroSensor() instanceof ModernRoboticsI2cGyro)
+            gyro = (ModernRoboticsI2cGyro) hardware.getGyroSensor();
     }
 
     public void turnRight(double power) {
@@ -278,5 +283,69 @@ public class Utilities {
             this.parent.telemetry.addData("target", target);
             this.parent.telemetry.addData("gyroSensor", gyroSensor.getIntegratedZValue());
         }
+    }
+
+    public void turnDegrees(double power, double angle) throws InterruptedException {
+        if(power < 0)
+            throw new IllegalStateException("Power must be positive");
+
+        double heading = -gyro.getIntegratedZValue();
+
+        double initialHeading = heading;
+        double targetAngle = heading + angle;
+        double percentToTarget = 0;
+        int offset = 10; //was 12
+
+
+        if(angle > 0) {
+            turn(power);
+
+            while(heading < targetAngle - offset) {
+                heading = -gyro.getIntegratedZValue();
+                percentToTarget = (heading - initialHeading)/(targetAngle - initialHeading) * 100;
+
+                /*
+                if(percentToTarget > 75 && power >= 0.20) {
+                    turn(power * 0.75);
+                }
+                */
+
+                this.parent.telemetry.addData("% to Target", percentToTarget);
+                this.parent.telemetry.addData("Heading", heading);
+                this.parent.telemetry.update();
+                idle();
+            }
+
+        }
+        else {
+            turn(-power);
+
+            while(heading > targetAngle + offset) {
+                heading = -gyro.getIntegratedZValue();
+                percentToTarget = (heading - initialHeading)/(targetAngle - initialHeading) * 100;
+
+                /*
+                if(percentToTarget > 75 && power >= 0.20) {
+                    turn(-power * 0.75);
+                }
+                */
+
+                this.parent.telemetry.addData("% to Target", percentToTarget);
+                this.parent.telemetry.addData("Heading", heading);
+                this.parent.telemetry.update();
+                idle();
+            }
+        }
+
+        hardware.stopAllMotors();
+
+
+    }
+
+    public void turn(double power) {
+        hardware.getFrontLeftMotor().setPower(power);
+        hardware.getBackLeftMotor().setPower(power);
+        hardware.getFrontRightMotor().setPower(-power);
+        hardware.getBackRightMotor().setPower(-power);
     }
 }
