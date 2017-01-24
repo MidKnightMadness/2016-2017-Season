@@ -2,11 +2,7 @@ package org.tka.robotics.utils.hardware;
 
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.ColorSensor;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.GyroSensor;
-import com.qualcomm.robotcore.hardware.LightSensor;
+import com.qualcomm.robotcore.hardware.*;
 
 import org.tka.robotics.utils.BallScorer;
 import org.tka.robotics.utils.Utilities;
@@ -112,6 +108,30 @@ public class SoftwareBotHardware extends RobotHardware{
     @Override
     public BallScorer getBallScorer() {
         throw new UnsupportedOperationException("No ball scorer on software bot.");
+    }
+
+    @Override
+    public Servo semaphore() {
+        // No semaphore servo on the Software Bot
+        return null;
+    }
+
+    @Override
+    public Servo elevatorRetainer() {
+        // No elevator retainer on the Software Bot
+        return null;
+    }
+
+    @Override
+    public DcMotor getIntakeMotor() {
+        // Mo intake on the Software Bot
+        return null;
+    }
+
+    @Override
+    public DcMotor getElevatorMotor() {
+        // No elevator on the Software Bot
+        return null;
     }
 
     /**

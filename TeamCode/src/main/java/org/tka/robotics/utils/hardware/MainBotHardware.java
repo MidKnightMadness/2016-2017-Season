@@ -2,22 +2,22 @@ package org.tka.robotics.utils.hardware;
 
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.ColorSensor;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.GyroSensor;
-import com.qualcomm.robotcore.hardware.LightSensor;
+import com.qualcomm.robotcore.hardware.*;
 
 import org.tka.robotics.utils.BallScorer;
 import org.tka.robotics.utils.Utilities;
 
 public class MainBotHardware extends RobotHardware{
 
-    private DcMotor front_left, front_right, back_left, back_right;
+    private static final double ELEVATOR_RETAINER_INITIAL_POSITION = 0;
+    private static final double SEMAPHORE_INITIAL_POSITION = 0;
+    private DcMotor front_left, front_right, back_left, back_right, intake, elevator;
 
     private final Utilities utilities;
 
     private BallScorer ballScorer;
+
+    private Servo elevatorRetainer, semaphore;
 
     private Thread ballScorerThread;
 
@@ -36,6 +36,8 @@ public class MainBotHardware extends RobotHardware{
         front_right = hardwareMap.dcMotor.get("front_right");
         back_left = hardwareMap.dcMotor.get("back_left");
         back_right = hardwareMap.dcMotor.get("back_right");
+        intake = hardwareMap.dcMotor.get("intake");
+        elevator = hardwareMap.dcMotor.get("elevator");
 
         gyroSensor = (ModernRoboticsI2cGyro)hardwareMap.gyroSensor.get("gyro_sensor");
         lightSensor = hardwareMap.lightSensor.get("light_sensor");
@@ -64,7 +66,17 @@ public class MainBotHardware extends RobotHardware{
         back_right.setDirection(DcMotorSimple.Direction.REVERSE);
 
 
+        semaphore = hardwareMap.servo.get("semaphore");
+        elevatorRetainer = hardwareMap.servo.get("elevator_retainer");
+
+        initializeServos();
         telemetry();
+    }
+
+    private void initializeServos(){
+        elevatorRetainer.setDirection(Servo.Direction.REVERSE);
+        semaphore.setPosition(SEMAPHORE_INITIAL_POSITION);
+        elevatorRetainer.setPosition(ELEVATOR_RETAINER_INITIAL_POSITION);
     }
 
     @Override
@@ -104,5 +116,25 @@ public class MainBotHardware extends RobotHardware{
     @Override
     public BallScorer getBallScorer() {
         return ballScorer;
+    }
+
+    @Override
+    public Servo semaphore() {
+        return semaphore;
+    }
+
+    @Override
+    public Servo elevatorRetainer() {
+        return elevatorRetainer;
+    }
+
+    @Override
+    public DcMotor getIntakeMotor() {
+        return intake;
+    }
+
+    @Override
+    public DcMotor getElevatorMotor() {
+        return elevator;
     }
 }

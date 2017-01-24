@@ -4,11 +4,7 @@ import android.util.Log;
 
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.ColorSensor;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.GyroSensor;
-import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.LightSensor;
+import com.qualcomm.robotcore.hardware.*;
 
 import org.firstinspires.ftc.robotcore.external.Func;
 import org.tka.robotics.utils.BallScorer;
@@ -58,6 +54,14 @@ public abstract class RobotHardware {
     public abstract ColorSensor getColorSensor();
 
     public abstract BallScorer getBallScorer();
+
+    public abstract Servo semaphore();
+
+    public abstract Servo elevatorRetainer();
+
+    public abstract DcMotor getIntakeMotor();
+
+    public abstract DcMotor getElevatorMotor();
 
     public void stopAllMotors(){
         for(DcMotor m :hardwareMap.dcMotor){
