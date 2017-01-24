@@ -29,6 +29,7 @@ public class MainBotTeleop extends OpMode {
     private DcMotor elevator;
 
     private Servo elevatorRetainer;
+    private Servo semaphore;
 
     /**
      * The main robot hardware
@@ -54,6 +55,7 @@ public class MainBotTeleop extends OpMode {
         elevator = hardwareMap.dcMotor.get("elevator");
 
         elevatorRetainer = hardwareMap.servo.get("elevator_retainer");
+        semaphore = hardwareMap.servo.get("semaphore");
 
         elevator.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
@@ -65,6 +67,8 @@ public class MainBotTeleop extends OpMode {
 
         elevatorRetainer.setDirection(Servo.Direction.REVERSE);
         elevatorRetainer.setPosition(ELEVATOR_CLOSE);
+
+        semaphore.setPosition(0);
 
     }
 
@@ -95,6 +99,8 @@ public class MainBotTeleop extends OpMode {
         if(gamepad1.x || (gamepad2.start || gamepad2.back || gamepad2.left_bumper || gamepad2.right_bumper)){
             hardware.getBallScorer().launch();
         }
+
+        semaphore.setPosition(hardware.getBallScorer().getState() == BallScorer.State.WAITING? 1 : 0);
     }
 
     private void elevatorClamp() {
