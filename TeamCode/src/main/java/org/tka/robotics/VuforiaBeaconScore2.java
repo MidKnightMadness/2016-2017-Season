@@ -77,6 +77,7 @@ public class VuforiaBeaconScore2 extends RedBlueOpMode {
 
         hardware.getUtilities().strafe(3250, 0.4);
         launchBall();
+        sleep(15);
         hardware.getUtilities().turnDegrees(0.4, -90);
 
 
