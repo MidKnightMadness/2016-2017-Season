@@ -79,7 +79,7 @@ public class MainBotTeleop extends OpMode {
         updateElevator();
         elevatorClamp();
 
-        if(gamepad1.x || (gamepad2.start || gamepad2.back || gamepad2.left_bumper || gamepad2.right_bumper)){
+        if(gamepad1.x || (gamepad2.back || gamepad2.left_bumper || gamepad2.right_bumper)){
             hardware.getBallScorer().launch();
         }
 
