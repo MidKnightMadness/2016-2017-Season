@@ -83,6 +83,10 @@ public class MainBotTeleop extends OpMode {
             hardware.getBallScorer().launch();
         }
 
+        if(gamepad2.left_trigger > 0.5 && gamepad2.right_trigger > 0.5){
+            hardware.getBallScorer().home();
+        }
+
         hardware.semaphore().setPosition(hardware.getBallScorer().getState() == BallScorer.State.WAITING? 1 : 0);
     }
 
