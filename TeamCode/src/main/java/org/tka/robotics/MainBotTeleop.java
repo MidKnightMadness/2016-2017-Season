@@ -88,6 +88,7 @@ public class MainBotTeleop extends OpMode {
         }
 
         hardware.semaphore().setPosition(hardware.getBallScorer().getState() == BallScorer.State.WAITING? 1 : 0);
+        motorUpdate();
     }
 
     private void elevatorClamp() {
@@ -95,6 +96,21 @@ public class MainBotTeleop extends OpMode {
             hardware.elevatorRetainer().setPosition(ELEVATOR_OPEN);
         } else if (gamepad1.y || gamepad2.dpad_left) {
             hardware.elevatorRetainer().setPosition(ELEVATOR_CLOSE);
+        }
+    }
+
+    private void motorUpdate(){
+        final double scaleFactor = 0.25;
+        DcMotor frontLeft = hardware.getFrontLeftMotor();
+        DcMotor frontRight = hardware.getFrontRightMotor();
+        DcMotor backLeft = hardware.getBackLeftMotor();
+        DcMotor backRight = hardware.getBackRightMotor();
+
+        if(Math.abs(hardware.getElevatorMotor().getCurrentPosition()) > 20000){
+            frontLeft.setPower(frontLeft.getPower() * scaleFactor);
+            frontRight.setPower(frontRight.getPower() * scaleFactor);
+            backLeft.setPower(backLeft.getPower() * scaleFactor);
+            backRight.setPower(backRight.getPower() * scaleFactor);
         }
     }
 
