@@ -1,9 +1,14 @@
 package org.tka.robotics.utils;
 
+import android.widget.TextView;
+import com.qualcomm.ftccommon.UpdateUI;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
+import org.firstinspires.ftc.robotcontroller.internal.FtcRobotControllerActivity;
+
+import java.lang.reflect.Field;
 
 import static org.tka.robotics.utils.BallScorer.State.*;
 
@@ -23,6 +28,8 @@ public class BallScorer implements Runnable {
     private boolean running = true;
 
     private int targetPos = 0;
+
+    private Field updateUIField, robotState;
 
     public BallScorer(OpMode opMode, DcMotor motor, Servo servo, TouchSensor touchSensor) {
         this.motor = motor;
@@ -124,6 +131,9 @@ public class BallScorer implements Runnable {
                     break;
             }
             Thread.yield();
+            if(runningOpMode().equalsIgnoreCase("Stop Robot")){
+                this.running = false;
+            }
         }
     }
 
@@ -145,5 +155,30 @@ public class BallScorer implements Runnable {
         RETRACTING,
         RETRACTING_PHASE_2,
         EXTENDING
+    }
+
+    /**
+     * <b>WARNING!!! ADVANCED CODING AHEAD!</b>
+     * <br/>
+     * Get the current op mode that is running
+     *
+     * @return The op mode that is running
+     */
+    private String runningOpMode() {
+        try {
+            if (updateUIField == null) {
+                updateUIField = FtcRobotControllerActivity.class.getDeclaredField("updateUI");
+                updateUIField.setAccessible(true);
+            }
+            UpdateUI ui = (UpdateUI) updateUIField.get(opMode.hardwareMap.appContext);
+            if (robotState == null) {
+                robotState = UpdateUI.class.getDeclaredField("textOpMode");
+                robotState.setAccessible(true);
+            }
+            return ((TextView) robotState.get(ui)).getText().toString().substring(9);
+        } catch (IllegalAccessException | NoSuchFieldException e) {
+            e.printStackTrace();
+        }
+        return "Stop Robot";
     }
 }
