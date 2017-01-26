@@ -6,7 +6,6 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
-import org.firstinspires.ftc.robotcore.external.Func;
 import org.tka.robotics.utils.BallScorer;
 import org.tka.robotics.utils.hardware.MainBotHardware;
 
@@ -32,14 +31,6 @@ public class MainBotTeleop extends OpMode {
 
     @Override
     public void init() {
-        telemetry.addData("Ball Launcher", new Func<String>() {
-            @Override
-            public String value() {
-                if(hardware == null)
-                    return "Unknown";
-                return hardware.getBallScorer().getState() == BallScorer.State.WAITING? "Ready" : "Not Ready";
-            }
-        });
         hardware = new MainBotHardware(this);
 
 
@@ -53,6 +44,11 @@ public class MainBotTeleop extends OpMode {
 
         hardware.elevatorRetainer().setDirection(Servo.Direction.REVERSE);
         hardware.elevatorRetainer().setPosition(ELEVATOR_CLOSE);
+    }
+
+    @Override
+    public void start() {
+        hardware.getBallScorer().startTeleop();
     }
 
     @Override
@@ -79,15 +75,15 @@ public class MainBotTeleop extends OpMode {
         updateElevator();
         elevatorClamp();
 
-        if(gamepad1.x || (gamepad2.start || gamepad2.back || gamepad2.left_bumper || gamepad2.right_bumper)){
+        if (gamepad1.x || (gamepad2.back || gamepad2.left_bumper || gamepad2.right_bumper)) {
             hardware.getBallScorer().launch();
         }
 
-        if(gamepad2.left_trigger > 0.5 && gamepad2.right_trigger > 0.5){
+        if (gamepad2.left_trigger > 0.5 && gamepad2.right_trigger > 0.5) {
             hardware.getBallScorer().home();
         }
 
-        hardware.semaphore().setPosition(hardware.getBallScorer().getState() == BallScorer.State.WAITING? 1 : 0);
+        hardware.semaphore().setPosition(hardware.getBallScorer().getState() == BallScorer.State.WAITING ? 1 : 0);
         motorUpdate();
     }
 
@@ -99,14 +95,14 @@ public class MainBotTeleop extends OpMode {
         }
     }
 
-    private void motorUpdate(){
+    private void motorUpdate() {
         final double scaleFactor = 0.25;
         DcMotor frontLeft = hardware.getFrontLeftMotor();
         DcMotor frontRight = hardware.getFrontRightMotor();
         DcMotor backLeft = hardware.getBackLeftMotor();
         DcMotor backRight = hardware.getBackRightMotor();
 
-        if(Math.abs(hardware.getElevatorMotor().getCurrentPosition()) > 20000){
+        if (Math.abs(hardware.getElevatorMotor().getCurrentPosition()) > 20000) {
             frontLeft.setPower(frontLeft.getPower() * scaleFactor);
             frontRight.setPower(frontRight.getPower() * scaleFactor);
             backLeft.setPower(backLeft.getPower() * scaleFactor);
