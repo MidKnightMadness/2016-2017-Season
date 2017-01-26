@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 import org.firstinspires.ftc.robotcontroller.internal.FtcRobotControllerActivity;
+import org.firstinspires.ftc.robotcore.external.Func;
 
 import java.lang.reflect.Field;
 
@@ -36,6 +37,13 @@ public class BallScorer implements Runnable {
         this.servo = servo;
         this.touchSensor = touchSensor;
         this.opMode = opMode;
+        opMode.telemetry.addData("Ball Launcher", new Func<String>() {
+            @Override
+            public String value() {
+                return (state == BallScorer.State.WAITING ? "Ready" : "Not Ready") +
+                        "(" + state.toString() + ")";
+            }
+        });
     }
 
     public DcMotor getMotor() {
