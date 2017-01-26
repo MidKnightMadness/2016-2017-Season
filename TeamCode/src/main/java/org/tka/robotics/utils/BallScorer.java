@@ -32,6 +32,8 @@ public class BallScorer implements Runnable {
 
     private Field updateUIField, robotState;
 
+    private Thread ballScorerThread;
+
     public BallScorer(OpMode opMode, DcMotor motor, Servo servo, TouchSensor touchSensor) {
         this.motor = motor;
         this.servo = servo;
@@ -44,6 +46,18 @@ public class BallScorer implements Runnable {
                         "(" + state.toString() + ")";
             }
         });
+    }
+
+    public void start(){
+        ballScorerThread = new Thread(this);
+        ballScorerThread.setName("Ball Scorer");
+        ballScorerThread.setDaemon(true);
+        ballScorerThread.start();
+    }
+
+    public void startTeleop(){
+        state = HOME_FIRING;
+        start();
     }
 
     public DcMotor getMotor() {
@@ -71,6 +85,18 @@ public class BallScorer implements Runnable {
     public void run() {
         while (running) {
             switch (state) {
+                case HOME_FIRING:
+                    servo.setPosition(0.5);
+                    waitUntil = System.currentTimeMillis() + 250;
+                    state = HOME_FIRING_WAITING;
+                    break;
+                case HOME_FIRING_WAITING:
+                    if(System.currentTimeMillis() > waitUntil){
+                        waitUntil = -1;
+                        state = HOMING;
+                        servo.setPosition(0);
+                    }
+                    break;
                 case HOMING:
                     if (!touchSensor.isPressed()) {
                         motor.setPower(1);
@@ -142,6 +168,8 @@ public class BallScorer implements Runnable {
     }
 
     public enum State {
+        HOME_FIRING,
+        HOME_FIRING_WAITING,
         HOMING,
         WAITING,
         FIRING,

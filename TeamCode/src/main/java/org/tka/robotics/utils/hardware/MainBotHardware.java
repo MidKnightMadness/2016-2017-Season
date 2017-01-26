@@ -48,11 +48,6 @@ public class MainBotHardware extends RobotHardware{
         ballScorer = new BallScorer(parent, hardwareMap.dcMotor.get("pinball_motor"),
                 hardwareMap.servo.get("pinball_servo"), hardwareMap.touchSensor.get("pinball_touch"));
 
-        ballScorerThread = new Thread(ballScorer);
-        ballScorerThread.setName("BallScorer");
-        ballScorerThread.setDaemon(true);
-        ballScorerThread.start();
-
         //front_left.setDirection(DcMotorSimple.Direction.REVERSE);
         //back_left.setDirection(DcMotorSimple.Direction.REVERSE);
 

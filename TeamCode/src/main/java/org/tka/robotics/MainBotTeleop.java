@@ -47,6 +47,11 @@ public class MainBotTeleop extends OpMode {
     }
 
     @Override
+    public void start() {
+        hardware.getBallScorer().startTeleop();
+    }
+
+    @Override
     public void loop() {
         double[] motors = calculateMotorValues(-gamepad1.left_stick_x, -gamepad1.left_stick_y,
                 -gamepad1.right_stick_x, -gamepad1.right_stick_y);
