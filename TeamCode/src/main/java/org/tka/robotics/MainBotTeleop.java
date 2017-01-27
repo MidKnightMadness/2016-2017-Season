@@ -111,13 +111,14 @@ public class MainBotTeleop extends OpMode {
     }
 
     private void updateElevator() {
+        int DELTA_CHANGE = 200;
         if (gamepad1.right_bumper || gamepad2.dpad_up) {
             hardware.getElevatorMotor().setPower(1);
-            hardware.getElevatorMotor().setTargetPosition(hardware.getElevatorMotor().getCurrentPosition() + 100);
+            hardware.getElevatorMotor().setTargetPosition(hardware.getElevatorMotor().getCurrentPosition() + DELTA_CHANGE);
         }
         if (gamepad1.left_bumper || gamepad2.dpad_down) {
             hardware.getElevatorMotor().setPower(1);
-            hardware.getElevatorMotor().setTargetPosition(hardware.getElevatorMotor().getCurrentPosition() - 100);
+            hardware.getElevatorMotor().setTargetPosition(hardware.getElevatorMotor().getCurrentPosition() - DELTA_CHANGE);
         }
     }
 
