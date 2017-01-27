@@ -78,7 +78,7 @@ public class BallScorer implements Runnable {
     }
 
     public void home() {
-        state = HOMING;
+        state = HOME_FIRING;
     }
 
     @Override
