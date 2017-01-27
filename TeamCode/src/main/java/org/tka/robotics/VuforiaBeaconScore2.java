@@ -51,7 +51,6 @@ public class VuforiaBeaconScore2 extends RedBlueOpMode {
         hardware.getGyroSensor().calibrate();
 
         while (hardware.getGyroSensor().isCalibrating())  {
-            Thread.sleep(50);
             idle();
         }
 
@@ -79,36 +78,59 @@ public class VuforiaBeaconScore2 extends RedBlueOpMode {
 
         hardware.getUtilities().resetDriveMotors();
 
-        hardware.getUtilities().strafe(3000, 0.4); // speed up
-        launchBall();
-        sleep(15);
-        hardware.getUtilities().turnDegrees(0.3, -90);
+        if(teamColor == TeamColor.BLUE) {
+            hardware.getUtilities().strafe(3000, 0.4); // speed up
+            launchBall();
+            sleep(15);
+            hardware.getUtilities().turnDegrees(0.3, -90);
 
 
-        telemetry.log().add("Starting driving until we find a location from the target");
-        // Drive sideways until we get a position from the targets
-        while (vuforia.getRobotPosition() == null) {
-            logPositionData(vuforia);
-            driveBackLeftDiagonal(0.70f); // doubled
-            idle();
+            telemetry.log().add("Starting driving until we find a location from the target");
+            // Drive sideways until we get a position from the targets
+            while (vuforia.getRobotPosition() == null) {
+                logPositionData(vuforia);
+                driveBackLeftDiagonal(0.70f); // doubled
+                idle();
+            }
+            telemetry.log().add("Found target, stopping");
+            hardware.stopAllMotors();
+
+
+
+
+            ///////////////////////////////
+            //NATHAN B CHANGED 680 to 570//
+            ///////////////////////////////
+
+
+
+
+            driveToTargetBlue(1350/*, 0.5F*/); //580, 1318
+            hardware.stopAllMotors();
+
+
         }
-        telemetry.log().add("Found target, stopping");
-        hardware.stopAllMotors();
+        if(teamColor == TeamColor.RED) {
+            telemetry.log().add("Starting driving until we find a location from the target");
+            // Drive sideways until we get a position from the targets
+            while (vuforia.getRobotPosition() == null) {
+                logPositionData(vuforia);
+                driveForwardLeftDiagonal(0.70f); // doubled
+                idle();
+            }
+            telemetry.log().add("Found target, stopping");
+            hardware.stopAllMotors();
 
+            driveToTargetRed(-1300);
+            hardware.stopAllMotors();
 
+            launchBall();
+            sleep(15);
 
-
-        ///////////////////////////////
-        //NATHAN B CHANGED 680 to 570//
-        ///////////////////////////////
-
-
-
-
-        driveToTarget(1350/*, 0.5F*/); //580, 1318
-        hardware.stopAllMotors();
-
+        }
         sleep(500);
+
+
 
 
         //hardware.getUtilities().gyroReadjust(INITIAL_HEADING, hardware.getGyroSensor());
@@ -163,7 +185,7 @@ public class VuforiaBeaconScore2 extends RedBlueOpMode {
         }
     }
 
-    private void driveToTarget(float targetY/*, float motorPower*/) throws InterruptedException {
+    private void driveToTargetBlue(float targetY/*, float motorPower*/) throws InterruptedException {
         float[] robotPosition = vuforia.getRobotPosition();
 
         float frontLeftMotorPower = 0;
@@ -223,6 +245,66 @@ public class VuforiaBeaconScore2 extends RedBlueOpMode {
         }
     }
 
+    private void driveToTargetRed(float targetX/*, float motorPower*/) throws InterruptedException {
+        float[] robotPosition = vuforia.getRobotPosition();
+
+        float frontLeftMotorPower = 0;
+        float frontRightMotorPower = 0;
+        float backLeftMotorPower = 0;
+        float backRightMotorPower = 0;
+        float deltaX;
+        //float deltaY;
+        float multiplierX;
+        //float multiplierY;
+        if (robotPosition == null)
+            return;
+
+        hardware.getLightSensor().enableLed(true);
+
+        while (hardware.getLightSensor().getLightDetected() < 0.4) {
+            robotPosition = vuforia.getRobotPosition();
+            logPositionData(vuforia);
+
+
+            frontLeftMotorPower = 0.08F;
+            frontRightMotorPower = 0.08F;
+            backLeftMotorPower = 0.08F;
+            backRightMotorPower = 0.08F;
+
+
+            deltaX = Math.abs(targetX - robotPosition[0]);
+            multiplierX = Range.clip(deltaX / 750, 0.1F, 0.2F);
+            if (Math.abs(targetX - robotPosition[0]) > 25) {
+                if (robotPosition[0] < targetX) {
+                    frontLeftMotorPower += multiplierX;
+                    frontRightMotorPower -= multiplierX;
+                    backLeftMotorPower -= multiplierX;
+                    backRightMotorPower += multiplierX;
+                } else {
+                    frontLeftMotorPower -= multiplierX;
+                    frontRightMotorPower += multiplierX;
+                    backLeftMotorPower += multiplierX;
+                    backRightMotorPower -= multiplierX;
+                }
+            }
+
+
+            hardware.getFrontLeftMotor().setPower(frontLeftMotorPower);
+            hardware.getFrontRightMotor().setPower(frontRightMotorPower);
+            hardware.getBackLeftMotor().setPower(backLeftMotorPower);
+            hardware.getBackRightMotor().setPower(backRightMotorPower);
+
+            telemetry.addData("front left", frontLeftMotorPower);
+            telemetry.addData("front right", frontRightMotorPower);
+            telemetry.addData("back left", backLeftMotorPower);
+            telemetry.addData("back right", backRightMotorPower);
+
+            telemetry.addData("light sensor", hardware.getLightSensor().getLightDetected());
+
+            idle();
+        }
+    }
+
     private void driveForward(float motorPower) {
         hardware.getFrontLeftMotor().setPower(motorPower);
         hardware.getFrontRightMotor().setPower(motorPower);
@@ -235,6 +317,14 @@ public class VuforiaBeaconScore2 extends RedBlueOpMode {
         hardware.getFrontRightMotor().setPower(0);
         hardware.getBackLeftMotor().setPower(0);
         hardware.getBackRightMotor().setPower(-motorPower);
+        idle();
+    }
+
+    private void driveForwardLeftDiagonal(float motorPower) throws InterruptedException {
+        hardware.getFrontLeftMotor().setPower(0);
+        hardware.getFrontRightMotor().setPower(motorPower);
+        hardware.getBackLeftMotor().setPower(motorPower);
+        hardware.getBackRightMotor().setPower(0);
         idle();
     }
 
