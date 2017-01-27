@@ -200,15 +200,15 @@ public class Utilities {
         while((hardware.getColorSensor().red() <= 1) && hardware.getColorSensor().blue() <= 1) {
 
             if(hardware.getLightSensor().getLightDetected() < 0.4) {
-                hardware.getFrontLeftMotor().setPower(-0.08+0.04);
-                hardware.getFrontRightMotor().setPower(0.08);
-                hardware.getBackLeftMotor().setPower(0.08+0.04);
-                hardware.getBackRightMotor().setPower(-0.08);
+                hardware.getFrontLeftMotor().setPower(-0.15+0.04);
+                hardware.getFrontRightMotor().setPower(0.15);
+                hardware.getBackLeftMotor().setPower(0.15+0.04);
+                hardware.getBackRightMotor().setPower(-0.15);
             } else {
-                hardware.getFrontLeftMotor().setPower(-0.08-0.04);
-                hardware.getFrontRightMotor().setPower(0.08);
-                hardware.getBackLeftMotor().setPower(0.08-0.04);
-                hardware.getBackRightMotor().setPower(-0.08);
+                hardware.getFrontLeftMotor().setPower(-0.15-0.04);
+                hardware.getFrontRightMotor().setPower(0.15);
+                hardware.getBackLeftMotor().setPower(0.15-0.04);
+                hardware.getBackRightMotor().setPower(-0.15);
             }
 
             this.parent.telemetry.addData("light", hardware.getLightSensor().getLightDetected());
