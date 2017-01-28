@@ -1,10 +1,12 @@
 package org.tka.robotics;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.tka.robotics.utils.BallScorer;
 
 @TeleOp(name = "Ball Launch Test")
+@Disabled
 public class BallLauncherTest extends OpMode {
 
     private BallScorer scorer;

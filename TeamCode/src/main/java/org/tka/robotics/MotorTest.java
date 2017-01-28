@@ -33,6 +33,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package org.tka.robotics;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -51,6 +52,7 @@ import java.util.Map;
  * @see Telemetry
  */
 @Autonomous(name = "Motor Test", group = "Test")
+@Disabled
 public class MotorTest extends LinearOpMode {
 
     @Override

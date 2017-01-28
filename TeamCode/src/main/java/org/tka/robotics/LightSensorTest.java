@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.hardware.LightSensor;
  */
 
 @Autonomous(name = "LightSensorTest")
+//@Disabled.
 public class LightSensorTest extends LinearOpMode {
 
     LightSensor lightSensor;

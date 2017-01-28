@@ -1,5 +1,6 @@
 package org.tka.robotics;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.TouchSensor;
@@ -11,6 +12,7 @@ import org.tka.robotics.utils.hardware.MainBotHardware;
  */
 
 @TeleOp(name = "DoubleTouchSensorTest")
+@Disabled
 public class DoubleTouchSensorTest extends OpMode {
 
     private MainBotHardware hardware;

@@ -7,7 +7,7 @@ import org.firstinspires.ftc.robotcore.external.Func;
 
 import java.util.Map;
 
-@TeleOp(name = "Better Motor Test")
+@TeleOp(name = "Motor Test")
 public class BetterMotorTest extends OpMode {
 
     private String[] motorNames;

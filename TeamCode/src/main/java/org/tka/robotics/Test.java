@@ -1,8 +1,8 @@
 package org.tka.robotics;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.tka.robotics.utils.hardware.MainBotHardware;
 
@@ -11,6 +11,7 @@ import org.tka.robotics.utils.hardware.MainBotHardware;
  */
 
 @Autonomous(name="PANIC test")
+@Disabled
 public class Test extends LinearOpMode {
 
     private MainBotHardware hardware;

@@ -1,5 +1,6 @@
 package org.tka.robotics;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -12,6 +13,7 @@ import java.util.Random;
  */
 
 @TeleOp(name = "LittleCarnivalBotFunVersion")
+@Disabled
 public class LittleCarnivalBotLevel2 extends OpMode {
     private DcMotor left, right;
 

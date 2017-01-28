@@ -1,9 +1,11 @@
 package org.tka.robotics.utils.pid;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 @Autonomous(name = "PID Test")
+@Disabled
 public class PidOpModeTest extends OpMode{
 
 

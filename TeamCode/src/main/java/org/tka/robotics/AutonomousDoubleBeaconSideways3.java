@@ -1,10 +1,11 @@
 package org.tka.robotics;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.hardware.TouchSensor;
+
 import org.tka.robotics.opmode.RedBlueAutonomous;
 import org.tka.robotics.opmode.RedBlueOpMode;
 import org.tka.robotics.opmode.TeamColor;
-import org.tka.robotics.utils.hardware.MainBotHardware;
 import org.tka.robotics.utils.hardware.SoftwareBotHardware;
 
 /**
@@ -12,6 +13,7 @@ import org.tka.robotics.utils.hardware.SoftwareBotHardware;
  */
 
 @RedBlueAutonomous(name = "Double Beacon Sideways")
+@Disabled
 public class AutonomousDoubleBeaconSideways3 extends RedBlueOpMode {
     SoftwareBotHardware robotHardware;
 

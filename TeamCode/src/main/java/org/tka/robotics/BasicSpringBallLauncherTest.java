@@ -1,9 +1,8 @@
 package org.tka.robotics;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.Range;
 
@@ -13,6 +12,7 @@ import com.qualcomm.robotcore.util.Range;
 
 
 @Autonomous(name = "BallSpringLauncherTest")
+@Disabled
 public class BasicSpringBallLauncherTest extends OpMode {
 
     private DcMotor motor;

@@ -2,11 +2,13 @@ package org.tka.robotics;
 
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsUsbDcMotorController;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.DifferentialControlLoopCoefficients;
 import org.tka.robotics.utils.hardware.MainBotHardware;
 
 @Autonomous(name = "ITS TIME TO DRIFT")
+@Disabled
 public class DriftTest extends LinearOpMode{
 
     private MainBotHardware hardware;

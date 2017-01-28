@@ -2,12 +2,13 @@ package org.tka.robotics;
 
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.tka.robotics.utils.hardware.MainBotHardware;
-import org.tka.robotics.utils.hardware.SoftwareBotHardware;
 
 @Autonomous(name = "Diagonal Gyro Test", group = "Sensor")
+@Disabled
 public class DiagonalGyroTest extends LinearOpMode {
 
     MainBotHardware robotHardware;

@@ -197,7 +197,11 @@ public class Utilities {
     }
 
     public void sideLineFollow() throws InterruptedException {
-        while((hardware.getColorSensor().red() <= 1) && hardware.getColorSensor().blue() <= 1) {
+        sideLineFollow(0, 0);
+    }
+    public void sideLineFollow(int red, int blue) throws InterruptedException {
+        while((Math.abs(hardware.getColorSensor().red() - red) <= 1) && Math.abs(hardware.getColorSensor().blue() - blue) <= 1) {
+
 
             if(hardware.getLightSensor().getLightDetected() < 0.4) {
                 hardware.getFrontLeftMotor().setPower(-0.15+0.04);

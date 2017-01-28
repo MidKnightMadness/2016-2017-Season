@@ -1,6 +1,7 @@
 package org.tka.robotics;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.RobotLog;
 
@@ -19,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Autonomous(name = "Vuforia")
+@Disabled
 public class VuforiaNavigation extends LinearOpMode {
 
     private final String TAG = "VLOC";

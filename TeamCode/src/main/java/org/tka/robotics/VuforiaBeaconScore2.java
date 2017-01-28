@@ -13,13 +13,12 @@ import org.tka.robotics.opmode.RedBlueOpMode;
 import org.tka.robotics.opmode.TeamColor;
 import org.tka.robotics.utils.BallScorer;
 import org.tka.robotics.utils.hardware.MainBotHardware;
-import org.tka.robotics.utils.hardware.SoftwareBotHardware;
 import org.tka.robotics.utils.vuforia.FtcVuforia;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
 
-@RedBlueAutonomous(name = "VuforiaBeaconScore2")
+@RedBlueAutonomous(name = "Vuforia Beacon Score")
 public class VuforiaBeaconScore2 extends RedBlueOpMode {
 
     private static final float MOTOR_POWER = 0.25F;
@@ -27,6 +26,8 @@ public class VuforiaBeaconScore2 extends RedBlueOpMode {
     private FtcVuforia vuforia;
     private static float INITIAL_HEADING;
     int heading = 0;
+
+    private int red, green, blue;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -69,6 +70,10 @@ public class VuforiaBeaconScore2 extends RedBlueOpMode {
         telemetry.log().add("Low Light: " + lowLight);
         telemetry.log().add("Initialized and ready!");
 
+        red = hardware.getColorSensor().red();
+        blue = hardware.getColorSensor().blue();
+        green = hardware.getColorSensor().green();
+
         hardware.getBallScorer().start();
 
         waitForStart();
@@ -95,89 +100,37 @@ public class VuforiaBeaconScore2 extends RedBlueOpMode {
             telemetry.log().add("Found target, stopping");
             hardware.stopAllMotors();
 
-
-
-
-            ///////////////////////////////
-            //NATHAN B CHANGED 680 to 570//
-            ///////////////////////////////
-
-
-
-
-            driveToTargetBlue(1350/*, 0.5F*/); //580, 1318
+            driveToTargetBlue(1350);
             hardware.stopAllMotors();
 
 
         }
         if(teamColor == TeamColor.RED) {
-            /*
-            telemetry.log().add("Starting driving until we find a location from the target");
-            // Drive sideways until we get a position from the targets
-            while (vuforia.getRobotPosition() == null) {
-                logPositionData(vuforia);
-                driveForwardLeftDiagonal(0.70f); // doubled
-                idle();
-            }
-            telemetry.log().add("Found target, stopping");
-            hardware.stopAllMotors();
-
-            driveToTargetRed(-1300);
-            hardware.stopAllMotors();
-
-
-            readjustOrientation(INITIAL_HEADING);
-
-
-            launchBall();
-            sleep(15);
-            */
-
             hardware.getUtilities().strafe(3000, 0.4); // speed up
             launchBall();
             sleep(15);
             hardware.getUtilities().turnDegrees(0.25, 90);
 
-
+            hardware.getUtilities().strafe(-1000, 0.4);
             telemetry.log().add("Starting driving until we find a location from the target");
             // Drive sideways until we get a position from the targets
-            while (vuforia.getRobotPosition() == null) {
+            hardware.getLightSensor().enableLed(true);
+            while (hardware.getLightSensor().getLightDetected() < 0.4) {
                 logPositionData(vuforia);
-                driveForwardLeftDiagonal(0.70f); // doubled
+                driveForwardLeftDiagonal(0.40f); // doubled
                 idle();
             }
             telemetry.log().add("Found target, stopping");
             hardware.stopAllMotors();
-
-            driveToTargetRed(-1300);
+            // Removed because it may be interfering with stuff AW
+//            driveToTargetRed(-1300);
             hardware.stopAllMotors();
-
         }
         sleep(500);
 
-
-
-
-        //hardware.getUtilities().gyroReadjust(INITIAL_HEADING, hardware.getGyroSensor());
-
-
         pushBeacon(touchSensor1, touchSensor2);
 
-        if(teamColor == TeamColor.RED) {
-            readjustOrientation(INITIAL_HEADING + 90);
-        }
-//        if(teamColor == TeamColor.BLUE) {
-//            readjustOrientation(INITIAL_HEADING - 90);
-//        }
-
         driveToSecondBeacon();
-
-        if(teamColor == TeamColor.RED) {
-            readjustOrientation(INITIAL_HEADING + 90);
-        }
-//      if(teamColor == TeamColor.BLUE) {
-//          readjustOrientation(INITIAL_HEADING - 90);
-//      }
 
         pushBeacon(touchSensor1, touchSensor2);
 
@@ -197,6 +150,8 @@ public class VuforiaBeaconScore2 extends RedBlueOpMode {
     }
 
     private void launchBall() throws InterruptedException {
+        if(teamColor  == TeamColor.RED)
+        readjustOrientation(INITIAL_HEADING);
         while(hardware.getBallScorer().getState() != BallScorer.State.WAITING) {
             idle();
         }
@@ -321,7 +276,7 @@ public class VuforiaBeaconScore2 extends RedBlueOpMode {
 
 
             deltaX = Math.abs(targetX - robotPosition[0]);
-            multiplierX = Range.clip(deltaX / 750, 0.1F, 0.2F);
+            multiplierX = Range.clip(deltaX / 750, 0.1F, 0.3F);
             if (Math.abs(targetX - robotPosition[0]) > 25) {
                 if (robotPosition[0] < targetX) {
                     frontLeftMotorPower += multiplierX;
@@ -351,6 +306,7 @@ public class VuforiaBeaconScore2 extends RedBlueOpMode {
 
             idle();
         }
+        readjustOrientation(INITIAL_HEADING + 90);
     }
 
     private void driveForward(float motorPower) {
@@ -415,7 +371,7 @@ public class VuforiaBeaconScore2 extends RedBlueOpMode {
     }
 
     private void pushBeacon(TouchSensor touchSensor1, TouchSensor touchSensor2) throws InterruptedException{
-        hardware.getUtilities().sideLineFollow();
+        hardware.getUtilities().sideLineFollow(red, blue);
 
         if (teamColor == TeamColor.BLUE)
             hardware.getUtilities().detectBeaconColorAndAdjustBlue();
@@ -429,7 +385,7 @@ public class VuforiaBeaconScore2 extends RedBlueOpMode {
 
         // run until the wall until either one of touch sensors is pressed or the timer reaches 5 seconds
 
-        while (this.getRuntime() < 1.0) {
+        while (this.getRuntime() < 2.0) {
             this.hardware.getFrontLeftMotor().setPower(-0.2);
             this.hardware.getFrontRightMotor().setPower(0.2);
             this.hardware.getBackLeftMotor().setPower(0.2);
@@ -465,6 +421,7 @@ public class VuforiaBeaconScore2 extends RedBlueOpMode {
                 hardware.getUtilities().setAllMotors(0.2);
                 idle();
             }
+//            readjustOrientation(INITIAL_HEADING + 90);
         }
     }
 }

@@ -1,22 +1,16 @@
 package org.tka.robotics;
 
-import com.qualcomm.robotcore.hardware.TouchSensor;
-import org.tka.robotics.opmode.RedBlueAutonomous;
-import org.tka.robotics.opmode.RedBlueOpMode;
-import org.tka.robotics.opmode.TeamColor;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.ColorSensor;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.LightSensor;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.Range;
 import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.teamcode.R;
-import org.tka.robotics.opmode.TeamColor;
-import org.tka.robotics.utils.hardware.MainBotHardware;
+import org.tka.robotics.opmode.RedBlueAutonomous;
+import org.tka.robotics.opmode.RedBlueOpMode;
 import org.tka.robotics.utils.hardware.SoftwareBotHardware;
 import org.tka.robotics.utils.vuforia.FtcVuforia;
 
@@ -24,6 +18,7 @@ import java.lang.reflect.Field;
 import java.util.Arrays;
 
 @RedBlueAutonomous(name = "VuforiaBeaconScore")
+@Disabled
 public class VuforiaBeaconScore extends RedBlueOpMode {
 
     private static final float MOTOR_POWER = 0.25F;

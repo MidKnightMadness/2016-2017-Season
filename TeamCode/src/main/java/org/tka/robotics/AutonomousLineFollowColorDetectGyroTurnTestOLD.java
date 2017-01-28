@@ -1,6 +1,7 @@
 package org.tka.robotics;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.LightSensor;
@@ -12,6 +13,7 @@ import org.tka.robotics.utils.hardware.SoftwareBotHardware;
  */
 
 @Autonomous(name = "Line Follow Color Detect Gyro Drive Test")
+@Disabled
 public class AutonomousLineFollowColorDetectGyroTurnTestOLD extends LinearOpMode {
     SoftwareBotHardware robotHardware;
     LightSensor lightSensor;

@@ -1,10 +1,12 @@
 package org.tka.robotics;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import org.tka.robotics.opmode.RedBlueAutonomous;
 import org.tka.robotics.opmode.RedBlueOpMode;
 
 @RedBlueAutonomous(name = "Red Blue OpMode Test")
+@Disabled
 public class RedBlueTest extends RedBlueOpMode {
 
     ElapsedTime time;
