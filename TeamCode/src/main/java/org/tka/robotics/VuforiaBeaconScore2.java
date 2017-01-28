@@ -136,7 +136,7 @@ public class VuforiaBeaconScore2 extends RedBlueOpMode {
             hardware.getUtilities().strafe(3000, 0.4); // speed up
             launchBall();
             sleep(15);
-            hardware.getUtilities().turnDegrees(0.3, 90);
+            hardware.getUtilities().turnDegrees(0.25, 90);
 
 
             telemetry.log().add("Starting driving until we find a location from the target");
@@ -314,10 +314,10 @@ public class VuforiaBeaconScore2 extends RedBlueOpMode {
             logPositionData(vuforia);
 
 
-            frontLeftMotorPower = 0.08F;
-            frontRightMotorPower = 0.08F;
-            backLeftMotorPower = 0.08F;
-            backRightMotorPower = 0.08F;
+            frontLeftMotorPower = 0.06F; // was 0.08
+            frontRightMotorPower = 0.06F; // was 0.08
+            backLeftMotorPower = 0.06F; // was 0.08
+            backRightMotorPower = 0.06F; // was 0.08
 
 
             deltaX = Math.abs(targetX - robotPosition[0]);
