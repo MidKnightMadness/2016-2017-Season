@@ -111,6 +111,7 @@ public class VuforiaBeaconScore2 extends RedBlueOpMode {
 
         }
         if(teamColor == TeamColor.RED) {
+            /*
             telemetry.log().add("Starting driving until we find a location from the target");
             // Drive sideways until we get a position from the targets
             while (vuforia.getRobotPosition() == null) {
@@ -130,6 +131,26 @@ public class VuforiaBeaconScore2 extends RedBlueOpMode {
 
             launchBall();
             sleep(15);
+            */
+
+            hardware.getUtilities().strafe(3000, 0.4); // speed up
+            launchBall();
+            sleep(15);
+            hardware.getUtilities().turnDegrees(0.3, 90);
+
+
+            telemetry.log().add("Starting driving until we find a location from the target");
+            // Drive sideways until we get a position from the targets
+            while (vuforia.getRobotPosition() == null) {
+                logPositionData(vuforia);
+                driveForwardLeftDiagonal(0.70f); // doubled
+                idle();
+            }
+            telemetry.log().add("Found target, stopping");
+            hardware.stopAllMotors();
+
+            driveToTargetRed(-1300);
+            hardware.stopAllMotors();
 
         }
         sleep(500);
@@ -143,14 +164,20 @@ public class VuforiaBeaconScore2 extends RedBlueOpMode {
         pushBeacon(touchSensor1, touchSensor2);
 
         if(teamColor == TeamColor.RED) {
-            readjustOrientation(INITIAL_HEADING);
+            readjustOrientation(INITIAL_HEADING + 90);
         }
+//        if(teamColor == TeamColor.BLUE) {
+//            readjustOrientation(INITIAL_HEADING - 90);
+//        }
 
         driveToSecondBeacon();
 
         if(teamColor == TeamColor.RED) {
-            readjustOrientation(INITIAL_HEADING);
+            readjustOrientation(INITIAL_HEADING + 90);
         }
+//      if(teamColor == TeamColor.BLUE) {
+//          readjustOrientation(INITIAL_HEADING - 90);
+//      }
 
         pushBeacon(touchSensor1, touchSensor2);
 
