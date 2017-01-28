@@ -54,7 +54,7 @@ public class VuforiaBeaconScore2 extends RedBlueOpMode {
             idle();
         }
 
-        INITIAL_HEADING = hardware.getGyroSensor().getIntegratedZValue();
+        INITIAL_HEADING = -hardware.getGyroSensor().getIntegratedZValue();
 
         telemetry.addData(">", "Gyro Calibrated.  Press Start.");
         telemetry.update();
@@ -124,6 +124,10 @@ public class VuforiaBeaconScore2 extends RedBlueOpMode {
             driveToTargetRed(-1300);
             hardware.stopAllMotors();
 
+
+            readjustOrientation(INITIAL_HEADING);
+
+
             launchBall();
             sleep(15);
 
@@ -138,7 +142,15 @@ public class VuforiaBeaconScore2 extends RedBlueOpMode {
 
         pushBeacon(touchSensor1, touchSensor2);
 
+        if(teamColor == TeamColor.RED) {
+            readjustOrientation(INITIAL_HEADING);
+        }
+
         driveToSecondBeacon();
+
+        if(teamColor == TeamColor.RED) {
+            readjustOrientation(INITIAL_HEADING);
+        }
 
         pushBeacon(touchSensor1, touchSensor2);
 
@@ -146,6 +158,15 @@ public class VuforiaBeaconScore2 extends RedBlueOpMode {
 
         while (opModeIsActive())
             idle();
+    }
+
+    private void readjustOrientation(float initialHeading) throws InterruptedException {
+        float readjustDegrees = initialHeading-(-hardware.getGyroSensor().getIntegratedZValue());
+
+        telemetry.addData("readjustDegrees", readjustDegrees);
+        telemetry.update();
+
+        hardware.getUtilities().turnDegreesSmall(0.2, readjustDegrees);
     }
 
     private void launchBall() throws InterruptedException {
@@ -394,7 +415,7 @@ public class VuforiaBeaconScore2 extends RedBlueOpMode {
 
         hardware.stopAllMotors();
 
-        hardware.getUtilities().strafe(2000, 0.3);
+        hardware.getUtilities().strafe(1500, 0.3);
         hardware.stopAllMotors();
     }
 
