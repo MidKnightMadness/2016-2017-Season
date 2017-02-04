@@ -31,10 +31,10 @@ public class VuforiaBeaconScore2 extends RedBlueOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        TouchSensor touchSensor1;
-        TouchSensor touchSensor2;
-        touchSensor1 = hardwareMap.touchSensor.get("touch1");
-        touchSensor2 = hardwareMap.touchSensor.get("touch2");
+        //TouchSensor touchSensor1;
+        //TouchSensor touchSensor2;
+        //touchSensor1 = hardwareMap.touchSensor.get("touch1");
+        //touchSensor2 = hardwareMap.touchSensor.get("touch2");
 
         // TODO add touch sensors to RobotHardware
 
@@ -128,11 +128,11 @@ public class VuforiaBeaconScore2 extends RedBlueOpMode {
         }
         sleep(500);
 
-        pushBeacon(touchSensor1, touchSensor2);
+        pushBeacon();
 
         driveToSecondBeacon();
 
-        pushBeacon(touchSensor1, touchSensor2);
+        pushBeacon();
 
 
 
@@ -370,15 +370,17 @@ public class VuforiaBeaconScore2 extends RedBlueOpMode {
         hardware.stopAllMotors();
     }
 
-    private void pushBeacon(TouchSensor touchSensor1, TouchSensor touchSensor2) throws InterruptedException{
-        hardware.getUtilities().sideLineFollow(red, blue);
+    private void pushBeacon() throws InterruptedException{
+        hardware.getUtilities().sideLineFollow();
+
+        sleep(500);
 
         if (teamColor == TeamColor.BLUE)
             hardware.getUtilities().detectBeaconColorAndAdjustBlue();
         if (teamColor == TeamColor.RED)
             hardware.getUtilities().detectBeaconColorAndAdjustRed();
 
-        boolean eitherTouchPressed = touchSensor1.isPressed() || touchSensor2.isPressed();
+        //boolean eitherTouchPressed = touchSensor1.isPressed() || touchSensor2.isPressed();
 
 
         this.resetStartTime();
@@ -390,8 +392,8 @@ public class VuforiaBeaconScore2 extends RedBlueOpMode {
             this.hardware.getFrontRightMotor().setPower(0.2);
             this.hardware.getBackLeftMotor().setPower(0.2);
             this.hardware.getBackRightMotor().setPower(-0.2);
-            telemetry.addData("touch1", touchSensor1.isPressed());
-            telemetry.addData("touch2", touchSensor2.isPressed());
+            //telemetry.addData("touch1", touchSensor1.isPressed());
+            //telemetry.addData("touch2", touchSensor2.isPressed());
             telemetry.addData("timer", this.getRuntime());
             idle();
         }

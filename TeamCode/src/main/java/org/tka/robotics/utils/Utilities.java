@@ -196,11 +196,10 @@ public class Utilities {
         hardware.stopAllMotors();
     }
 
+
+
     public void sideLineFollow() throws InterruptedException {
-        sideLineFollow(0, 0);
-    }
-    public void sideLineFollow(int red, int blue) throws InterruptedException {
-        while((Math.abs(hardware.getColorSensor().red() - red) <= 1) && Math.abs(hardware.getColorSensor().blue() - blue) <= 1) {
+        while(hardware.getUltrasonicSensor().getUltrasonicLevel() > 16) {
 
 
             if(hardware.getLightSensor().getLightDetected() < 0.4) {
