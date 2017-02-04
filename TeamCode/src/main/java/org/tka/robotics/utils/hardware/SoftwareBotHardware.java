@@ -134,6 +134,12 @@ public class SoftwareBotHardware extends RobotHardware{
         return null;
     }
 
+    @Override
+    public UltrasonicSensor getUltrasonicSensor() {
+        // No ultrasonic sensor on the Software Bot
+        return null;
+    }
+
     /**
      * Stops <b>all</b> motors on the robot
      */

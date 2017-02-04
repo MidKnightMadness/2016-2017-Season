@@ -1,11 +1,8 @@
 package org.tka.robotics.utils.hardware;
 
 import android.util.Log;
-
-import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.*;
-
 import org.firstinspires.ftc.robotcore.external.Func;
 import org.tka.robotics.utils.BallScorer;
 import org.tka.robotics.utils.Utilities;
@@ -62,6 +59,8 @@ public abstract class RobotHardware {
     public abstract DcMotor getIntakeMotor();
 
     public abstract DcMotor getElevatorMotor();
+
+    public abstract UltrasonicSensor getUltrasonicSensor();
 
     public void stopAllMotors(){
         for(DcMotor m :hardwareMap.dcMotor){

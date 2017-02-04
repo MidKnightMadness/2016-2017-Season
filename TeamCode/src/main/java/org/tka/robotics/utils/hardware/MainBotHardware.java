@@ -19,6 +19,8 @@ public class MainBotHardware extends RobotHardware{
 
     private Servo elevatorRetainer, semaphore;
 
+    private UltrasonicSensor ultrasonicSensor;
+
     private Thread ballScorerThread;
 
     public MainBotHardware(OpMode opmode) {
@@ -38,6 +40,7 @@ public class MainBotHardware extends RobotHardware{
         back_right = hardwareMap.dcMotor.get("back_right");
         intake = hardwareMap.dcMotor.get("intake");
         elevator = hardwareMap.dcMotor.get("elevator");
+        ultrasonicSensor = hardwareMap.ultrasonicSensor.get("ultrasonic");
 
         gyroSensor = (ModernRoboticsI2cGyro)hardwareMap.gyroSensor.get("gyro_sensor");
         lightSensor = hardwareMap.lightSensor.get("light_sensor");
@@ -131,5 +134,10 @@ public class MainBotHardware extends RobotHardware{
     @Override
     public DcMotor getElevatorMotor() {
         return elevator;
+    }
+
+    @Override
+    public UltrasonicSensor getUltrasonicSensor() {
+        return ultrasonicSensor;
     }
 }
