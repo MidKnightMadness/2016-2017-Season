@@ -83,11 +83,13 @@ public class VuforiaBeaconScore2 extends RedBlueOpMode {
 
         hardware.getUtilities().resetDriveMotors();
 
+        hardware.getUtilities().strafe(2800, 0.6); // speed up
+        launchBall();
+        sleep(15);
+
         if(teamColor == TeamColor.BLUE) {
-            hardware.getUtilities().strafe(3000, 0.4); // speed up
-            launchBall();
-            sleep(15);
-            hardware.getUtilities().turnDegrees(0.3, -90);
+
+            hardware.getUtilities().turnDegrees(0.25, -90);
 
 
             telemetry.log().add("Starting driving until we find a location from the target");
@@ -106,9 +108,7 @@ public class VuforiaBeaconScore2 extends RedBlueOpMode {
 
         }
         if(teamColor == TeamColor.RED) {
-            hardware.getUtilities().strafe(3000, 0.4); // speed up
-            launchBall();
-            sleep(15);
+
             hardware.getUtilities().turnDegrees(0.25, 90);
 
             hardware.getUtilities().strafe(-1000, 0.4);
@@ -122,11 +122,10 @@ public class VuforiaBeaconScore2 extends RedBlueOpMode {
             }
             telemetry.log().add("Found target, stopping");
             hardware.stopAllMotors();
-            // Removed because it may be interfering with stuff AW
-//            driveToTargetRed(-1300);
+            driveToTargetRed(-1300);
             hardware.stopAllMotors();
         }
-        sleep(500);
+        //sleep(500);
 
         pushBeacon();
 
@@ -373,12 +372,14 @@ public class VuforiaBeaconScore2 extends RedBlueOpMode {
     private void pushBeacon() throws InterruptedException{
         hardware.getUtilities().sideLineFollow();
 
-        sleep(500);
+
 
         if (teamColor == TeamColor.BLUE)
             hardware.getUtilities().detectBeaconColorAndAdjustBlue();
         if (teamColor == TeamColor.RED)
             hardware.getUtilities().detectBeaconColorAndAdjustRed();
+
+        hardware.getUtilities().strafe(-400, 0.4);
 
         //boolean eitherTouchPressed = touchSensor1.isPressed() || touchSensor2.isPressed();
 
@@ -387,7 +388,7 @@ public class VuforiaBeaconScore2 extends RedBlueOpMode {
 
         // run until the wall until either one of touch sensors is pressed or the timer reaches 5 seconds
 
-        while (this.getRuntime() < 2.0) {
+        while (this.getRuntime() < 1.75) {
             this.hardware.getFrontLeftMotor().setPower(-0.2);
             this.hardware.getFrontRightMotor().setPower(0.2);
             this.hardware.getBackLeftMotor().setPower(0.2);

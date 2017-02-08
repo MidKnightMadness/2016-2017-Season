@@ -238,7 +238,7 @@ public class Utilities {
             parent.telemetry.addData("", "blue > red");
             parent.telemetry.update();
 
-            driveForward(-300, 0.4);
+            driveForward(-250, 0.4);
         }
         else {
             //go forward
@@ -246,11 +246,9 @@ public class Utilities {
             parent.telemetry.addData("", "red > blue");
             parent.telemetry.update();
 
-            driveForward(300, 0.4);
+            driveForward(250, 0.4);
 
         }
-
-        hardware.getUtilities().strafe(-400, 0.4);
     }
 
     public void detectBeaconColorAndAdjustRed() throws InterruptedException {
@@ -261,7 +259,7 @@ public class Utilities {
             parent.telemetry.update();
             //sleep(500);
 
-            driveForward(300, 0.4);
+            driveForward(250, 0.4);
 
 
 
@@ -273,11 +271,9 @@ public class Utilities {
             parent.telemetry.update();
             //sleep(500);
 
-            driveForward(-300, 0.4);
+            driveForward(-250, 0.4);
 
         }
-
-        hardware.getUtilities().strafe(-400, 0.4);
     }
 
     public void gyroReadjust(float target, ModernRoboticsI2cGyro gyroSensor) {
