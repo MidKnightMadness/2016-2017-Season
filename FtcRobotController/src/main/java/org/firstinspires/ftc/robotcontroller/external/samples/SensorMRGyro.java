@@ -35,7 +35,6 @@ import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.GyroSensor;
 
 /*
  * This is an example LinearOpMode that shows how to use
@@ -48,12 +47,12 @@ import com.qualcomm.robotcore.hardware.GyroSensor;
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
 */
-@TeleOp(name = "Sensor: MR Gyro", group = "Sensor")
+@TeleOp(name = "Gyro", group = "Sensor")
 @Disabled
 public class SensorMRGyro extends LinearOpMode {
 
   @Override
-  public void runOpMode() {
+  public void runOpMode() throws InterruptedException {
 
     ModernRoboticsI2cGyro gyro;   // Hardware Device Object
     int xVal, yVal, zVal = 0;     // Gyro rate Values
@@ -71,8 +70,8 @@ public class SensorMRGyro extends LinearOpMode {
     gyro.calibrate();
 
     // make sure the gyro is calibrated.
-    while (!isStopRequested() && gyro.isCalibrating())  {
-      sleep(50);
+    while (gyro.isCalibrating())  {
+      Thread.sleep(50);
       idle();
     }
 
@@ -109,6 +108,7 @@ public class SensorMRGyro extends LinearOpMode {
       telemetry.addData("3", "Y av. %03d", yVal);
       telemetry.addData("4", "Z av. %03d", zVal);
       telemetry.update();
+      idle(); // Always call idle() at the bottom of your while(opModeIsActive()) loop
     }
   }
 }
