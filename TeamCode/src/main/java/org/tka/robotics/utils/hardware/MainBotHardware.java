@@ -17,7 +17,7 @@ public class MainBotHardware extends RobotHardware{
 
     private BallScorer ballScorer;
 
-    private Servo elevatorRetainer, semaphore;
+    private Servo elevatorRetainer, semaphore, ball_holder;
 
     private UltrasonicSensor ultrasonicSensor;
 
@@ -66,6 +66,7 @@ public class MainBotHardware extends RobotHardware{
 
         semaphore = hardwareMap.servo.get("semaphore");
         elevatorRetainer = hardwareMap.servo.get("elevator_retainer");
+        ball_holder = hardwareMap.servo.get("ball_holder");
 
         initializeServos();
 //        telemetry();
@@ -75,6 +76,7 @@ public class MainBotHardware extends RobotHardware{
         elevatorRetainer.setDirection(Servo.Direction.REVERSE);
         semaphore.setPosition(SEMAPHORE_INITIAL_POSITION);
         elevatorRetainer.setPosition(ELEVATOR_RETAINER_INITIAL_POSITION);
+        ball_holder.setPosition(0);
     }
 
     @Override
@@ -139,5 +141,10 @@ public class MainBotHardware extends RobotHardware{
     @Override
     public UltrasonicSensor getUltrasonicSensor() {
         return ultrasonicSensor;
+    }
+
+    @Override
+    public Servo ballHolderServo() {
+        return ball_holder;
     }
 }

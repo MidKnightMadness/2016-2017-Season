@@ -62,6 +62,8 @@ public abstract class RobotHardware {
 
     public abstract UltrasonicSensor getUltrasonicSensor();
 
+    public abstract Servo ballHolderServo();
+
     public void stopAllMotors(){
         for(DcMotor m :hardwareMap.dcMotor){
             m.setPower(0);
