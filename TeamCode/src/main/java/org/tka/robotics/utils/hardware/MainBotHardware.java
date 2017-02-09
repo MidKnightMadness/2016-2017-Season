@@ -68,7 +68,7 @@ public class MainBotHardware extends RobotHardware{
         elevatorRetainer = hardwareMap.servo.get("elevator_retainer");
 
         initializeServos();
-        telemetry();
+//        telemetry();
     }
 
     private void initializeServos(){
