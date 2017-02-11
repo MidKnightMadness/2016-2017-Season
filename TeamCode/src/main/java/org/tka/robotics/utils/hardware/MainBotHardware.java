@@ -144,7 +144,7 @@ public class MainBotHardware extends RobotHardware{
     }
 
     @Override
-    public Servo ballHolderServo() {
+    public Servo getBallHolderServo() {
         return ball_holder;
     }
 }

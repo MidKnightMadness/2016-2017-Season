@@ -11,7 +11,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
  */
 
 @TeleOp(name = "LittleCarnivalBot")
-@Disabled
+//@Disabled
 public class LittleCarnivalBot extends OpMode {
     private DcMotor left, right;
 
@@ -29,8 +29,8 @@ public class LittleCarnivalBot extends OpMode {
 
     @Override
     public void loop() {
-        left.setPower(gamepad1.left_stick_y * 0.20);
-        right.setPower(gamepad1.right_stick_y * 0.20);
+        left.setPower(gamepad1.left_stick_y * 1);
+        right.setPower(gamepad1.right_stick_y * 1);
 
         telemetry.addData("left", gamepad1.left_stick_y);
         telemetry.addData("right", gamepad1.right_stick_y);

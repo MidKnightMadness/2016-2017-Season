@@ -49,7 +49,7 @@ public class MainBotTeleop extends OpMode {
     @Override
     public void start() {
         hardware.getBallScorer().startTeleop();
-        hardware.ballHolderServo().setPosition(0.5);
+        hardware.getBallHolderServo().setPosition(0.5);
     }
 
     @Override

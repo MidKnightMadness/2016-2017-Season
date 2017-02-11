@@ -141,7 +141,7 @@ public class SoftwareBotHardware extends RobotHardware{
     }
 
     @Override
-    public Servo ballHolderServo() {
+    public Servo getBallHolderServo() {
         // No servo on the Software Bot
         return null;
     }

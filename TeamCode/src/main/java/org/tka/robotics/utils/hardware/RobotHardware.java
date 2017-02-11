@@ -62,7 +62,7 @@ public abstract class RobotHardware {
 
     public abstract UltrasonicSensor getUltrasonicSensor();
 
-    public abstract Servo ballHolderServo();
+    public abstract Servo getBallHolderServo();
 
     public void stopAllMotors(){
         for(DcMotor m :hardwareMap.dcMotor){
