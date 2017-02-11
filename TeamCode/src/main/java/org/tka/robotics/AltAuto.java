@@ -111,7 +111,6 @@ public class AltAuto extends RedBlueOpMode {
 
 
 
-
         while (opModeIsActive())
             idle();
     }
