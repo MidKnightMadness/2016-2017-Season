@@ -88,6 +88,7 @@ public class AltAuto extends RedBlueOpMode {
             hardware.getUtilities().turnDegrees(0.5, -50);
             hardware.getUtilities().strafe(4250, 0.8);
 
+
             launchBall();
 
             sleep(15);
