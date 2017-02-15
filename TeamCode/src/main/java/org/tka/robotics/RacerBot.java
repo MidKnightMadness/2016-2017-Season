@@ -1,18 +1,13 @@
 package org.tka.robotics;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
-/**
- * Created by Joshua on 9/28/2016.
- */
 
-@TeleOp(name = "LittleCarnivalBot")
-//@Disabled
-public class LittleCarnivalBot extends OpMode {
+@TeleOp(name = "Racer Bot")
+public class RacerBot extends OpMode {
     private DcMotor left, right;
 
     @Override
@@ -23,17 +18,13 @@ public class LittleCarnivalBot extends OpMode {
         left.resetDeviceConfigurationForOpMode();
         right.resetDeviceConfigurationForOpMode();
 
-        left.setDirection(DcMotorSimple.Direction.FORWARD);
-        right.setDirection(DcMotorSimple.Direction.REVERSE);
+        left.setDirection(DcMotorSimple.Direction.REVERSE);
+        right.setDirection(DcMotorSimple.Direction.FORWARD);
     }
 
     @Override
     public void loop() {
-        left.setPower(gamepad1.left_stick_y * 1);
-        right.setPower(gamepad1.right_stick_y * 1);
-
-        telemetry.addData("left", gamepad1.left_stick_y);
-        telemetry.addData("right", gamepad1.right_stick_y);
-        telemetry.update();
+        left.setPower(gamepad1.left_stick_y);
+        right.setPower(gamepad1.right_stick_y);
     }
 }
