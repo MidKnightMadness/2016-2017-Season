@@ -203,15 +203,15 @@ public class Utilities {
 
 
             if(hardware.getLightSensor().getLightDetected() < 0.4) {
-                hardware.getFrontLeftMotor().setPower(-0.15+0.04);
-                hardware.getFrontRightMotor().setPower(0.15);
-                hardware.getBackLeftMotor().setPower(0.15+0.04);
-                hardware.getBackRightMotor().setPower(-0.15);
+                hardware.getFrontLeftMotor().setPower(-0.25+0.04);
+                hardware.getFrontRightMotor().setPower(0.25);
+                hardware.getBackLeftMotor().setPower(0.25+0.04);
+                hardware.getBackRightMotor().setPower(-0.25);
             } else {
-                hardware.getFrontLeftMotor().setPower(-0.15-0.04);
-                hardware.getFrontRightMotor().setPower(0.15);
-                hardware.getBackLeftMotor().setPower(0.15-0.04);
-                hardware.getBackRightMotor().setPower(-0.15);
+                hardware.getFrontLeftMotor().setPower(-0.25-0.04);
+                hardware.getFrontRightMotor().setPower(0.25);
+                hardware.getBackLeftMotor().setPower(0.25-0.04);
+                hardware.getBackRightMotor().setPower(-0.25);
             }
 
             this.parent.telemetry.addData("light", hardware.getLightSensor().getLightDetected());
@@ -238,7 +238,7 @@ public class Utilities {
             parent.telemetry.addData("", "blue > red");
             parent.telemetry.update();
 
-            driveForward(-250, 0.4);
+            driveForward(-250, 0.5);
         }
         else {
             //go forward
@@ -246,7 +246,7 @@ public class Utilities {
             parent.telemetry.addData("", "red > blue");
             parent.telemetry.update();
 
-            driveForward(250, 0.4);
+            driveForward(100, 0.5);
 
         }
     }
@@ -259,7 +259,7 @@ public class Utilities {
             parent.telemetry.update();
             //sleep(500);
 
-            driveForward(250, 0.4);
+            driveForward(100, 0.5);
 
 
 
@@ -271,7 +271,7 @@ public class Utilities {
             parent.telemetry.update();
             //sleep(500);
 
-            driveForward(-250, 0.4);
+            driveForward(-250, 0.5);
 
         }
     }

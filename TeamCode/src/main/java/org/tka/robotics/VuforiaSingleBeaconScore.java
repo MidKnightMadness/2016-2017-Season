@@ -3,6 +3,7 @@ package org.tka.robotics;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.Range;
 import com.qualcomm.robotcore.util.RobotLog;
+
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.teamcode.R;
@@ -16,10 +17,8 @@ import org.tka.robotics.utils.vuforia.FtcVuforia;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 
-import static fi.iki.elonen.NanoHTTPD.Method.HEAD;
-
-@RedBlueAutonomous(name = "Vuforia Beacon Score")
-public class VuforiaBeaconScore2 extends RedBlueOpMode {
+@RedBlueAutonomous(name = "Vuforia 2 Particle 1 Beacon")
+public class VuforiaSingleBeaconScore extends RedBlueOpMode {
 
     private static final float MOTOR_POWER = 0.25F;
     private MainBotHardware hardware;
@@ -69,10 +68,27 @@ public class VuforiaBeaconScore2 extends RedBlueOpMode {
         hardware.getUtilities().resetDriveMotors();
 
         hardware.getUtilities().strafe(3000, 0.7);
+
+        telemetry.log().add("Launching ball");
         launchBall();
+
         sleep(15);
 
-        hardware.getUtilities().turnDegrees(0.3, teamColor == TeamColor.BLUE ? -90 : 90);
+        telemetry.log().add("Dropping in second ball");
+        hardware.getBallHolderServo().setPosition(0.5);
+
+        sleep(500);
+
+        telemetry.log().add("Waiting for ball scorer...");
+        while (hardware.getBallScorer().getState() != BallScorer.State.WAITING) {
+            sleep(10);
+        }
+
+        telemetry.log().add("Launching second ball");
+        launchBall();
+        sleep(500);
+
+        hardware.getUtilities().turnDegrees(0.3, teamColor == TeamColor.BLUE ? -90 : 85);
         telemetry.log().add("Starting driving until we find a location from the target");
 
         while (vuforia.getRobotPosition() == null) {
@@ -93,9 +109,11 @@ public class VuforiaBeaconScore2 extends RedBlueOpMode {
 
         pushBeacon();
 
-        driveToSecondBeacon();
+        hardware.getUtilities().turnDegrees(0.3, 70);
 
-        pushBeacon();
+        hardware.getUtilities().driveForward(5000, 0.5);
+
+
 
 
         while (opModeIsActive())
@@ -113,7 +131,7 @@ public class VuforiaBeaconScore2 extends RedBlueOpMode {
 
     private void launchBall() throws InterruptedException {
         if (teamColor == TeamColor.RED)
-            readjustOrientation(INITIAL_HEADING);
+            //readjustOrientation(INITIAL_HEADING);
         while (hardware.getBallScorer().getState() != BallScorer.State.WAITING) {
             idle();
         }
@@ -340,7 +358,7 @@ public class VuforiaBeaconScore2 extends RedBlueOpMode {
             hardware.getUtilities().detectBeaconColorAndAdjustBlue();
         }
         if (teamColor == TeamColor.RED) {
-            readjustOrientation(INITIAL_HEADING + 90);
+            //readjustOrientation(INITIAL_HEADING + 90);
             hardware.getUtilities().detectBeaconColorAndAdjustRed();
 
         }
