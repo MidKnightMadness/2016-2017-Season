@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
+
 import org.tka.robotics.utils.BallScorer;
 import org.tka.robotics.utils.hardware.MainBotHardware;
 
@@ -33,6 +34,7 @@ public class MainBotTeleop extends OpMode {
     public void init() {
         hardware = new MainBotHardware(this);
 
+        hardware.telemetry();
 
         hardware.getElevatorMotor().setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
@@ -86,6 +88,7 @@ public class MainBotTeleop extends OpMode {
 
         hardware.semaphore().setPosition(hardware.getBallScorer().getState() == BallScorer.State.WAITING ? 1 : 0);
         motorUpdate();
+        telemetry.update();
     }
 
     private void elevatorClamp() {
@@ -112,14 +115,16 @@ public class MainBotTeleop extends OpMode {
     }
 
     private void updateElevator() {
-        int DELTA_CHANGE = 200;
         if (gamepad1.right_bumper || gamepad2.dpad_up) {
+            hardware.elevatorRetainer().setPosition(ELEVATOR_OPEN);
+            hardware.getElevatorMotor().setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             hardware.getElevatorMotor().setPower(1);
-            hardware.getElevatorMotor().setTargetPosition(hardware.getElevatorMotor().getCurrentPosition() + DELTA_CHANGE);
-        }
-        if (gamepad1.left_bumper || gamepad2.dpad_down) {
-            hardware.getElevatorMotor().setPower(1);
-            hardware.getElevatorMotor().setTargetPosition(hardware.getElevatorMotor().getCurrentPosition() - DELTA_CHANGE);
+        } else if (gamepad1.left_bumper || gamepad2.dpad_down) {
+            hardware.getElevatorMotor().setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            hardware.getElevatorMotor().setPower(-1);
+        } else {
+            hardware.getElevatorMotor().setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            hardware.getElevatorMotor().setTargetPosition(hardware.getElevatorMotor().getCurrentPosition());
         }
     }
 
