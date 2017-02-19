@@ -9,7 +9,8 @@ import com.qualcomm.robotcore.util.ClassFilter;
 import com.qualcomm.robotcore.util.ClassManager;
 
 import java.lang.reflect.Field;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class RedBlueOpModeRegistrar implements ClassFilter {
     private static final String TAG = "FTC_OP_MODE_REGISTER::";
@@ -67,27 +68,8 @@ public class RedBlueOpModeRegistrar implements ClassFilter {
         }
     }
 
-    public void process() {
-        if(register == null)
-            return;
-        try {
-            for (Class<RedBlueOpMode> clazz : toRegister) {
-                String opModeName = getOpModeName(clazz);
-                OpMode redOpMode = clazz.newInstance();
-                OpMode blueOpMode = clazz.newInstance();
-                Field teamColorField = clazz.getField("teamColor");
-                teamColorField.setAccessible(true);
-                teamColorField.set(redOpMode, TeamColor.RED);
-                teamColorField.set(blueOpMode, TeamColor.BLUE);
-                this.register.register(new OpModeMeta(String.format("[R] %s", opModeName), OpModeMeta.Flavor.AUTONOMOUS, "RedOpModes"), redOpMode);
-                this.register.register(new OpModeMeta(String.format("[B] %s", opModeName), OpModeMeta.Flavor.AUTONOMOUS, "BlueOpModes"), blueOpMode);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     @Override
+    @SuppressWarnings("unchecked")
     public void filter(Class aClass) {
         if (aClass.isAnnotationPresent(RedBlueAutonomous.class)) {
             if (aClass.isAnnotationPresent(Disabled.class)) {
@@ -101,6 +83,27 @@ public class RedBlueOpModeRegistrar implements ClassFilter {
                 }
             } else
                 Log.w(TAG, String.format("Class {%s} is not a RedBlueOpMode", aClass.getCanonicalName()));
+        }
+    }
+
+    public void process() {
+        if (register == null)
+            return;
+        for (Class<RedBlueOpMode> clazz : toRegister) {
+            try {
+                Log.i(TAG, "Processing " + clazz);
+                String opModeName = getOpModeName(clazz);
+                OpMode redOpMode = clazz.newInstance();
+                OpMode blueOpMode = clazz.newInstance();
+                Field teamColorField = clazz.getField("teamColor");
+                teamColorField.setAccessible(true);
+                teamColorField.set(redOpMode, TeamColor.RED);
+                teamColorField.set(blueOpMode, TeamColor.BLUE);
+                this.register.register(new OpModeMeta(String.format("[R] %s", opModeName), OpModeMeta.Flavor.AUTONOMOUS, "RedOpModes"), redOpMode);
+                this.register.register(new OpModeMeta(String.format("[B] %s", opModeName), OpModeMeta.Flavor.AUTONOMOUS, "BlueOpModes"), blueOpMode);
+            } catch (IllegalAccessException | InstantiationException | NoSuchFieldException e) {
+                Log.e(TAG, "An error occurred when registering " + clazz, e);
+            }
         }
     }
 }
